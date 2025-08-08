@@ -1,0 +1,733 @@
+!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Benjamin Min - Finance & Leadership Professional</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1a365d;
+            font-family: 'Georgia', serif;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #2c3e50;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            font-family: 'Georgia', serif;
+        }
+
+        .nav-links a:hover {
+            color: #1a365d;
+        }
+
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(26, 54, 93, 0.9), rgba(44, 82, 130, 0.9));
+            z-index: -1;
+        }
+
+        .hero-content {
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-family: 'Georgia', serif;
+            font-weight: normal;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 12px 30px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            font-family: 'Georgia', serif;
+        }
+
+        .cta-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .section {
+            padding: 5rem 0;
+            background: white;
+            margin: 2rem 0;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #1a365d;
+        }
+
+        .section h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #1a365d;
+            position: relative;
+            font-family: 'Georgia', serif;
+            font-weight: normal;
+        }
+
+        .section h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 2px;
+            background: #1a365d;
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .about-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            text-align: center;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .skill-item {
+            background: #1a365d;
+            color: white;
+            padding: 1rem;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: 500;
+            transition: transform 0.3s ease;
+            font-family: 'Georgia', serif;
+        }
+
+        .skill-item:hover {
+            transform: translateY(-3px);
+            background: #2c5282;
+        }
+
+        .experience-item {
+            background: #f8f9fa;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            border-radius: 8px;
+            border-left: 4px solid #1a365d;
+            transition: all 0.3s ease;
+        }
+
+        .experience-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(26, 54, 93, 0.1);
+        }
+
+        .experience-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .job-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #1a365d;
+            font-family: 'Georgia', serif;
+        }
+
+        .company {
+            font-size: 1.1rem;
+            color: #555;
+            margin: 0.5rem 0;
+        }
+
+        .date-location {
+            color: #666;
+            font-size: 0.9rem;
+            text-align: right;
+        }
+
+        .responsibilities {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .responsibilities li {
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .responsibilities li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: #1a365d;
+            font-weight: bold;
+        }
+
+        .contact-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e1e1e1;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #1a365d;
+        }
+
+        .submit-btn {
+            background: #1a365d;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            font-family: 'Georgia', serif;
+        }
+
+        .submit-btn:hover {
+            background: #2c5282;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(26, 54, 93, 0.2);
+        }
+
+        .contact-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .contact-item {
+            text-align: center;
+            padding: 2rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            transition: transform 0.3s ease;
+        }
+
+        .contact-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .contact-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #1a365d;
+        }
+
+        footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 2rem;
+        }
+
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .floating-element {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .experience-header {
+                flex-direction: column;
+            }
+
+            .date-location {
+                text-align: left;
+            }
+
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-elements">
+        <div class="floating-element" style="top: 10%; left: 10%; width: 60px; height: 60px; animation-delay: 0s;"></div>
+        <div class="floating-element" style="top: 20%; right: 10%; width: 40px; height: 40px; animation-delay: 2s;"></div>
+        <div class="floating-element" style="bottom: 20%; left: 15%; width: 80px; height: 80px; animation-delay: 4s;"></div>
+        <div class="floating-element" style="bottom: 10%; right: 20%; width: 50px; height: 50px; animation-delay: 1s;"></div>
+    </div>
+
+    <header>
+        <nav class="container">
+            <div class="logo">Benjamin Min</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#experience">Experience</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <h1>Benjamin Min</h1>
+                <p>Finance & Leadership Professional | Student Advocate</p>
+                <a href="#about" class="cta-button">Learn More About Me</a>
+            </div>
+        </section>
+
+        <div class="container">
+            <section id="about" class="section">
+                <h2>About Me</h2>
+                <div class="about-grid">
+                    <div class="about-text">
+                        <p>I'm a dedicated finance and business student at UC Riverside, passionate about financial management, student advocacy, and leadership development. Currently pursuing a Bachelor of Science with a concentration in Accounting & Finance, I bring real-world experience from my roles as CFO of Student Rights Advocacy Union and CHASS Senator.</p>
+                        
+                        <p>My experience spans across non-profit financial management, student government budget allocation, and business operations. I've successfully managed over $350,000 in student government funds and led financial planning initiatives that maximize organizational impact while maintaining fiscal responsibility.</p>
+                        
+                        <div class="skills-grid">
+                            <div class="skill-item">Financial Planning & Analysis</div>
+                            <div class="skill-item">Budget Management</div>
+                            <div class="skill-item">Non-Profit Operations</div>
+                            <div class="skill-item">Student Advocacy</div>
+                            <div class="skill-item">Leadership Development</div>
+                            <div class="skill-item">Strategic Planning</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="contact-info">
+                            <div class="contact-item">
+                                <div class="contact-icon">🎓</div>
+                                <h3>Education</h3>
+                                <p>UC Riverside<br>Expected Spring 2028<br>BS in Accounting & Finance</p>
+                            </div>
+                            <div class="contact-item">
+                                <div class="contact-icon">🌐</div>
+                                <h3>Languages</h3>
+                                <p>Korean (Fluent)<br>English (Fluent)<br>Spanish (Conversational)<br>Mandarin (Intermediate)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="experience" class="section">
+                <h2>Professional Experience</h2>
+                
+                <div class="experience-item">
+                    <div class="experience-header">
+                        <div>
+                            <div class="job-title">Chief Financial Officer (CFO)</div>
+                            <div class="company">Student Rights Advocacy Union Inc.</div>
+                        </div>
+                        <div class="date-location">
+                            Oct 2023 – Present<br>
+                            West Covina, CA
+                        </div>
+                    </div>
+                    <ul class="responsibilities">
+                        <li>Led financial planning, budgeting, analysis to ensure the organization's resources were allocated efficiently and transparently</li>
+                        <li>Managed the financial operations of a non-profit, driving initiatives that maximized impact while maintaining fiscal responsibility</li>
+                        <li>Implemented strategic financial policies to support the union's mission of advocating for student rights and promoting equality</li>
+                        <li>Provided grants & funding to student leadership organizations to promote student leadership and civic engagement</li>
+                    </ul>
+                </div>
+
+                <div class="experience-item">
+                    <div class="experience-header">
+                        <div>
+                            <div class="job-title">CHASS Senator</div>
+                            <div class="company">Associated Students of UCR</div>
+                        </div>
+                        <div class="date-location">
+                            Oct 2024 – Present<br>
+                            Riverside, CA
+                        </div>
+                    </div>
+                    <ul class="responsibilities">
+                        <li>Allocated $350,000+ in student government funds across 200+ organizations, ensuring equitable and strategic distribution</li>
+                        <li>Audited and monitored internal budgets to promote transparency, compliance, and responsible financial governance</li>
+                        <li>Collaborated with university finance staff to align fund disbursement with institutional policies and student needs</li>
+                        <li>Built deep insight into university budgeting cycles, funding proposals, and student finance operations</li>
+                    </ul>
+                </div>
+
+                <div class="experience-item">
+                    <div class="experience-header">
+                        <div>
+                            <div class="job-title">Hotel Management Intern</div>
+                            <div class="company">Tuscana Apartments</div>
+                        </div>
+                        <div class="date-location">
+                            Jun 2024 – Sep 2024<br>
+                            Enid, OK
+                        </div>
+                    </div>
+                    <ul class="responsibilities">
+                        <li>Developed leadership & teamwork skills by collaborating with functional teams to solve problems and improve service quality</li>
+                        <li>Streamlined operational processes, contributing to increased customer satisfaction and improved workflow management</li>
+                        <li>Applied business & financial acumen in managing daily operations to enhance guest experiences and optimize efficiency</li>
+                        <li>Gained hands-on experience in financial reporting, budgeting, and cost analysis, supporting the hotel's financial goals</li>
+                    </ul>
+                </div>
+
+                <h3 style="text-align: center; margin: 3rem 0 2rem; color: #1a365d; font-family: 'Georgia', serif;">Leadership & Campus Finance Experiences</h3>
+
+                <div class="experience-item">
+                    <div class="experience-header">
+                        <div>
+                            <div class="job-title">Director of Professional Development</div>
+                            <div class="company">Future Business Leaders of America (FBLA)</div>
+                        </div>
+                        <div class="date-location">
+                            Nov 2024 – Present<br>
+                            Riverside, CA
+                        </div>
+                    </div>
+                    <ul class="responsibilities">
+                        <li>Reviewed and advised on chapter budget proposals, ensuring alignment with available funding and strategic goals</li>
+                        <li>Facilitated communication between leadership and members to enhance financial transparency and engagement</li>
+                        <li>Supported fiscal decision making processes in committee meetings, providing insight into cost effectiveness</li>
+                        <li>Led financial planning for events promoting student financial literacy</li>
+                    </ul>
+                </div>
+
+                <div class="experience-item">
+                    <div class="experience-header">
+                        <div>
+                            <div class="job-title">Director of Fundraising</div>
+                            <div class="company">Undergraduate Business Association (UBA)</div>
+                        </div>
+                        <div class="date-location">
+                            Dec 2024 – Present<br>
+                            Riverside, CA
+                        </div>
+                    </div>
+                    <ul class="responsibilities">
+                        <li>Processed annual budgets, purchase orders, and reimbursements in accordance with UCR accounting protocols</li>
+                        <li>Maintained full oversight of financial documentation, serving as a signatory on all active accounts</li>
+                        <li>Implemented finance tracking systems to ensure budget accuracy, compliance, and accountability</li>
+                        <li>Coordinated and executed fundraising campaigns to support club initiatives</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="contact" class="section">
+                <h2>Get In Touch</h2>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <div class="contact-icon">📧</div>
+                        <h3>Email</h3>
+                        <p>minjihwan0417@gmail.com</p>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">📍</div>
+                        <h3>Location</h3>
+                        <p>Riverside, CA</p>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">💼</div>
+                        <h3>LinkedIn</h3>
+                        <p>Connect with me professionally</p>
+                    </div>
+                </div>
+
+                <div class="contact-form">
+                    <form>
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="subject">Subject</label>
+                            <input type="text" id="subject" name="subject" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" name="message" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="submit-btn">Send Message</button>
+                    </form>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Benjamin Min. All rights reserved.</p>
+            <p>Finance Professional | Student Advocate | Future Leader</p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Header background on scroll
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(255, 255, 255, 0.98)';
+                header.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+            } else {
+                header.style.background = 'rgba(255, 255, 255, 0.98)';
+                header.style.boxShadow = 'none';
+            }
+        });
+
+        // Form submission with better handling
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const formData = new FormData(this);
+            const name = formData.get('name');
+            const email = formData.get('email');
+            const subject = formData.get('subject');
+            const message = formData.get('message');
+            
+            // Validate form
+            if (!name || !email || !subject || !message) {
+                alert('Please fill in all fields.');
+                return;
+            }
+            
+            // Create mailto link
+            const mailtoLink = `mailto:minjihwan0417@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`From: ${name}\nEmail: ${email}\n\nMessage:\n${message}`)}`;
+            
+            // Show the message in a more prominent way
+            const submitBtn = document.querySelector('.submit-btn');
+            const originalText = submitBtn.textContent;
+            
+            // Change button to show success
+            submitBtn.textContent = 'Message Prepared!';
+            submitBtn.style.background = '#28a745';
+            
+            // Try to open email client
+            try {
+                window.open(mailtoLink);
+            } catch (error) {
+                console.log('Mailto failed, showing manual instructions');
+            }
+            
+            // Show detailed instructions
+            setTimeout(() => {
+                alert(`Thank you ${name}! 
+
+I've prepared an email for you. Here's what to do next:
+
+1. If your email app opened automatically, just click send
+2. If not, please copy this email address: minjihwan0417@gmail.com
+3. Or you can manually send an email with:
+   - Subject: ${subject}
+   - Your message and contact info
+
+I'll get back to you soon!`);
+                
+                // Reset form and button
+                this.reset();
+                submitBtn.textContent = originalText;
+                submitBtn.style.background = '#1a365d';
+            }, 1000);
+        });
+
+        // Animate elements on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeInUp 1s ease-out';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.experience-item, .skill-item, .contact-item').forEach(item => {
+            observer.observe(item);
+        });
+    </script>
+</body>
+</html>
