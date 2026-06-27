@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Benjamin Min — Finance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+--black: #0a0a0a;
+--off-black: #111111;
+--deep: #161616;
+--panel: #1a1a1a;
+--border: rgba(255,255,255,0.07);
+--border-light: rgba(255,255,255,0.12);
+--gold: #b8975a;
+--gold-light: #d4b07a;
+--gold-dim: rgba(184,151,90,0.15);
+--white: #f5f3ef;
+--muted: #888480;
+--muted-light: #a8a49e;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+background: var(--black);
+color: var(--white);
+font-family: 'Instrument Sans', sans-serif;
+font-size: 15px;
+line-height: 1.6;
+overflow-x: hidden;
+}
+
+/* NAV */
+nav {
+position: fixed;
+top: 0; left: 0; right: 0;
+z-index: 100;
+padding: 24px 60px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+border-bottom: 1px solid transparent;
+transition: all 0.4s ease;
+}
+nav.scrolled {
+background: rgba(10,10,10,0.93);
+border-bottom-color: var(--border);
+backdrop-filter: blur(20px);
+padding: 18px 60px;
+}
+.nav-logo {
+font-family: 'Cormorant Garamond', serif;
+font-size: 22px;
+font-weight: 500;
+color: var(--white);
+text-decoration: none;
+}
+.nav-logo span { color: var(--gold); }
+.nav-links { display: flex; gap: 40px; list-style: none; }
+.nav-links a {
+font-family: 'DM Mono', monospace;
+font-size: 11px;
+letter-spacing: 0.12em;
+text-transform: uppercase;
+color: var(--muted);
+text-decoration: none;
+transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--white); }
+.nav-cta {
+font-family: 'DM Mono', monospace;
+font-size: 11px;
+letter-spacing: 0.12em;
+text-transform: uppercase;
+color: var(--gold);
+text-decoration: none;
+border: 1px solid var(--gold);
+padding: 10px 22px;
+transition: all 0.25s ease;
+}
+.nav-cta:hover { background: var(--gold); color: var(--black); }
+
+/* HERO */
+#hero {
+min-height: 100vh;
+display: flex;
+align-items: center;
+padding: 0 60px;
+position: relative;
+overflow: hidden;
+}
+.hero-bg-line {
+position: absolute;
+top: 0; bottom: 0;
+width: 1px;
+background: linear-gradient(to bottom, transparent, var(--border), transparent);
+pointer-events: none;
+}
+.hero-bg-line:nth-child(1) { left: 25%; }
+.hero-bg-line:nth-child(2) { left: 50%; }
+.hero-bg-line:nth-child(3) { left: 75%; }
+
+.hero-content { position: relative; z-index: 2; max-width: 900px; }
+
+.hero-eyebrow {
+font-family: 'DM Mono', monospace;
+font-size: 11px;
+letter-spacing: 0.18em;
+text-transform: uppercase;
+color: var(--gold);
+margin-bottom: 32px;
+display: flex;
+align-items: center;
+gap: 16px;
+animation: fadeUp 0.8s ease 0.2s both;
+}
+.hero-eyebrow::before {
+content: '';
+display: block;
+width: 40px;
+height: 1px;
+background: var(--gold);
+}
+.hero-name {
+font-family: 'Cormorant Garamond', serif;
+font-size: clamp(64px, 9vw, 110px);
+font-weight: 300;
+line-height: 0.92;
+letter-spacing: -0.02em;
+margin-bottom: 8px;
+animation: fadeUp 0.9s ease 0.4s both;
+}
+.hero-name em { font-style: italic; color: var(--gold-light); }
+
+.hero-title {
+font-family: 'Cormorant Garamond', serif;
+font-size: clamp(22px, 3.5vw, 42px);
+font-weight: 300;
+color: var(--muted-light);
+margin-bottom: 40px;
+letter-spacing: 0.01em;
+animation: fadeUp 0.9s ease 0.55s both;
+}
+.hero-desc {
+font-size: 15px;
+color: var(--muted);
+max-width: 520px;
+line-height: 1.8;
+margin-bottom: 56px;
+animation: fadeUp 0.9s ease 0.7s both;
+}
+.hero-actions {
+display: flex;
+gap: 20px;
+align-items: center;
+animation: fadeUp 0.9s ease 0.85s both;
+}
+
+.btn-primary {
+background: var(--gold);
+color: var(--black);
+font-family: 'DM Mono', monospace;
+font-size: 11px;
+letter-spacing: 0.12em;
+text-transform: uppercase;
+text-decoration: none;
+padding: 16px 36px;
+font-weight: 500;
+transition: all 0.25s;
+display: inline-block;
+}
+.btn-primary:hover {
+background: var(--gold-light);
+transform: translateY(-2px);
+box-shadow: 0 12px 40px rgba(184,151,90,0.25);
+}
+.btn-secondary {
+font-family: 'DM Mono', monospace;
+font-size: 11px;
+letter-spacing: 0.12em;
+text-transform: uppercase;
+color: var(--muted-light);
+text-decoration: none;
+display: flex;
+align-items: center;
+gap: 10px;
+transition: color 0.2s;
+}
+.btn-secondary:hover { color: var(--white); }
+.btn-secondary::after { content: '→'; }
+
+.hero-stats {
+position: absolute;
+right: 60px;
+bottom: 60px;
+display: flex;
+flex-direction: column;
+gap: 32px;
+animation: fadeIn 1s ease 1.1s both;
+}
+.hero-stat {
+text-align: right;
+border-right: 2px solid var(--gold);
+padding-right: 20px;
+}
+.hero-stat-num {
+font-family: 'Cormorant Garamond', serif;
+font-size: 36px;
+font-weight: 500;
+color: var(--white);
+line-height: 1;
+display: block;
+}
+.hero-stat-label {
+font-family: 'DM Mono', monospace;
+font-size: 10px;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+color: var(--muted);
+display: block;
+margin-top: 4px;
+}
+.hero-scroll {
+position: absolute;
+bottom: 40px;
+left: 60px;
+display: flex;
+align-items: center;
+gap: 12px;
+font-family: 'DM Mono', monospace;
+font-size: 10px;
+letter-spacing: 0.12em;
+text-transform: uppercase;
+color: var(--muted);
+animation: fadeIn 1s ease 1.4s both;
+}
+.scroll-line {
+width: 40px; height: 1px;
+background: var(--muted);
+animation: scrollPulse 2s ease infinite;
+}
+
+/* SECTIONS */
+section { padding: 120px 60px; }
+
+.section-header {
+display: flex;
+align-items: baseline;
+gap: 24px;
+margin-bottom: 80px;
+}
+.section-num {
+font-family: 'DM Mono', monospace;
+font-size: 11px;
+letter-spacing: 0.1em;
+color: var(--gold);
+}
+.section-title {
+font-family: 'Cormorant Garamond', serif;
+font-size: clamp(38px, 5vw, 60px);
+font-weight: 300;
+letter-spacing: -0.01em;
+line-height: 1;
+}
+.section-title em { font-style: italic; color: var(--gold-light); }
+.section-line {
+flex: 1;
+height: 1px;
+background: var(--border);
+margin-left: auto;
+max-width: 200px;
+}
+
+/* ABOUT */
+#about {
+background: var(--off-black);
+border-top: 1px solid var(--border);
+border-bottom: 1px solid var(--border);
+}
+.about-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 80px;
+align-items: start;
+}
+.about-text p {
+color: var(--muted-light);
+line-height: 1.9;
+margin-bottom: 20px;
+font-size: 15px;
+}
+.about-text p strong { color: var(--white); font-weight: 500; }
+.about-details { display: flex; flex-direction: column; gap: 0; margin-top: 32px; }
+.about-detail-row {
+display: flex;
+gap: 20px;
+align-items: center;
+padding: 14px 0;
+border-bottom: 1px solid var(--border);
+}
+.about-detail-label {
+font-family: 'DM Mono', monospace;
+font-size: 10px;
+letter-spacing: 0.12em;
+text-transform: uppercase;
+color: var(--muted);
+min-width: 100px;
+}
+.about-detail-val { font-size: 14px; color: var(--white); }
+.about-right { display: flex; flex-direction: column; gap: 32px; }
+.skills-group-title {
+font-family: 'DM Mono', monospace;
+font-size: 10px;
+letter-spacing: 0.12em;
+text-transform: uppercase;
+color: var(--gold);
+margin-bottom: 14px;
+}
+.skill-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.skill-tag {
+font-family: 'DM Mono', monospace;
+font-size: 11px;
+letter-spacing: 0.06em;
+color: var(--muted-light);
+border: 1px solid var(--border-light);
+padding: 6px 14px;
+transition: all 0.2s;
+cursor: default;
+}
+.skill-tag:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+
+/* EXPERIENCE */
+#experience { background: var(--black); }
+.exp-grid { display: flex; flex-direction: column; }
+.exp-item {
+display: grid;
+grid-template-columns: 280px 1fr;
+gap: 60px;
+padding: 48px 0;
+border-bottom: 1px solid var(--border);
+position: relative;
+transition: background 0.3s;
+}
+.exp-item::before {
+content: '';
+position: absolute;
+left: -60px; right: -60px; top: 0; bottom: 0;
+background: var(--gold-dim);
+opacity: 0;
+transition: opacity 0.3s;
+pointer-events: none;
+}
+.exp-item:hover::before { opacity: 1; }
+.exp-meta { position: relative; z-index: 1; }
+.exp-company {
+font-family: 'Cormorant Garamond', serif;
+font-size: 20px;
+font-weight: 500;
+color: var(--white);
+margin-bottom: 6px;
+line-height: 1.2;
+}
+.exp-date {
+font-family: 'DM Mono', monospace;
+font-size: 10px;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+color: var(--muted);
+margin-bottom: 12px;
+}
+.exp-type {
+display: inline-block;
+font-family: 'DM Mono', monospace;
+font-size: 9px;
+letter-spacing: 0.12em;
+text-transform: uppercase;
+color: var(--gold);
+border: 1px solid var(--gold);
+padding: 3px 10px;
+}
+.exp-content { position: relative; z-index: 1; }
+.exp-role {
+font-family: 'Cormorant Garamond', serif;
+font-size: 26px;
+font-weight: 400;
+color: var(--white);
+margin-bottom: 20px;
+line-height: 1.2;
+}
+.exp-bullets { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.exp-bullets li {
+color: var(--muted);
+font-size: 14px;
+line-height: 1.7;
+padding-left: 20px;
+position: relative;
+}
+.exp-bullets li::before {
+content: '—';
+position: absolute;
+left: 0;
+color: var(--gold);
+font-size: 12px;
+}
+
+/* LEADERSHIP */
+#leadership {
+background: var(--off-black);
+border-top: 1px solid var(--border);
+border-bottom: 1px solid var(--border);
+}
+.leadership-grid {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 2px;
+background: var(--border);
+}
+.leadership-card {
+background: var(--panel);
+padding: 44px 40px;
+transition: background 0.3s;
+}
+.leadership-card:hover { background: var(--deep); }
+.leadership-org {
+font-family: 'DM Mono', monospace;
+font-size: 10px;
+letter-spacing: 0.12em;
+text-transform: uppercase;
+color: var(--gold);
+margin-bottom: 16px;
+}
+.leadership-role {
+font-family: 'Cormorant Garamond', serif;
+font-size: 24px;
+font-weight: 400;
+color: var(--white);
+margin-bottom: 8px;
+line-height: 1.2;
+}
+.leadership-date {
+font-family: 'DM Mono', monospace;
+font-size: 10px;
+color: var(--muted);
+letter-spacing: 0.08em;
+margin-bottom: 20px;
+}
+.leadership-desc { font-size: 13px; color: var(--muted); line-height: 1.7; }
+
+/* PROGRAMS */
+#programs { background: var(--black); }
+.programs-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 60px;
+}
+.programs-col-title {
+font-family: 'DM Mono', monospace;
+font-size: 10px;
+letter-spacing: 0.16em;
+text-transform: uppercase;
+color: var(--gold);
+margin-bottom: 32px;
+padding-bottom: 16px;
+border-bottom: 1px solid var(--border);
+}
+.program-item {
+display: flex;
+justify-content: space-between;
+align-items: baseline;
+gap: 20px;
+padding: 18px 0;
+border-bottom: 1px solid var(--border);
+transition: border-color 0.2s;
+}
+.program-item:hover { border-bottom-color: var(--gold); }
+.program-name { font-size: 14px; color: var(--white); flex: 1; }
+.program-issuer {
+font-family: 'DM Mono', monospace;
+font-size: 10px;
+color: var(--muted);
+letter-spacing: 0.06em;
+text-align: right;
+white-space: nowrap;
+}
+
+/* TICKER */
+.ticker-section {
+background: var(--gold);
+padding: 20px 0;
+overflow: hidden;
+}
+.ticker-track {
+display: flex;
+animation: ticker 30s linear infinite;
+white-space: nowrap;
+}
+.ticker-item {
+display: flex;
+align-items: center;
+gap: 40px;
+padding: 0 40px;
+font-family: 'DM Mono', monospace;
+font-size: 11px;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+color: var(--black);
+font-weight: 500;
+}
+.ticker-sep {
+width: 4px; height: 4px;
+background: var(--black);
+border-radius: 50%;
+opacity: 0.4;
+flex-shrink: 0;
+}
+
+/* PROJECTS (new section) */
+#projects {
+background: var(--off-black);
+border-top: 1px solid var(--border);
+border-bottom: 1px solid var(--border);
+}
+.projects-intro {
+color: var(--muted-light);
+max-width: 640px;
+line-height: 1.85;
+margin-bottom: 56px;
+font-size: 15px;
+}
+.projects-list { display: flex; flex-direction: column; }
+.project-card {
+display: grid;
+grid-template-columns: 64px 1fr auto;
+gap: 36px;
+align-items: start;
+padding: 40px 0;
+border-bottom: 1px solid var(--border);
+position: relative;
+transition: background 0.3s;
+text-decoration: none;
+}
+.project-card:last-child { border-bottom: none; }
+.project-card::before {
+content: '';
+position: absolute;
+left: -60px; right: -60px; top: 0; bottom: 0;
+background: var(--gold-dim);
+opacity: 0;
+transition: opacity 0.3s;
+pointer-events: none;
+}
+.project-card:hover::before { opacity: 1; }
+.project-num {
+position: relative; z-index: 1;
+font-family: 'DM Mono', monospace;
+font-size: 12px;
+letter-spacing: 0.06em;
+color: var(--gold);
+border: 1px solid var(--gold);
+width: 44px; height: 44px;
+display: flex; align-items: center; justify-content: center;
+}
+.project-body { position: relative; z-index: 1; }
+.project-title {
+font-family: 'Cormorant Garamond', serif;
+font-size: 26px;
+font-weight: 400;
+color: var(--white);
+margin-bottom: 10px;
+line-height: 1.2;
+}
+.project-desc {
+font-size: 14px;
+color: var(--muted);
+line-height: 1.75;
+margin-bottom: 18px;
+max-width: 620px;
+}
+.project-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.project-action {
+position: relative; z-index: 1;
+display: flex;
+align-items: center;
+justify-self: end;
+align-self: center;
+}
+.project-link {
+font-family: 'DM Mono', monospace;
+font-size: 11px;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+color: var(--muted-light);
+text-decoration: none;
+display: flex;
+align-items: center;
+gap: 10px;
+border: 1px solid var(--border-light);
+padding: 12px 20px;
+white-space: nowrap;
+transition: all 0.2s;
+}
+.project-link::after { content: '→'; transition: transform 0.2s; }
+.project-card:hover .project-link {
+border-color: var(--gold);
+color: var(--gold);
+background: var(--gold-dim);
+}
+.project-card:hover .project-link::after { transform: translateX(3px); }
+
+/* EDUCATION */
+#education {
+background: var(--black);
+border-top: 1px solid var(--border);
+}
+.edu-card {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 80px;
+padding: 60px;
+border: 1px solid var(--border);
+position: relative;
+overflow: hidden;
+}
+.edu-card::before {
+content: 'UCR';
+position: absolute;
+right: -20px; top: -30px;
+font-family: 'Cormorant Garamond', serif;
+font-size: 200px;
+font-weight: 600;
+color: rgba(184,151,90,0.04);
+line-height: 1;
+pointer-events: none;
+user-select: none;
+}
+.edu-school {
+font-family: 'Cormorant Garamond', serif;
+font-size: 32px;
+font-weight: 400;
+color: var(--white);
+margin-bottom: 8px;
+line-height: 1.2;
+}
+.edu-degree {
+font-family: 'DM Mono', monospace;
+font-size: 11px;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+color: var(--gold);
+margin-bottom: 24px;
+}
+.edu-detail { font-size: 14px; color: var(--muted); margin-bottom: 8px; }
+.edu-detail strong { color: var(--white); }
+.edu-awards { display: flex; flex-direction: column; gap: 16px; }
+.edu-award {
+padding: 16px 20px;
+border: 1px solid var(--border);
+border-left: 3px solid var(--gold);
+background: rgba(184,151,90,0.03);
+}
+.edu-award-name { font-size: 14px; color: var(--white); margin-bottom: 4px; font-weight: 500; }
+.edu-award-amt {
+font-family: 'DM Mono', monospace;
+font-size: 11px;
+color: var(--gold);
+letter-spacing: 0.06em;
+}
+
+/* CONTACT */
+#contact {
+background: var(--black);
+border-top: 1px solid var(--border);
+text-align: center;
+padding: 120px 60px 80px;
+}
+.contact-tagline {
+font-family: 'Cormorant Garamond', serif;
+font-size: clamp(42px, 7vw, 84px);
+font-weight: 300;
+line-height: 0.95;
+letter-spacing: -0.02em;
+margin-bottom: 48px;
+}
+.contact-tagline em { font-style: italic; color: var(--gold-light); }
+.contact-email {
+display: inline-block;
+font-family: 'DM Mono', monospace;
+font-size: 14px;
+letter-spacing: 0.06em;
+color: var(--muted-light);
+text-decoration: none;
+border-bottom: 1px solid var(--border-light);
+padding-bottom: 4px;
+margin-bottom: 48px;
+transition: all 0.2s;
+}
+.contact-email:hover { color: var(--gold); border-bottom-color: var(--gold); }
+.contact-links {
+display: flex;
+justify-content: center;
+gap: 40px;
+margin-bottom: 100px;
+}
+.contact-link {
+font-family: 'DM Mono', monospace;
+font-size: 11px;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+color: var(--muted);
+text-decoration: none;
+transition: color 0.2s;
+display: flex;
+align-items: center;
+gap: 8px;
+}
+.contact-link:hover { color: var(--white); }
+.footer-bottom {
+border-top: 1px solid var(--border);
+padding-top: 40px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+.footer-name { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--muted); }
+.footer-copy { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: var(--muted); }
+
+/* ANIMATIONS */
+@keyframes fadeUp {
+from { opacity: 0; transform: translateY(30px); }
+to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+from { opacity: 0; }
+to { opacity: 1; }
+}
+@keyframes ticker {
+from { transform: translateX(0); }
+to { transform: translateX(-50%); }
+}
+@keyframes scrollPulse {
+0%, 100% { width: 40px; }
+50% { width: 60px; }
+}
+
+/* RESPONSIVE */
+@media (max-width: 1000px) {
+nav { padding: 20px 30px; }
+nav.scrolled { padding: 16px 30px; }
+.nav-links { display: none; }
+section { padding: 80px 30px; }
+#hero { padding: 0 30px; }
+.about-grid, .programs-grid, .edu-card { grid-template-columns: 1fr; gap: 40px; }
+.exp-item { grid-template-columns: 1fr; gap: 16px; }
+.leadership-grid { grid-template-columns: 1fr; }
+.hero-stats { display: none; }
+.footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+.contact-links { flex-direction: column; gap: 20px; align-items: center; }
+.project-card { grid-template-columns: 1fr; gap: 16px; }
+.project-action { justify-self: start; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav id="navbar">
+<a href="#hero" class="nav-logo">Benjamin <span>Min</span></a>
+<ul class="nav-links">
+<li><a href="#about">Profile</a></li>
+<li><a href="#experience">Experience</a></li>
+<li><a href="#leadership">Leadership</a></li>
+<li><a href="#programs">Programs</a></li>
+<li><a href="#projects">Projects</a></li>
+<li><a href="#education">Education</a></li>
+</ul>
+<a href="mailto:minjihwan0417@gmail.com" class="nav-cta">Get in Touch</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+<div class="hero-bg-line"></div>
+<div class="hero-bg-line"></div>
+<div class="hero-bg-line"></div>
+<div class="hero-content">
+<div class="hero-eyebrow">Finance &middot; Investment Banking &middot; UCR Business</div>
+<h1 class="hero-name">Benjamin<br><em>Min</em></h1>
+<p class="hero-title">Financial Analyst &middot; Student Leader &middot; Advocate</p>
+<p class="hero-desc">
+Finance student at UC Riverside targeting investment banking and capital markets roles
+at top-tier financial institutions. Hands-on experience in capital allocation,
+nonprofit financial oversight, portfolio construction, and student advocacy.
+</p>
+<div class="hero-actions">
+<a href="#experience" class="btn-primary">View Experience</a>
+<a href="mailto:minjihwan0417@gmail.com" class="btn-secondary">Connect</a>
+</div>
+</div>
+<div class="hero-stats">
+<div class="hero-stat">
+<span class="hero-stat-num">$350K+</span>
+<span class="hero-stat-label">Capital Overseen</span>
+</div>
+<div class="hero-stat">
+<span class="hero-stat-num">150+</span>
+<span class="hero-stat-label">Budget Reviews</span>
+</div>
+<div class="hero-stat">
+<span class="hero-stat-num">200+</span>
+<span class="hero-stat-label">Orgs Supported</span>
+</div>
+</div>
+<div class="hero-scroll">
+<div class="scroll-line"></div>
+Scroll to explore
+</div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-section">
+<div class="ticker-track">
+<div class="ticker-item">Financial Analysis <div class="ticker-sep"></div></div>
+<div class="ticker-item">Capital Allocation <div class="ticker-sep"></div></div>
+<div class="ticker-item">3x Dean's Honor List <div class="ticker-sep"></div></div>
+<div class="ticker-item">Portfolio Construction <div class="ticker-sep"></div></div>
+<div class="ticker-item">BlackRock Academy <div class="ticker-sep"></div></div>
+<div class="ticker-item">JLL Capital Markets &mdash; 2nd Place <div class="ticker-sep"></div></div>
+<div class="ticker-item">Six Sigma Green Belt <div class="ticker-sep"></div></div>
+<div class="ticker-item">Korean &middot; English &middot; Spanish <div class="ticker-sep"></div></div>
+<div class="ticker-item">VITA Tax Preparer <div class="ticker-sep"></div></div>
+<div class="ticker-item">UC Investments Academy <div class="ticker-sep"></div></div>
+<div class="ticker-item">Financial Analysis <div class="ticker-sep"></div></div>
+<div class="ticker-item">Capital Allocation <div class="ticker-sep"></div></div>
+<div class="ticker-item">3x Dean's Honor List <div class="ticker-sep"></div></div>
+<div class="ticker-item">Portfolio Construction <div class="ticker-sep"></div></div>
+<div class="ticker-item">BlackRock Academy <div class="ticker-sep"></div></div>
+<div class="ticker-item">JLL Capital Markets &mdash; 2nd Place <div class="ticker-sep"></div></div>
+<div class="ticker-item">Six Sigma Green Belt <div class="ticker-sep"></div></div>
+<div class="ticker-item">Korean &middot; English &middot; Spanish <div class="ticker-sep"></div></div>
+<div class="ticker-item">VITA Tax Preparer <div class="ticker-sep"></div></div>
+<div class="ticker-item">UC Investments Academy <div class="ticker-sep"></div></div>
+</div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+<div class="section-header">
+<span class="section-num">01</span>
+<h2 class="section-title">Profile &amp;<br><em>Skills</em></h2>
+<div class="section-line"></div>
+</div>
+<div class="about-grid">
+<div class="about-text">
+<p>
+I'm a <strong>Finance student at UC Riverside</strong> targeting investment banking
+and capital markets roles at top-tier financial institutions. My experience spans
+nonprofit financial oversight, institutional investment programs, student government
+capital management, and real estate finance.
+</p>
+<p>
+I've overseen <strong>$350,000+ in organizational capital</strong>, completed portfolio
+construction training with BlackRock's Aladdin platform, and placed 2nd at the
+JLL Capital Markets Cup. I'm driven by the intersection of financial rigor and community impact.
+</p>
+<p>
+As a Korean-American who immigrated at 13 and earned the IB Diploma, I bring
+cross-cultural fluency and firsthand perspective on access and equity to every
+financial role I hold.
+</p>
+<div class="about-details">
+<div class="about-detail-row">
+<span class="about-detail-label">Location</span>
+<span class="about-detail-val">Riverside, California</span>
+</div>
+<div class="about-detail-row">
+<span class="about-detail-label">University</span>
+<span class="about-detail-val">UC Riverside &mdash; Class of 2028</span>
+</div>
+<div class="about-detail-row">
+<span class="about-detail-label">Degree</span>
+<span class="about-detail-val">B.S. Business Administration, Finance + Econ Minor</span>
+</div>
+<div class="about-detail-row">
+<span class="about-detail-label">Email</span>
+<span class="about-detail-val">minjihwan0417@gmail.com</span>
+</div>
+</div>
+</div>
+<div class="about-right">
+<div>
+<div class="skills-group-title">Technical Finance</div>
+<div class="skill-tags">
+<div class="skill-tag">Financial Modeling</div>
+<div class="skill-tag">Budgeting</div>
+<div class="skill-tag">Capital Allocation</div>
+<div class="skill-tag">Financial Reporting</div>
+<div class="skill-tag">Variance Analysis</div>
+<div class="skill-tag">P&amp;L Analysis</div>
+<div class="skill-tag">Portfolio Construction</div>
+<div class="skill-tag">Equity Valuation</div>
+<div class="skill-tag">ESG Analysis</div>
+</div>
+</div>
+<div>
+<div class="skills-group-title">Tools &amp; Platforms</div>
+<div class="skill-tags">
+<div class="skill-tag">Microsoft Excel</div>
+<div class="skill-tag">SAP</div>
+<div class="skill-tag">QuickBooks</div>
+<div class="skill-tag">NetSuite</div>
+<div class="skill-tag">BlackRock Aladdin</div>
+<div class="skill-tag">Python</div>
+</div>
+</div>
+<div>
+<div class="skills-group-title">Languages</div>
+<div class="skill-tags">
+<div class="skill-tag">Korean &mdash; Native</div>
+<div class="skill-tag">English &mdash; Native</div>
+<div class="skill-tag">Spanish &mdash; Conversational</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+<div class="section-header">
+<span class="section-num">02</span>
+<h2 class="section-title">Professional<br><em>Experience</em></h2>
+<div class="section-line"></div>
+</div>
+<div class="exp-grid">
+
+<div class="exp-item">
+<div class="exp-meta">
+<div class="exp-company">Students Rights Advocacy Union, Inc.</div>
+<div class="exp-date">Oct 2023 &ndash; Present</div>
+<div class="exp-type">Nonprofit</div>
+</div>
+<div class="exp-content">
+<div class="exp-role">Chief Financial Officer | Fiscal Analyst</div>
+<ul class="exp-bullets">
+<li>Direct financial planning and budgeting for a multi-year nonprofit organization</li>
+<li>Oversee financial reporting and internal controls ensuring fiduciary accountability and regulatory compliance</li>
+<li>Implemented strategic financial policies and governance frameworks supporting long-term organizational sustainability</li>
+<li>Collaborate with executive leadership to align financial strategy with organizational objectives and growth initiatives</li>
+</ul>
+</div>
+</div>
+
+<div class="exp-item">
+<div class="exp-meta">
+<div class="exp-company">Associated Students of UCR</div>
+<div class="exp-date">Oct 2024 &ndash; Present</div>
+<div class="exp-type">Executive Fellow</div>
+</div>
+<div class="exp-content">
+<div class="exp-role">CHASS Senator | Executive Fellow (Office of Finance)</div>
+<ul class="exp-bullets">
+<li>Oversee allocation and monitoring of $350,000+ in pooled organizational capital across 200+ student organizations</li>
+<li>Conduct 150+ budget reviews and compliance checks aligned with university fiscal policies and governance standards</li>
+<li>Manage internal operating budgets and delivered financial literacy workshops on budgeting and responsible capital use</li>
+<li>Collaborate with university finance staff to execute fund disbursements and ensure procedural alignment</li>
+</ul>
+</div>
+</div>
+
+<div class="exp-item">
+<div class="exp-meta">
+<div class="exp-company">Tuscana Apartments</div>
+<div class="exp-date">Jun 2024 &ndash; Sep 2024</div>
+<div class="exp-type">Internship</div>
+</div>
+<div class="exp-content">
+<div class="exp-role">Hotel Management Intern</div>
+<ul class="exp-bullets">
+<li>Supported financial reporting, budgeting, and cost analysis for 200+ unit hospitality property</li>
+<li>Analyzed P&amp;L statements and operating expenses to identify efficiency improvements and support decision-making</li>
+<li>Identified process improvements that enhanced operational efficiency and service delivery</li>
+<li>Evaluated financial and operational drivers of real asset-based businesses</li>
+</ul>
+</div>
+</div>
+
+
+</div>
+</section>
+
+<!-- LEADERSHIP -->
+<section id="leadership">
+<div class="section-header">
+<span class="section-num">03</span>
+<h2 class="section-title">Leadership &amp;<br><em>Activities</em></h2>
+<div class="section-line"></div>
+</div>
+<div class="leadership-grid">
+<div class="leadership-card">
+<div class="leadership-org">Phi Chi Theta Business Fraternity</div>
+<div class="leadership-role">VP of Finance | Finance Intern</div>
+<div class="leadership-date">Feb 2026 &ndash; Present</div>
+<p class="leadership-desc">Manage chapter budget, financial reporting, and treasury operations for professional business fraternity. Oversee expense tracking, reimbursements, and compliance with organizational financial policies. Coordinate with national organization on financial reporting requirements and audit preparation.</p>
+</div>
+<div class="leadership-card">
+<div class="leadership-org">Undergraduate Business Association</div>
+<div class="leadership-role">VP of Finance | Director of Fundraising | Finance Intern</div>
+<div class="leadership-date">Dec 2024 &ndash; Present</div>
+<p class="leadership-desc">Promoted twice over 18 months, from Finance Intern to Director of Fundraising to VP of Finance, reflecting sustained performance and increasing organizational trust. Lead fundraising strategy and execution to support organizational programming and member initiatives. Manage budgeting, purchase orders, and reimbursements in compliance with UCR accounting standards.</p>
+</div>
+<div class="leadership-card">
+<div class="leadership-org">Future Business Leaders of America</div>
+<div class="leadership-role">Director of Professional Development | Finance Intern</div>
+<div class="leadership-date">Nov 2024 &ndash; Present</div>
+<p class="leadership-desc">Design and lead professional development workshops on resume strategy, LinkedIn optimization, and networking. Deliver structured presentations to support member career readiness. Coordinate speaker sessions and programming to align with member development goals.</p>
+</div>
+<div class="leadership-card">
+<div class="leadership-org">Association of Latino Professionals For America</div>
+<div class="leadership-role">Finance Intern</div>
+<div class="leadership-date">Feb 2024 &ndash; Jul 2025</div>
+<p class="leadership-desc">Analyzed expense reports and event budgets to identify cost-saving opportunities and improve budget efficiency. Assisted cross-functional teams with budget tracking, reimbursement review, and financial documentation under tight timelines.</p>
+</div>
+</div>
+</section>
+
+<!-- PROGRAMS & CERTS -->
+<section id="programs">
+<div class="section-header">
+<span class="section-num">04</span>
+<h2 class="section-title">Programs &amp;<br><em>Certifications</em></h2>
+<div class="section-line"></div>
+</div>
+<div class="programs-grid">
+<div>
+<div class="programs-col-title">Competitions &amp; Selective Programs</div>
+<div class="program-item">
+<span class="program-name">JLL Capital Markets Cup &mdash; <strong style="color:var(--gold)">2nd Place</strong></span>
+<span class="program-issuer">JLL</span>
+</div>
+<div class="program-item">
+<span class="program-name">Eastdil Secured Real Estate Finance</span>
+<span class="program-issuer">Eastdil Secured</span>
+</div>
+<div class="program-item">
+<span class="program-name">BlackRock Portfolio Construction</span>
+<span class="program-issuer">BlackRock</span>
+</div>
+<div class="program-item">
+<span class="program-name">UC Investments Academy</span>
+<span class="program-issuer">University of California</span>
+</div>
+<div class="program-item">
+<span class="program-name">McKinsey Forward</span>
+<span class="program-issuer">McKinsey &amp; Company</span>
+</div>
+<div class="program-item">
+<span class="program-name">Ohana Real Estate</span>
+<span class="program-issuer">Project Destined</span>
+</div>
+<div class="program-item">
+<span class="program-name">Andersen Aspire</span>
+<span class="program-issuer">Andersen</span>
+</div>
+<div class="program-item">
+<span class="program-name">JLL Data Centers Program</span>
+<span class="program-issuer">JLL</span>
+</div>
+<div class="program-item">
+<span class="program-name">U.S. Bank Access to Ascend</span>
+<span class="program-issuer">U.S. Bank</span>
+</div>
+<div class="program-item">
+<span class="program-name">EY CHARGE</span>
+<span class="program-issuer">EY</span>
+</div>
+<div class="program-item">
+<span class="program-name">TideSpark Future Leaders</span>
+<span class="program-issuer">TideSpark</span>
+</div>
+</div>
+<div>
+<div class="programs-col-title">Licenses &amp; Certifications</div>
+<div class="program-item">
+<span class="program-name">Bloomberg Market Concepts (BMC)</span>
+<span class="program-issuer">Bloomberg</span>
+</div>
+<div class="program-item">
+<span class="program-name">Bloomberg Finance Fundamentals (BFF)</span>
+<span class="program-issuer">Bloomberg</span>
+</div>
+<div class="program-item">
+<span class="program-name">CFA Institute Investment Foundations</span>
+<span class="program-issuer">CFA Institute</span>
+</div>
+<div class="program-item">
+<span class="program-name">Six Sigma: Green Belt</span>
+<span class="program-issuer">LinkedIn</span>
+</div>
+</div>
+</div>
+</section>
+
+<!-- PROJECTS (NEW) -->
+<section id="projects">
+<div class="section-header">
+<span class="section-num">05</span>
+<h2 class="section-title">Independent<br><em>Research &amp; Tools</em></h2>
+<div class="section-line"></div>
+</div>
+<p class="projects-intro">
+Five independent analytical tools built across wealth management, commercial real estate capital markets, corporate strategy, corporate banking, and Korea&ndash;U.S. cross-border investment. Each uses verified, sourced data &mdash; not placeholders.
+</p>
+<div class="projects-list">
+
+<a class="project-card" href="./projects/cre-dashboard.html" target="_blank">
+<div class="project-num">01</div>
+<div class="project-body">
+<div class="project-title">Global CRE Market Intelligence Dashboard</div>
+<p class="project-desc">Live market data across NYC, Seoul, London, Dubai, and Tokyo &mdash; cap rates, vacancy, investment volume, and verified transactions sourced from CBRE, JLL, and Cushman &amp; Wakefield.</p>
+<div class="project-tags">
+<div class="skill-tag">CRE Capital Markets</div>
+<div class="skill-tag">5 Global Markets</div>
+</div>
+</div>
+<div class="project-action"><span class="project-link">View Dashboard</span></div>
+</a>
+
+<a class="project-card" href="./projects/wealth-simulator.html" target="_blank">
+<div class="project-num">02</div>
+<div class="project-body">
+<div class="project-title">Private Wealth Allocation Simulator</div>
+<p class="project-desc">Institutional-grade portfolio allocation tool modeled on JPMorgan Private Bank and UBS frameworks. Evaluates five client inputs to generate differentiated allocations with scenario analysis.</p>
+<div class="project-tags">
+<div class="skill-tag">Wealth Management</div>
+<div class="skill-tag">Private Banking</div>
+</div>
+</div>
+<div class="project-action"><span class="project-link">View Simulator</span></div>
+</a>
+
+<a class="project-card" href="./projects/strategy-tracker.html" target="_blank">
+<div class="project-num">03</div>
+<div class="project-body">
+<div class="project-title">Corporate Strategy Case Tracker</div>
+<p class="project-desc">A living database of 12 real strategic moves &mdash; M&amp;A, pivots, divestitures &mdash; each mapped to a strategic framework (Porter's Value Chain, BCG Matrix, Ansoff Matrix) with an analyst verdict.</p>
+<div class="project-tags">
+<div class="skill-tag">Strategy Consulting</div>
+<div class="skill-tag">12 Verified Cases</div>
+</div>
+</div>
+<div class="project-action"><span class="project-link">View Tracker</span></div>
+</a>
+
+<a class="project-card" href="./projects/korea-us-brief.html" target="_blank">
+<div class="project-num">04</div>
+<div class="project-body">
+<div class="project-title">Korea&ndash;U.S. Cross-Border Investment Brief</div>
+<p class="project-desc">A bilingual reading of bilateral capital flows &mdash; the $350B Korea trade deal, Hyundai and Samsung's U.S. manufacturing bets, and the U.S. private-equity wave into Korean assets.</p>
+<div class="project-tags">
+<div class="skill-tag">Cross-Border Capital</div>
+<div class="skill-tag">Korean Fluency</div>
+</div>
+</div>
+<div class="project-action"><span class="project-link">View Brief</span></div>
+</a>
+
+<a class="project-card" href="./projects/credit-analysis.html" target="_blank">
+<div class="project-num">05</div>
+<div class="project-body">
+<div class="project-title">Corporate Banking Credit Analysis Tool</div>
+<p class="project-desc">An interactive credit underwriting model &mdash; leverage, coverage, and liquidity scorecard mapped to an implied issuer rating, with covenant testing and incremental debt capacity sizing.</p>
+<div class="project-tags">
+<div class="skill-tag">Corporate Banking</div>
+<div class="skill-tag">Credit Analysis</div>
+</div>
+</div>
+<div class="project-action"><span class="project-link">View Tool</span></div>
+</a>
+
+</div>
+</section>
+
+<!-- EDUCATION -->
+<section id="education">
+<div class="section-header">
+<span class="section-num">06</span>
+<h2 class="section-title">Education &amp;<br><em>Honors</em></h2>
+<div class="section-line"></div>
+</div>
+<div class="edu-card">
+<div>
+<div class="edu-school">University of California,<br>Riverside</div>
+<div class="edu-degree">B.S. Business Administration &mdash; Finance</div>
+<p class="edu-detail">Minor: <strong>Economics</strong></p>
+<p class="edu-detail">Graduation: <strong>Spring 2028</strong></p>
+<p class="edu-detail" style="margin-top:16px; color: var(--muted)">Relevant Coursework: International Finance, The Stock Market, Financial Accounting</p>
+<p class="edu-detail" style="margin-top:12px;">Honors: <strong style="color:var(--gold)">4x Dean's Honor List</strong></p>
+</div>
+<div>
+<div class="programs-col-title" style="margin-bottom:24px;">Scholarships &amp; Awards</div>
+<div class="edu-awards">
+<div class="edu-award">
+<div class="edu-award-name">Ascend Foundation National Scholar</div>
+<div class="edu-award-amt">$10,000</div>
+</div>
+<div class="edu-award">
+<div class="edu-award-name">UCR Merit Scholarship</div>
+<div class="edu-award-amt">$2,000</div>
+</div>
+<div class="edu-award">
+<div class="edu-award-name">Loda Mae Davis Scholarship</div>
+<div class="edu-award-amt">$4,000</div>
+</div>
+<div class="edu-award">
+<div class="edu-award-name">First General Bank Scholarship</div>
+<div class="edu-award-amt">$1,000</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+<div>
+<div class="contact-tagline">
+Let's build something<br><em>together.</em>
+</div>
+<a href="mailto:minjihwan0417@gmail.com" class="contact-email">minjihwan0417@gmail.com</a>
+<div class="contact-links">
+<a href="https://www.linkedin.com/in/benjaminmin/" target="_blank" class="contact-link">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0H5C2.24 0 0 2.24 0 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5V5c0-2.76-2.24-5-5-5zM8 19H5V8h3v11zM6.5 6.73c-.97 0-1.75-.79-1.75-1.76S5.53 3.2 6.5 3.2c.96 0 1.75.79 1.75 1.77s-.79 1.76-1.75 1.76zM20 19h-3v-5.6c0-3.37-4-3.12-4 0V19h-3V8h3v1.77C14.4 7.5 20 7.33 20 12.9V19z"/></svg>
+LinkedIn
+</a>
+<a href="mailto:minjihwan0417@gmail.com" class="contact-link">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+Email
+</a>
+</div>
+<div class="footer-bottom">
+<div class="footer-name">Benjamin Min</div>
+<div class="footer-copy">&copy; 2026 &middot; Finance Portfolio &middot; UC Riverside</div>
+</div>
+</div>
+</section>
+
+<script>
+var navbar = document.getElementById('navbar');
+window.addEventListener('scroll', function() {
+if (window.scrollY > 60) {
+navbar.classList.add('scrolled');
+} else {
+navbar.classList.remove('scrolled');
+}
+});
+</script>
+</body>
+</html>
