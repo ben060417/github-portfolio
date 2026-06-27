@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Corporate Credit Analysis — Benjamin Min</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0e1217;
+  --surface:#161b22;
+  --surface2:#1c232d;
+  --surface3:#252e3a;
+  --border:rgba(255,255,255,0.07);
+  --border2:rgba(255,255,255,0.12);
+  --text1:#e9edf2;
+  --text2:#97a1b0;
+  --text3:#5d6675;
+  --steel:#5a8bb0;
+  --steel-bg:rgba(90,139,176,0.12);
+  --steel-brd:rgba(90,139,176,0.3);
+  --green:#3fbf8f;
+  --green-bg:rgba(63,191,143,0.1);
+  --amber:#dba63c;
+  --amber-bg:rgba(219,166,60,0.1);
+  --red:#e0584f;
+  --red-bg:rgba(224,88,79,0.1);
+  /* adaptive — set by JS */
+  --accent:#3fbf8f;
+  --accent-bg:rgba(63,191,143,0.1);
+  --sans:'IBM Plex Sans',sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--text1);-webkit-font-smoothing:antialiased;line-height:1.5}
+.wrap{max-width:1240px;margin:0 auto;padding:0 1.5rem 3rem}
+
+/* HEADER */
+.header{display:flex;align-items:center;justify-content:space-between;padding:1.75rem 0 1.4rem;border-bottom:1px solid var(--border);margin-bottom:1.5rem;gap:1rem;flex-wrap:wrap}
+.header-brand{display:flex;align-items:center;gap:.85rem}
+.brand-mark{width:38px;height:38px;border-radius:8px;background:linear-gradient(135deg,var(--steel),#3d6986);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:700;font-size:1rem;color:#fff;font-family:var(--mono)}
+.brand-title{font-size:1.15rem;font-weight:600;letter-spacing:-.01em}
+.brand-sub{font-family:var(--mono);font-size:.64rem;color:var(--text3);letter-spacing:.05em;margin-top:1px}
+.header-right{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+.edu-pill{font-family:var(--mono);font-size:.62rem;letter-spacing:.05em;color:var(--text3);border:1px solid var(--border2);border-radius:20px;padding:.3rem .75rem}
+.meth-btn{font-family:var(--sans);font-size:.74rem;color:var(--steel);background:var(--steel-bg);border:1px solid var(--steel-brd);border-radius:7px;padding:.4rem .85rem;cursor:pointer;transition:all .15s}
+.meth-btn:hover{background:rgba(90,139,176,0.2)}
+
+/* PRESETS */
+.presets{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-bottom:1.5rem}
+.presets-label{font-family:var(--mono);font-size:.64rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);margin-right:.25rem}
+.preset-btn{font-family:var(--sans);font-size:.74rem;color:var(--text2);background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:.4rem .8rem;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:.4rem}
+.preset-btn:hover{border-color:var(--border2);color:var(--text1);background:var(--surface2)}
+.preset-btn .pd{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+
+/* MAIN GRID */
+.grid{display:grid;grid-template-columns:360px 1fr;gap:1.25rem;align-items:start}
+
+/* INPUT PANEL */
+.input-panel{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.25rem;position:sticky;top:1rem}
+.ip-group{margin-bottom:1.3rem}
+.ip-group:last-child{margin-bottom:0}
+.ip-group-head{display:flex;align-items:center;gap:.5rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.09em;text-transform:uppercase;color:var(--steel);margin-bottom:.75rem;padding-bottom:.4rem;border-bottom:1px solid var(--border)}
+.field{margin-bottom:.7rem}
+.field:last-child{margin-bottom:0}
+.field label{display:block;font-size:.72rem;color:var(--text2);margin-bottom:.25rem}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.input-wrap{position:relative}
+.input-prefix{position:absolute;left:.6rem;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:.78rem;color:var(--text3);pointer-events:none}
+.input-suffix{position:absolute;right:.6rem;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:.72rem;color:var(--text3);pointer-events:none}
+input[type=number],input[type=text],select{
+  width:100%;background:var(--bg);border:1px solid var(--border);border-radius:7px;
+  padding:.5rem .65rem;font-family:var(--mono);font-size:.82rem;color:var(--text1);outline:none;transition:border-color .15s;
+}
+input.has-prefix{padding-left:1.5rem}
+input[type=text]{font-family:var(--sans)}
+input:focus,select:focus{border-color:var(--steel)}
+select{font-family:var(--sans);cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2397a1b0' fill='none' stroke-width='1.3'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .7rem center;padding-right:1.6rem}
+.field-hint{font-family:var(--mono);font-size:.6rem;color:var(--text3);margin-top:.2rem}
+
+/* RESULTS */
+.results{display:flex;flex-direction:column;gap:1.25rem;min-width:0}
+
+/* HERO */
+.hero{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.5rem;position:relative;overflow:hidden;transition:border-color .3s}
+.hero::before{content:'';position:absolute;top:-40%;left:50%;transform:translateX(-50%);width:340px;height:240px;background:radial-gradient(ellipse,var(--accent-bg),transparent 70%);pointer-events:none;transition:background .4s}
+.hero-grid{display:grid;grid-template-columns:300px 1fr;gap:1.5rem;align-items:center;position:relative}
+.gauge-wrap{position:relative;width:300px;height:185px;margin:0 auto}
+.gauge-center{position:absolute;left:0;right:0;bottom:6px;text-align:center}
+.gauge-rating{font-size:2.6rem;font-weight:700;line-height:1;color:var(--accent);letter-spacing:-.02em;transition:color .3s;font-family:var(--mono)}
+.gauge-grade{font-size:.72rem;color:var(--text2);margin-top:.2rem;letter-spacing:.02em}
+.gauge-ig{display:inline-block;margin-top:.4rem;font-family:var(--mono);font-size:.6rem;letter-spacing:.06em;text-transform:uppercase;padding:.18rem .6rem;border-radius:20px;background:var(--accent-bg);color:var(--accent);border:1px solid;transition:all .3s}
+.hero-readout{}
+.hero-co{font-size:1.2rem;font-weight:600;margin-bottom:.15rem;line-height:1.2}
+.hero-co-meta{font-family:var(--mono);font-size:.66rem;color:var(--text3);letter-spacing:.04em;margin-bottom:1rem}
+.composite-row{display:flex;align-items:baseline;gap:.5rem;margin-bottom:.2rem}
+.composite-label{font-family:var(--mono);font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text3)}
+.composite-val{font-family:var(--mono);font-size:1.05rem;font-weight:600;color:var(--text1)}
+.composite-scale{font-family:var(--mono);font-size:.7rem;color:var(--text3)}
+.hero-pd{font-size:.74rem;color:var(--text2);line-height:1.55;margin-top:.6rem;padding-top:.7rem;border-top:1px solid var(--border)}
+.hero-pd strong{color:var(--accent);font-weight:600}
+
+/* KPI STRIP */
+.kpi-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.85rem .9rem;border-top:2px solid var(--kc,var(--text3))}
+.kpi-l{font-family:var(--mono);font-size:.58rem;letter-spacing:.05em;text-transform:uppercase;color:var(--text3);margin-bottom:.4rem;line-height:1.3}
+.kpi-v{font-family:var(--mono);font-size:1.15rem;font-weight:600;color:var(--text1);line-height:1}
+.kpi-s{font-family:var(--mono);font-size:.6rem;color:var(--text3);margin-top:.3rem}
+
+/* PILLAR CARDS */
+.pillars{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pillar{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.2rem}
+.pillar.full{grid-column:1/-1}
+.pillar-head{display:flex;align-items:center;gap:.6rem;margin-bottom:.85rem}
+.pillar-name{font-size:.9rem;font-weight:600;color:var(--text1)}
+.pillar-score{font-family:var(--mono);font-size:.66rem;font-weight:600;padding:.18rem .55rem;border-radius:5px;margin-left:auto}
+.pillar-bar{height:6px;border-radius:3px;background:linear-gradient(90deg,var(--red) 0%,var(--amber) 45%,var(--green) 100%);position:relative;margin-bottom:1rem;opacity:.85}
+.pillar-marker{position:absolute;top:50%;width:13px;height:13px;border-radius:50%;border:2.5px solid var(--bg);transform:translate(-50%,-50%);transition:left .5s cubic-bezier(.4,0,.2,1)}
+.pillar-rows{}
+.prow{display:flex;justify-content:space-between;align-items:baseline;padding:.4rem 0;border-bottom:1px solid var(--border)}
+.prow:last-child{border-bottom:none}
+.prow-l{font-size:.76rem;color:var(--text2)}
+.prow-v{font-family:var(--mono);font-size:.8rem;font-weight:500;color:var(--text1)}
+.prow-v.flag{color:var(--red)}
+
+/* COVENANTS */
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.2rem 1.3rem}
+.panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;gap:.5rem;flex-wrap:wrap}
+.panel-title{font-size:.95rem;font-weight:600}
+.panel-note{font-family:var(--mono);font-size:.62rem;color:var(--text3);letter-spacing:.03em}
+.cov-table{width:100%;border-collapse:collapse}
+.cov-table th{font-family:var(--mono);font-size:.58rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);text-align:right;padding:0 .5rem .55rem;font-weight:500}
+.cov-table th:first-child{text-align:left}
+.cov-table td{padding:.55rem .5rem;border-top:1px solid var(--border);font-family:var(--mono);font-size:.8rem;text-align:right;color:var(--text1)}
+.cov-table td:first-child{text-align:left;font-family:var(--sans);font-size:.8rem;color:var(--text2)}
+.cov-status{display:inline-flex;align-items:center;gap:.3rem;font-size:.62rem;font-weight:600;padding:.15rem .5rem;border-radius:4px}
+.cov-pass{background:var(--green-bg);color:var(--green)}
+.cov-fail{background:var(--red-bg);color:var(--red)}
+.cov-head-room{font-family:var(--mono);font-size:.72rem}
+.proforma-col{color:var(--steel)!important}
+
+/* DEBT CAPACITY */
+.cap-table{width:100%;border-collapse:collapse}
+.cap-table th{font-family:var(--mono);font-size:.58rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);text-align:right;padding:0 .5rem .55rem;font-weight:500}
+.cap-table th:first-child{text-align:left}
+.cap-table td{padding:.5rem .5rem;border-top:1px solid var(--border);font-family:var(--mono);font-size:.8rem;text-align:right}
+.cap-table td:first-child{text-align:left}
+.cap-row-ig{background:var(--steel-bg)}
+.cap-pos{color:var(--green)}
+.cap-neg{color:var(--red)}
+.cap-tag{font-family:var(--mono);font-size:.56rem;letter-spacing:.04em;padding:.1rem .4rem;border-radius:3px;background:var(--steel-bg);color:var(--steel);margin-left:.4rem}
+
+/* MEMO */
+.memo{background:linear-gradient(135deg,var(--surface),var(--surface2));border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 12px 12px 0;padding:1.4rem 1.5rem;transition:border-color .3s}
+.memo-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;gap:.75rem;flex-wrap:wrap}
+.memo-title{font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text3)}
+.rec-badge{font-size:.78rem;font-weight:700;padding:.4rem .9rem;border-radius:7px;letter-spacing:.01em}
+.memo-body{font-size:.86rem;color:var(--text2);line-height:1.75}
+.memo-body p{margin-bottom:.7rem}
+.memo-cols{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0}
+.memo-col-head{font-family:var(--mono);font-size:.6rem;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.5rem}
+.memo-col.str .memo-col-head{color:var(--green)}
+.memo-col.rsk .memo-col-head{color:var(--red)}
+.memo-li{display:flex;gap:.5rem;font-size:.78rem;color:var(--text2);line-height:1.5;margin-bottom:.4rem}
+.memo-li-mark{flex-shrink:0;font-family:var(--mono);font-size:.8rem;line-height:1.4}
+.memo-col.str .memo-li-mark{color:var(--green)}
+.memo-col.rsk .memo-li-mark{color:var(--red)}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);display:none;align-items:flex-start;justify-content:center;padding:3rem 1.5rem;z-index:100}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border2);border-radius:14px;padding:1.75rem;max-width:600px;width:100%;max-height:82vh;overflow-y:auto}
+.modal-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.1rem}
+.modal-h h2{font-size:1.1rem;font-weight:600}
+.modal-x{background:transparent;border:1px solid var(--border2);border-radius:7px;padding:.35rem .8rem;font-family:var(--mono);font-size:.7rem;color:var(--text3);cursor:pointer}
+.modal-x:hover{color:var(--text2);background:var(--surface2)}
+.modal h3{font-family:var(--mono);font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;color:var(--steel);margin:1.1rem 0 .45rem}
+.modal p,.modal li{font-size:.82rem;color:var(--text2);line-height:1.7;margin-bottom:.45rem}
+.modal ul{padding-left:1.1rem}
+.modal table{width:100%;border-collapse:collapse;margin:.5rem 0}
+.modal table td{font-family:var(--mono);font-size:.74rem;padding:.3rem .5rem;border-bottom:1px solid var(--border);color:var(--text2)}
+.modal table td:last-child{text-align:right;color:var(--text1)}
+
+/* FOOTER */
+.foot{text-align:center;margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border);font-family:var(--mono);font-size:.64rem;color:var(--text3);letter-spacing:.05em;line-height:1.7}
+.foot strong{color:var(--text2)}
+
+@media(max-width:980px){
+  .grid{grid-template-columns:1fr}
+  .input-panel{position:static}
+  .hero-grid{grid-template-columns:1fr}
+  .kpi-strip{grid-template-columns:repeat(2,1fr)}
+  .pillars{grid-template-columns:1fr}
+  .memo-cols{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-brand">
+      <div class="brand-mark">CR</div>
+      <div>
+        <div class="brand-title">Corporate Credit Analysis</div>
+        <div class="brand-sub">UNDERWRITING MODEL · RISK RATING · COVENANT &amp; CAPACITY TESTING</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <span class="edu-pill">Educational model · illustrative ratings</span>
+      <button class="meth-btn" onclick="document.getElementById('modal').classList.add('open')">Methodology ↗</button>
+    </div>
+  </div>
+
+  <!-- PRESETS -->
+  <div class="presets" id="presets">
+    <span class="presets-label">Load example:</span>
+    <button class="preset-btn" data-preset="ig"><span class="pd" style="background:var(--green)"></span>IG Industrial</button>
+    <button class="preset-btn" data-preset="retail"><span class="pd" style="background:var(--amber)"></span>Leveraged Retailer</button>
+    <button class="preset-btn" data-preset="tech"><span class="pd" style="background:var(--green)"></span>Prime Tech (net cash)</button>
+    <button class="preset-btn" data-preset="distress"><span class="pd" style="background:var(--red)"></span>Distressed Energy</button>
+  </div>
+
+  <div class="grid">
+
+    <!-- INPUT PANEL -->
+    <div class="input-panel">
+      <div class="ip-group">
+        <div class="ip-group-head">◴ Borrower Profile</div>
+        <div class="field">
+          <label>Company name</label>
+          <input type="text" id="coName" value="Atlas Manufacturing Inc." oninput="compute()">
+        </div>
+        <div class="field">
+          <label>Industry (sets leverage tolerance)</label>
+          <select id="industry" onchange="compute()">
+            <option value="technology">Technology / Software</option>
+            <option value="industrials" selected>Industrials / Manufacturing</option>
+            <option value="retail">Retail / Consumer Disc.</option>
+            <option value="consumer">Consumer Staples</option>
+            <option value="healthcare">Healthcare</option>
+            <option value="energy">Energy (E&amp;P / volatile)</option>
+            <option value="utilities">Utilities / Regulated</option>
+            <option value="realestate">Real Estate / REIT</option>
+            <option value="telecom">Telecom</option>
+            <option value="services">Business Services</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="ip-group">
+        <div class="ip-group-head">◵ Income Statement ($M)</div>
+        <div class="field-row">
+          <div class="field"><label>Revenue</label><div class="input-wrap"><span class="input-prefix">$</span><input class="has-prefix" type="number" id="rev" value="1200" oninput="compute()"></div></div>
+          <div class="field"><label>EBITDA</label><div class="input-wrap"><span class="input-prefix">$</span><input class="has-prefix" type="number" id="ebitda" value="240" oninput="compute()"></div></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Deprec. &amp; Amort.</label><div class="input-wrap"><span class="input-prefix">$</span><input class="has-prefix" type="number" id="da" value="70" oninput="compute()"></div></div>
+          <div class="field"><label>Interest expense</label><div class="input-wrap"><span class="input-prefix">$</span><input class="has-prefix" type="number" id="interest" value="45" oninput="compute()"></div></div>
+        </div>
+        <div class="field"><label>Effective tax rate</label><div class="input-wrap"><input type="number" id="tax" value="21" oninput="compute()"><span class="input-suffix">%</span></div></div>
+      </div>
+
+      <div class="ip-group">
+        <div class="ip-group-head">◶ Balance Sheet ($M)</div>
+        <div class="field-row">
+          <div class="field"><label>Total debt</label><div class="input-wrap"><span class="input-prefix">$</span><input class="has-prefix" type="number" id="debt" value="720" oninput="compute()"></div></div>
+          <div class="field"><label>Cash &amp; equiv.</label><div class="input-wrap"><span class="input-prefix">$</span><input class="has-prefix" type="number" id="cash" value="120" oninput="compute()"></div></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Current assets</label><div class="input-wrap"><span class="input-prefix">$</span><input class="has-prefix" type="number" id="ca" value="380" oninput="compute()"></div></div>
+          <div class="field"><label>Current liab.</label><div class="input-wrap"><span class="input-prefix">$</span><input class="has-prefix" type="number" id="cl" value="240" oninput="compute()"></div></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Total equity</label><div class="input-wrap"><span class="input-prefix">$</span><input class="has-prefix" type="number" id="equity" value="540" oninput="compute()"></div></div>
+          <div class="field"><label>Total assets</label><div class="input-wrap"><span class="input-prefix">$</span><input class="has-prefix" type="number" id="assets" value="1560" oninput="compute()"></div></div>
+        </div>
+      </div>
+
+      <div class="ip-group">
+        <div class="ip-group-head">◷ Cash Flow ($M)</div>
+        <div class="field-row">
+          <div class="field"><label>Cash from ops (CFO)</label><div class="input-wrap"><span class="input-prefix">$</span><input class="has-prefix" type="number" id="cfo" value="175" oninput="compute()"></div></div>
+          <div class="field"><label>CapEx</label><div class="input-wrap"><span class="input-prefix">$</span><input class="has-prefix" type="number" id="capex" value="85" oninput="compute()"></div></div>
+        </div>
+        <div class="field"><label>Scheduled annual principal due</label><div class="input-wrap"><span class="input-prefix">$</span><input class="has-prefix" type="number" id="principal" value="60" oninput="compute()"></div><div class="field-hint">Used for DSCR / fixed-charge coverage</div></div>
+      </div>
+
+      <div class="ip-group">
+        <div class="ip-group-head">◸ Facility Sizing (pro-forma)</div>
+        <div class="field-row">
+          <div class="field"><label>Proposed new debt</label><div class="input-wrap"><span class="input-prefix">$</span><input class="has-prefix" type="number" id="newDebt" value="0" oninput="compute()"></div></div>
+          <div class="field"><label>Pricing (rate)</label><div class="input-wrap"><input type="number" id="newRate" value="7.0" oninput="compute()"><span class="input-suffix">%</span></div></div>
+        </div>
+        <div class="field-hint">Enter a proposed facility to stress leverage &amp; covenants pro-forma.</div>
+      </div>
+    </div>
+
+    <!-- RESULTS -->
+    <div class="results" id="results"></div>
+  </div>
+
+  <div class="foot">
+    <strong>Corporate Credit Analysis Tool</strong> · Built by Benjamin Min · UCR Finance<br>
+    Implied ratings are illustrative, generated by a transparent scorecard based on published rating-agency methodologies. Not an actual credit rating and not lending advice.
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-h">
+      <h2>Methodology &amp; Disclaimers</h2>
+      <button class="modal-x" onclick="document.getElementById('modal').classList.remove('open')">Close ✕</button>
+    </div>
+    <p>This tool estimates a borrower's creditworthiness from its financial statements using a transparent, weighted scorecard. It is modeled on the structure of public rating-agency methodologies (S&amp;P, Moody's) and standard corporate-banking credit analysis, but it is an <strong>educational approximation</strong> — not an actual credit rating.</p>
+    <h3>The Five Cs framing</h3>
+    <p>Bank credit analysis traditionally weighs the Five Cs: Capacity (cash flow vs. obligations), Capital (leverage and equity cushion), Conditions (industry / macro), Collateral, and Character. This model quantifies the first three from reported financials; Collateral and Character require qualitative diligence beyond statement data.</p>
+    <h3>Scorecard weights</h3>
+    <table>
+      <tr><td>Leverage — Net Debt / EBITDA</td><td>30%</td></tr>
+      <tr><td>Coverage — EBITDA / Interest</td><td>25%</td></tr>
+      <tr><td>Cash flow — FCF / Total Debt</td><td>20%</td></tr>
+      <tr><td>Profitability — EBITDA margin</td><td>15%</td></tr>
+      <tr><td>Liquidity — Current ratio</td><td>10%</td></tr>
+    </table>
+    <p>Each metric is scored 1–10 against threshold bands, then blended into a composite that maps to an implied rating (AAA → D). Investment grade is BBB and above.</p>
+    <h3>Industry adjustment</h3>
+    <p>Leverage thresholds shift by industry. Stable, asset-heavy sectors (utilities, real estate, telecom) tolerate higher leverage for a given rating; volatile or asset-light sectors (technology, energy E&amp;P, discretionary retail) require lower leverage for the same rating.</p>
+    <h3>Covenants &amp; capacity</h3>
+    <p>The covenant package shown is a representative corporate facility (max leverage, min interest coverage, min DSCR, min current ratio) for illustration; real covenants are negotiated per deal. Debt capacity shows incremental senior debt available before net leverage crosses each threshold, holding EBITDA and cash constant.</p>
+    <h3>Limitations</h3>
+    <ul>
+      <li>Single-period analysis; real underwriting uses multi-year trends and projections.</li>
+      <li>No adjustment for operating leases, pensions, or off-balance-sheet items.</li>
+      <li>Net income is derived as (EBIT − Interest) × (1 − tax rate).</li>
+      <li>Not investment, credit, or lending advice.</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+/* ───────── RATING TIERS ───────── */
+const TIERS = [
+  {min:9.3, label:'AAA',  grade:'Prime', band:'IG', accent:'#2dd4a7'},
+  {min:8.6, label:'AA',   grade:'High Grade', band:'IG', accent:'#33c9a0'},
+  {min:7.7, label:'A',    grade:'Upper-Medium Grade', band:'IG', accent:'#3fbf8f'},
+  {min:6.8, label:'BBB',  grade:'Lower-Medium Grade (IG floor)', band:'IG', accent:'#6cb86a'},
+  {min:5.8, label:'BB',   grade:'Speculative', band:'HY', accent:'#d9c14a'},
+  {min:4.8, label:'B',    grade:'Highly Speculative', band:'HY', accent:'#dba63c'},
+  {min:3.8, label:'CCC',  grade:'Substantial Risk', band:'HY', accent:'#e27a3f'},
+  {min:0,   label:'CC/D', grade:'Distressed / Default Risk', band:'D', accent:'#e0584f'},
+];
+const COLORS={green:'#3fbf8f',amber:'#dba63c',red:'#e0584f'};
+
+/* industry leverage tolerance (extra turns of Net Debt/EBITDA) */
+const INDUSTRY_OFFSET={
+  technology:-0.75, industrials:0, retail:-0.25, consumer:0.25, healthcare:0,
+  energy:-0.5, utilities:1.5, realestate:1.5, telecom:1.0, services:-0.25
+};
+const INDUSTRY_LABEL={
+  technology:'Technology / Software', industrials:'Industrials / Manufacturing',
+  retail:'Retail / Consumer Disc.', consumer:'Consumer Staples', healthcare:'Healthcare',
+  energy:'Energy (E&P)', utilities:'Utilities / Regulated', realestate:'Real Estate / REIT',
+  telecom:'Telecom', services:'Business Services'
+};
+
+/* ───────── PRESETS ───────── */
+const PRESETS={
+  ig:{coName:'Atlas Manufacturing Inc.',industry:'industrials',rev:1200,ebitda:240,da:70,interest:45,tax:21,debt:720,cash:120,ca:380,cl:240,equity:540,assets:1560,cfo:175,capex:85,principal:60,newDebt:0,newRate:7.0},
+  retail:{coName:'Harbor Retail Group',industry:'retail',rev:3000,ebitda:240,da:120,interest:150,tax:21,debt:1500,cash:80,ca:700,cl:620,equity:250,assets:2100,cfo:150,capex:130,principal:50,newDebt:0,newRate:9.5},
+  tech:{coName:'Vertex Software Corp.',industry:'technology',rev:5000,ebitda:1750,da:150,interest:30,tax:21,debt:600,cash:2500,ca:3200,cl:900,equity:4800,assets:6500,cfo:1500,capex:250,principal:100,newDebt:0,newRate:6.0},
+  distress:{coName:'Pioneer Energy Partners',industry:'energy',rev:1800,ebitda:120,da:200,interest:180,tax:21,debt:2200,cash:50,ca:400,cl:700,equity:-150,assets:2600,cfo:40,capex:160,principal:120,newDebt:0,newRate:12.0}
+};
+
+/* ───────── HELPERS ───────── */
+const $=id=>document.getElementById(id);
+const val=id=>{const v=parseFloat($(id).value);return isNaN(v)?0:v;};
+const sd=(a,b)=>b>0?a/b:null;                  /* safe divide, null if denom<=0 */
+const fx=v=>v==null?'n/m':v.toFixed(2)+'x';
+const fpct=v=>v==null?'n/m':(v*100).toFixed(1)+'%';
+const fm=v=>{const s=v<0?'-':'';return s+'$'+Math.abs(Math.round(v)).toLocaleString()+'M';};
+const clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
+
+/* stepwise scorers (return 1..10) */
+function scoreLeverage(nd,ebitda,offset){
+  if(ebitda<=0) return 2;
+  if(nd<=0) return 10;                          /* net cash */
+  const x=nd/ebitda;
+  const t=[[1.0,10],[1.5,9],[2.5,8],[3.5,7],[4.5,6],[6.0,5],[8.0,4]];
+  for(const [thr,sc] of t){ if(x<=thr+offset) return sc; }
+  return 3;
+}
+function scoreCoverage(ebitda,interest){
+  if(interest<=0) return ebitda>0?10:3;
+  const x=ebitda/interest;
+  const t=[[15,10],[12,9],[8,8],[5,7],[3,6],[2,5],[1.2,4]];
+  for(const [thr,sc] of t){ if(x>=thr) return sc; }
+  return 3;
+}
+function scoreMargin(m){
+  const t=[[35,9.5],[25,8.5],[18,7.5],[12,6.8],[8,6],[4,5]];
+  for(const [thr,sc] of t){ if(m*100>=thr) return sc; }
+  return 4;
+}
+function scoreLiquidity(cr){
+  if(cr==null) return 5;
+  const t=[[2.0,9],[1.5,8],[1.2,7],[1.0,6],[0.8,5]];
+  for(const [thr,sc] of t){ if(cr>=thr) return sc; }
+  return 4;
+}
+function scoreCashFlow(fcfDebt){
+  if(fcfDebt==null) return 5;
+  const x=fcfDebt*100;
+  const t=[[30,10],[20,9],[12,8],[8,7],[4,6],[0,5]];
+  for(const [thr,sc] of t){ if(x>=thr) return sc; }
+  return 3;
+}
+function tierFor(score){ for(const t of TIERS){ if(score>=t.min) return t; } return TIERS[TIERS.length-1]; }
+function scoreColor(s){ return s>=6.8?COLORS.green : s>=4.8?COLORS.amber : COLORS.red; }
+
+/* ───────── COMPUTE ───────── */
+function compute(){
+  const rev=val('rev'), ebitda=val('ebitda'), da=val('da'), interest=val('interest'), tax=val('tax')/100;
+  const debt=val('debt'), cash=val('cash'), ca=val('ca'), cl=val('cl'), equity=val('equity'), assets=val('assets');
+  const cfo=val('cfo'), capex=val('capex'), principal=val('principal');
+  const newDebt=val('newDebt'), newRate=val('newRate')/100;
+  const industry=$('industry').value;
+  const offset=INDUSTRY_OFFSET[industry]||0;
+
+  /* derived */
+  const ebit=ebitda-da;
+  const ni=(ebit-interest)*(1-tax);
+  const netDebt=debt-cash;
+  const fcf=cfo-capex;
+  const wc=ca-cl;
+
+  /* ratios */
+  const totLev=sd(debt,ebitda);
+  const netLev=ebitda>0?netDebt/ebitda:null;
+  const de=sd(debt,equity);
+  const dtc=(debt+equity)>0?debt/(debt+equity):null;
+  const covEbitda=sd(ebitda,interest);
+  const covEbit=sd(ebit,interest);
+  const covCapex=sd(ebitda-capex,interest);
+  const dscr=sd(ebitda,interest+principal);
+  const ebitdaMargin=sd(ebitda,rev);
+  const opMargin=sd(ebit,rev);
+  const netMargin=sd(ni,rev);
+  const roe=sd(ni,equity);
+  const roa=sd(ni,assets);
+  const cr=sd(ca,cl);
+  const cashRatio=sd(cash,cl);
+  const cfoDebt=sd(cfo,debt);
+  const fcfDebt=sd(fcf,debt);
+  const fcfEbitda=sd(fcf,ebitda);
+
+  /* scores */
+  const sLev=scoreLeverage(netDebt,ebitda,offset);
+  const sCov=scoreCoverage(ebitda,interest);
+  const sCf=scoreCashFlow(fcfDebt);
+  const sMar=scoreMargin(ebitdaMargin||0);
+  const sLiq=scoreLiquidity(cr);
+  let composite=sLev*0.30+sCov*0.25+sCf*0.20+sMar*0.15+sLiq*0.10;
+  if(ebitda<=0) composite=Math.min(composite,3.2);     /* negative EBITDA → distressed */
+  if(equity<0) composite=Math.min(composite,5.2);       /* negative equity caps rating */
+  composite=clamp(composite,1,10);
+  const tier=tierFor(composite);
+
+  /* adaptive accent */
+  document.documentElement.style.setProperty('--accent',tier.accent);
+  document.documentElement.style.setProperty('--accent-bg',tier.accent.replace(')','')+'1a');
+  /* hex+alpha */
+  const hexA=tier.accent+'1f';
+  document.documentElement.style.setProperty('--accent-bg',hexA);
+
+  /* probability-of-default style descriptor (illustrative) */
+  const pdMap={'AAA':'< 0.1%','AA':'~ 0.1%','A':'~ 0.3%','BBB':'~ 0.9%','BB':'~ 3.5%','B':'~ 9%','CCC':'~ 25%+','CC/D':'> 40%'};
+  const pd=pdMap[tier.label]||'n/m';
+
+  /* ── pro-forma ── */
+  const pf = newDebt>0;
+  const pfDebt=debt+newDebt;
+  const pfInterest=interest+newDebt*newRate;
+  const pfNetDebt=pfDebt-cash;
+  const pfTotLev=sd(pfDebt,ebitda);
+  const pfNetLev=ebitda>0?pfNetDebt/ebitda:null;
+  const pfCov=sd(ebitda,pfInterest);
+  const pfDscr=sd(ebitda,pfInterest+principal);
+  const pfCr=cr;
+
+  /* ── covenants (illustrative package) ── */
+  const COV=[
+    {name:'Max total leverage', op:'≤', thr:4.0, unit:'x', actual:totLev, pfActual:pfTotLev, lowerBetter:true},
+    {name:'Min interest coverage', op:'≥', thr:3.0, unit:'x', actual:covEbitda, pfActual:pfCov, lowerBetter:false},
+    {name:'Min DSCR (fixed charge)', op:'≥', thr:1.20, unit:'x', actual:dscr, pfActual:pfDscr, lowerBetter:false},
+    {name:'Min current ratio', op:'≥', thr:1.0, unit:'x', actual:cr, pfActual:pfCr, lowerBetter:false},
+  ];
+
+  /* ── debt capacity ── */
+  const targets=[2.0,2.5,3.0,3.5,4.0];
+  const capRows=targets.map(t=>{
+    const maxDebt=ebitda>0 ? t*ebitda+cash : null;       /* Net Debt=T*EBITDA → Total=T*EBITDA+cash */
+    const incr=maxDebt==null?null:maxDebt-debt;
+    return {t,maxDebt,incr};
+  });
+
+  render({
+    coName:$('coName').value||'Borrower', industry, ebitda, ni, ebit, netDebt, fcf, wc,
+    totLev, netLev, de, dtc, covEbitda, covEbit, covCapex, dscr,
+    ebitdaMargin, opMargin, netMargin, roe, roa, cr, cashRatio, cfoDebt, fcfDebt, fcfEbitda,
+    sLev, sCov, sCf, sMar, sLiq, composite, tier, pd,
+    debt, cash, equity, pf, newDebt, pfDebt, pfTotLev, pfNetLev, pfCov, pfDscr,
+    COV, capRows
+  });
+}
+
+/* ───────── GAUGE ───────── */
+function angleForScore(s){ const t=(clamp(s,2,10)-2)/8; return 180*(1-t); }
+function polar(cx,cy,r,deg){ const a=deg*Math.PI/180; return [cx+r*Math.cos(a), cy-r*Math.sin(a)]; }
+function arcPath(cx,cy,r,a0,a1){
+  const [x0,y0]=polar(cx,cy,r,a0), [x1,y1]=polar(cx,cy,r,a1);
+  const large=Math.abs(a1-a0)>180?1:0;
+  /* sweep from a0(high deg,left) to a1(low deg,right): drawing clockwise on screen → sweep-flag 1 */
+  return `M ${x0.toFixed(1)} ${y0.toFixed(1)} A ${r} ${r} 0 ${large} 1 ${x1.toFixed(1)} ${y1.toFixed(1)}`;
+}
+function buildGauge(score,tier){
+  const cx=150, cy=160, r=120, rw=16;
+  const segs=[
+    {a:2.0,b:3.8,c:'#e0584f'},{a:3.8,b:4.8,c:'#e27a3f'},{a:4.8,b:5.8,c:'#dba63c'},
+    {a:5.8,b:6.8,c:'#d9c14a'},{a:6.8,b:7.7,c:'#6cb86a'},{a:7.7,b:8.6,c:'#3fbf8f'},
+    {a:8.6,b:9.3,c:'#33c9a0'},{a:9.3,b:10,c:'#2dd4a7'}
+  ];
+  let paths='';
+  segs.forEach(s=>{
+    const a0=angleForScore(s.a), a1=angleForScore(s.b);
+    paths+=`<path d="${arcPath(cx,cy,r,a0,a1)}" stroke="${s.c}" stroke-width="${rw}" fill="none" stroke-linecap="butt" opacity="0.9"/>`;
+  });
+  /* IG threshold tick at score 6.8 */
+  const igDeg=angleForScore(6.8);
+  const [ix0,iy0]=polar(cx,cy,r-rw/2-3,igDeg), [ix1,iy1]=polar(cx,cy,r+rw/2+3,igDeg);
+  const igTick=`<line x1="${ix0.toFixed(1)}" y1="${iy0.toFixed(1)}" x2="${ix1.toFixed(1)}" y2="${iy1.toFixed(1)}" stroke="#e9edf2" stroke-width="2"/>`;
+  const [ilx,ily]=polar(cx,cy,r+rw/2+16,igDeg);
+  const igLabel=`<text x="${ilx.toFixed(1)}" y="${ily.toFixed(1)}" fill="#97a1b0" font-size="9" font-family="IBM Plex Mono" text-anchor="middle">IG ▸</text>`;
+  /* needle */
+  const nDeg=angleForScore(score);
+  const [nx,ny]=polar(cx,cy,r-rw-6,nDeg);
+  const [bx0,by0]=polar(cx,cy,9,nDeg-90);
+  const [bx1,by1]=polar(cx,cy,9,nDeg+90);
+  const needle=`<polygon points="${nx.toFixed(1)},${ny.toFixed(1)} ${bx0.toFixed(1)},${by0.toFixed(1)} ${bx1.toFixed(1)},${by1.toFixed(1)}" fill="${tier.accent}"/>`+
+               `<circle cx="${cx}" cy="${cy}" r="9" fill="${tier.accent}"/><circle cx="${cx}" cy="${cy}" r="4" fill="#0e1217"/>`;
+  /* end labels */
+  const lend=`<text x="22" y="172" fill="#5d6675" font-size="8.5" font-family="IBM Plex Mono">D</text>`+
+             `<text x="272" y="172" fill="#5d6675" font-size="8.5" font-family="IBM Plex Mono">AAA</text>`;
+  return `<svg viewBox="0 0 300 178" width="300" height="178" role="img" aria-label="Credit rating gauge">${paths}${igTick}${igLabel}${needle}${lend}</svg>`;
+}
+
+/* ───────── RENDER ───────── */
+function render(d){
+  const t=d.tier;
+  const igColor = t.band==='IG'?COLORS.green : t.band==='HY'?COLORS.amber : COLORS.red;
+
+  /* pillar position helper (sub-score → % left) */
+  const pos=s=>clamp((s-1)/9*100,2,98).toFixed(0);
+
+  /* covenant rows */
+  const covHtml=d.COV.map(c=>{
+    const pass = c.actual==null ? false : (c.lowerBetter ? c.actual<=c.thr : c.actual>=c.thr);
+    const head = c.actual==null?'n/m':(c.lowerBetter? (c.thr-c.actual) : (c.actual-c.thr));
+    const headStr = c.actual==null?'n/m':(head>=0?'+':'')+head.toFixed(2)+'x';
+    let pfCell='';
+    if(d.pf){
+      const pfPass = c.pfActual==null?false:(c.lowerBetter?c.pfActual<=c.thr:c.pfActual>=c.thr);
+      pfCell=`<td class="proforma-col">${fx(c.pfActual)} ${pfPass?'<span class="cov-status cov-pass">OK</span>':'<span class="cov-status cov-fail">BREACH</span>'}</td>`;
+    }
+    return `<tr>
+      <td>${c.name}</td>
+      <td>${c.op} ${c.thr.toFixed(2)}x</td>
+      <td>${fx(c.actual)}</td>
+      ${pfCell}
+      <td class="cov-head-room" style="color:${pass?COLORS.green:COLORS.red}">${headStr}</td>
+      <td>${pass?'<span class="cov-status cov-pass">● Pass</span>':'<span class="cov-status cov-fail">● Fail</span>'}</td>
+    </tr>`;
+  }).join('');
+  const covHead=`<tr><th>Covenant (illustrative)</th><th>Threshold</th><th>Actual</th>${d.pf?'<th class="proforma-col">Pro-forma</th>':''}<th>Headroom</th><th>Status</th></tr>`;
+
+  /* capacity rows */
+  const igFloorT=3.5;
+  const capHtml=d.capRows.map(r=>{
+    const isIG=Math.abs(r.t-igFloorT)<0.01;
+    const incrStr = r.incr==null?'n/m':(r.incr>=0?'+':'')+fm(r.incr).replace('$','$');
+    const incrCls = r.incr==null?'':(r.incr>=0?'cap-pos':'cap-neg');
+    return `<tr class="${isIG?'cap-row-ig':''}">
+      <td>${r.t.toFixed(1)}x net ${isIG?'<span class="cap-tag">IG FLOOR</span>':''}</td>
+      <td>${r.maxDebt==null?'n/m':fm(r.maxDebt)}</td>
+      <td class="${incrCls}">${incrStr}</td>
+    </tr>`;
+  }).join('');
+
+  /* memo */
+  const strengths=[], risks=[];
+  if(d.netLev!=null && d.netLev<=2.5) strengths.push(`Conservative leverage at <strong>${fx(d.netLev)}</strong> net debt/EBITDA.`);
+  if(d.netLev!=null && d.netLev>4.5) risks.push(`Elevated leverage at ${fx(d.netLev)} net debt/EBITDA limits financial flexibility.`);
+  if(d.covEbitda!=null && d.covEbitda>=6) strengths.push(`Strong interest coverage of <strong>${fx(d.covEbitda)}</strong> EBITDA/interest.`);
+  if(d.covEbitda!=null && d.covEbitda<2) risks.push(`Thin interest coverage of ${fx(d.covEbitda)} signals limited capacity to service debt from earnings.`);
+  if(d.ebitdaMargin!=null && d.ebitdaMargin>=0.25) strengths.push(`Healthy EBITDA margin of <strong>${fpct(d.ebitdaMargin)}</strong>.`);
+  if(d.ebitdaMargin!=null && d.ebitdaMargin<0.08) risks.push(`Thin EBITDA margin of ${fpct(d.ebitdaMargin)} leaves little cushion for cost shocks.`);
+  if(d.fcfDebt!=null && d.fcfDebt>=0.12) strengths.push(`Robust free-cash-flow generation at <strong>${fpct(d.fcfDebt)}</strong> FCF/debt.`);
+  if(d.fcf<0) risks.push(`Negative free cash flow of ${fm(d.fcf)} implies reliance on external funding.`);
+  if(d.cr!=null && d.cr>=1.5) strengths.push(`Comfortable liquidity with a current ratio of <strong>${fx(d.cr)}</strong>.`);
+  if(d.cr!=null && d.cr<1.0) risks.push(`Current ratio below 1.0x (${fx(d.cr)}) points to near-term liquidity strain.`);
+  if(d.equity<0) risks.push(`<strong>Negative book equity</strong> (${fm(d.equity)}) — accumulated deficit; a material credit concern.`);
+  if(d.ebitda<=0) risks.push(`<strong>Negative or zero EBITDA</strong> — the business is not generating operating cash to cover debt.`);
+  if(strengths.length===0) strengths.push('No standout credit strengths identified at current inputs.');
+  if(risks.length===0) risks.push('No material credit weaknesses identified at current inputs.');
+
+  /* recommendation */
+  let rec;
+  const anyBreach=d.COV.some(c=> c.actual==null?true:(c.lowerBetter?c.actual>c.thr:c.actual<c.thr));
+  const pfBreach=d.pf && d.COV.some(c=> c.pfActual==null?true:(c.lowerBetter?c.pfActual>c.thr:c.pfActual<c.thr));
+  if(t.band==='IG'){
+    rec={label:'APPROVE',tone:COLORS.green,text:`A ${t.label} profile supports approval on standard investment-grade terms. Pricing should reflect low default risk; covenant-lite or incurrence-based packages are typical at this quality.`};
+  } else if(t.label==='BB'){
+    rec={label:'APPROVE WITH CONDITIONS',tone:COLORS.amber,text:`A ${t.label} (crossover) profile is bankable with a full maintenance-covenant package, security, and pricing that compensates for speculative-grade risk.`};
+  } else if(t.label==='B'){
+    rec={label:'REFER TO COMMITTEE',tone:COLORS.amber,text:`A ${t.label} profile carries meaningful default risk. Escalate to credit committee; require enhanced covenants, security, and a clear deleveraging path before extending credit.`};
+  } else {
+    rec={label:'DECLINE / RESTRUCTURE',tone:COLORS.red,text:`A ${t.label} profile indicates substantial or imminent default risk. New unsecured exposure is not advisable; any facility should be secured, sized to liquidation value, or paired with restructuring.`};
+  }
+  if(anyBreach && t.band==='IG'){ rec.text+=' Note: one or more illustrative covenants are not met at current inputs — confirm package terms before close.'; }
+  let pfNote='';
+  if(d.pf){
+    pfNote = pfBreach
+      ? `<p style="color:${COLORS.red}">⚠ As proposed, the ${fm(d.newDebt)} facility would push pro-forma metrics into covenant breach (pro-forma leverage ${fx(d.pfTotLev)}, coverage ${fx(d.pfCov)}). Recommend resizing the facility or restructuring terms.</p>`
+      : `<p style="color:${COLORS.green}">✓ The proposed ${fm(d.newDebt)} facility keeps pro-forma metrics within the illustrative covenant package (pro-forma leverage ${fx(d.pfTotLev)}, coverage ${fx(d.pfCov)}).</p>`;
+  }
+
+  const html=`
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-grid">
+      <div>
+        <div class="gauge-wrap">
+          ${buildGauge(d.composite,t)}
+          <div class="gauge-center">
+            <div class="gauge-rating">${t.label}</div>
+            <div class="gauge-grade">${t.grade}</div>
+            <span class="gauge-ig" style="border-color:${igColor};color:${igColor};background:${igColor}1f">${t.band==='IG'?'Investment Grade':t.band==='HY'?'High Yield':'Distressed'}</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-readout">
+        <div class="hero-co">${d.coName}</div>
+        <div class="hero-co-meta">${INDUSTRY_LABEL[d.industry]} · implied issuer rating</div>
+        <div class="composite-row"><span class="composite-label">Composite score</span><span class="composite-val">${d.composite.toFixed(2)}</span><span class="composite-scale">/ 10.0</span></div>
+        <div class="composite-row"><span class="composite-label">Est. 1-yr PD</span><span class="composite-val">${d.pd}</span><span class="composite-scale">illustrative</span></div>
+        <div class="hero-pd">Implied <strong>${t.label}</strong> rating from a weighted scorecard of leverage, coverage, cash flow, profitability, and liquidity — with leverage thresholds adjusted for ${INDUSTRY_LABEL[d.industry]}.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPI STRIP -->
+  <div class="kpi-strip">
+    <div class="kpi" style="--kc:${scoreColor(d.sLev)}"><div class="kpi-l">Net Debt / EBITDA</div><div class="kpi-v">${fx(d.netLev)}</div><div class="kpi-s">Total ${fx(d.totLev)}</div></div>
+    <div class="kpi" style="--kc:${scoreColor(d.sCov)}"><div class="kpi-l">EBITDA / Interest</div><div class="kpi-v">${fx(d.covEbitda)}</div><div class="kpi-s">EBIT ${fx(d.covEbit)}</div></div>
+    <div class="kpi" style="--kc:${scoreColor(d.sCf)}"><div class="kpi-l">FCF / Debt</div><div class="kpi-v">${fpct(d.fcfDebt)}</div><div class="kpi-s">FCF ${fm(d.fcf)}</div></div>
+    <div class="kpi" style="--kc:${scoreColor(d.sMar)}"><div class="kpi-l">EBITDA Margin</div><div class="kpi-v">${fpct(d.ebitdaMargin)}</div><div class="kpi-s">Op ${fpct(d.opMargin)}</div></div>
+    <div class="kpi" style="--kc:${scoreColor(d.sLiq)}"><div class="kpi-l">Current Ratio</div><div class="kpi-v">${fx(d.cr)}</div><div class="kpi-s">Cash ${fx(d.cashRatio)}</div></div>
+  </div>
+
+  <!-- PILLARS -->
+  <div class="pillars">
+    ${pillar('Leverage & Solvency',d.sLev,[
+      ['Total Debt / EBITDA',fx(d.totLev)],['Net Debt / EBITDA',fx(d.netLev)],
+      ['Debt / Equity',d.de==null?'n/m':fx(d.de)],['Debt / Total Capital',fpct(d.dtc)]
+    ],pos)}
+    ${pillar('Coverage',d.sCov,[
+      ['EBITDA / Interest',fx(d.covEbitda)],['EBIT / Interest',fx(d.covEbit)],
+      ['(EBITDA − CapEx) / Int.',fx(d.covCapex)],['DSCR (incl. principal)',fx(d.dscr)]
+    ],pos)}
+    ${pillar('Cash Flow',d.sCf,[
+      ['Free cash flow',fm(d.fcf)],['CFO / Debt',fpct(d.cfoDebt)],
+      ['FCF / Debt',fpct(d.fcfDebt)],['FCF / EBITDA',fpct(d.fcfEbitda)]
+    ],pos)}
+    ${pillar('Profitability',d.sMar,[
+      ['EBITDA margin',fpct(d.ebitdaMargin)],['Operating margin',fpct(d.opMargin)],
+      ['Net margin',fpct(d.netMargin)],['ROE · ROA',(d.roe==null?'n/m':fpct(d.roe))+' · '+(d.roa==null?'n/m':fpct(d.roa))]
+    ],pos)}
+    <div class="pillar full">
+      <div class="pillar-head"><span class="pillar-name">Liquidity</span><span class="pillar-score" style="background:${scoreColor(d.sLiq)}1f;color:${scoreColor(d.sLiq)}">${d.sLiq.toFixed(1)} / 10</span></div>
+      <div class="pillar-bar"><div class="pillar-marker" style="left:${pos(d.sLiq)}%;background:${scoreColor(d.sLiq)}"></div></div>
+      <div class="pillar-rows" style="display:grid;grid-template-columns:1fr 1fr;gap:0 1.5rem">
+        <div class="prow"><span class="prow-l">Current ratio</span><span class="prow-v">${fx(d.cr)}</span></div>
+        <div class="prow"><span class="prow-l">Cash ratio</span><span class="prow-v">${fx(d.cashRatio)}</span></div>
+        <div class="prow"><span class="prow-l">Working capital</span><span class="prow-v">${fm(d.wc)}</span></div>
+        <div class="prow"><span class="prow-l">Net income (derived)</span><span class="prow-v ${d.ni<0?'flag':''}">${fm(d.ni)}</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COVENANTS -->
+  <div class="panel">
+    <div class="panel-head"><span class="panel-title">Covenant Compliance</span><span class="panel-note">Illustrative corporate facility package${d.pf?' · pro-forma column reflects proposed facility':''}</span></div>
+    <table class="cov-table"><thead>${covHead}</thead><tbody>${covHtml}</tbody></table>
+  </div>
+
+  <!-- DEBT CAPACITY -->
+  <div class="panel">
+    <div class="panel-head"><span class="panel-title">Incremental Debt Capacity</span><span class="panel-note">Additional senior debt before net leverage crosses each target (EBITDA &amp; cash held constant)</span></div>
+    <table class="cap-table"><thead><tr><th>Target net leverage</th><th>Max total debt</th><th>Incremental capacity</th></tr></thead><tbody>${capHtml}</tbody></table>
+  </div>
+
+  <!-- MEMO -->
+  <div class="memo">
+    <div class="memo-head"><span class="memo-title">Credit Memo · Recommendation</span><span class="rec-badge" style="background:${rec.tone}1f;color:${rec.tone};border:1px solid ${rec.tone}55">${rec.label}</span></div>
+    <div class="memo-body">
+      <p>${d.coName} presents an implied <strong style="color:${t.accent}">${t.label}</strong> (${t.grade}) credit profile in the ${INDUSTRY_LABEL[d.industry]} sector, with a composite score of ${d.composite.toFixed(2)}/10 and estimated one-year default probability of ${d.pd}.</p>
+      <div class="memo-cols">
+        <div class="memo-col str"><div class="memo-col-head">▲ Credit strengths</div>${strengths.map(s=>`<div class="memo-li"><span class="memo-li-mark">+</span><span>${s}</span></div>`).join('')}</div>
+        <div class="memo-col rsk"><div class="memo-col-head">▼ Credit risks</div>${risks.map(s=>`<div class="memo-li"><span class="memo-li-mark">−</span><span>${s}</span></div>`).join('')}</div>
+      </div>
+      <p>${rec.text}</p>
+      ${pfNote}
+    </div>
+  </div>
+  `;
+  $('results').innerHTML=html;
+}
+
+function pillar(name,score,rows,pos){
+  const c=score>=6.8?COLORS.green:score>=4.8?COLORS.amber:COLORS.red;
+  return `<div class="pillar">
+    <div class="pillar-head"><span class="pillar-name">${name}</span><span class="pillar-score" style="background:${c}1f;color:${c}">${score.toFixed(1)} / 10</span></div>
+    <div class="pillar-bar"><div class="pillar-marker" style="left:${pos(score)}%;background:${c}"></div></div>
+    <div class="pillar-rows">${rows.map(r=>`<div class="prow"><span class="prow-l">${r[0]}</span><span class="prow-v">${r[1]}</span></div>`).join('')}</div>
+  </div>`;
+}
+
+/* ───────── PRESETS WIRING ───────── */
+document.getElementById('presets').addEventListener('click',e=>{
+  const btn=e.target.closest('.preset-btn');
+  if(!btn) return;
+  const p=PRESETS[btn.dataset.preset];
+  for(const k in p){ const el=$(k); if(el) el.value=p[k]; }
+  compute();
+});
+
+/* init */
+compute();
+</script>
+</body>
+</html>

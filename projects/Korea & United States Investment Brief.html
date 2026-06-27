@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Korea–U.S. Cross-Border Investment Brief — Benjamin Min</title>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0a0e1a;
+  --ink2:#121829;
+  --ink3:#1a2236;
+  --ink4:#232d45;
+  --paper:#ede8dd;
+  --paper-dim:#cfc9bc;
+  --text1:#f2efe9;
+  --text2:#9fa6b8;
+  --text3:#5e6678;
+  --kr-red:#e23b48;
+  --kr-red-bg:rgba(226,59,72,0.1);
+  --kr-red-brd:rgba(226,59,72,0.28);
+  --us-blue:#3d7bd6;
+  --us-blue-bg:rgba(61,123,214,0.1);
+  --us-blue-brd:rgba(61,123,214,0.28);
+  --gold:#c5a253;
+  --gold-bg:rgba(197,162,83,0.1);
+  --gold-brd:rgba(197,162,83,0.28);
+  --green:#46b888;
+  --red:#e06b6b;
+  --border:rgba(255,255,255,0.07);
+  --border2:rgba(255,255,255,0.12);
+  --serif:'Newsreader',serif;
+  --sans:'Inter',sans-serif;
+  --mono:'JetBrains Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--ink);color:var(--text1);-webkit-font-smoothing:antialiased;line-height:1.5}
+.wrap{max-width:1080px;margin:0 auto;padding:0 1.5rem 4rem}
+
+/* ── MASTHEAD ── */
+.masthead{border-bottom:2px solid var(--paper-dim);padding:2.25rem 0 1.25rem;margin-bottom:0}
+.masthead-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:.75rem}
+.issue-meta{font-family:var(--mono);font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
+.issue-meta-right{font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;color:var(--text3);text-align:right}
+.masthead-title{font-family:var(--serif);font-size:3rem;font-weight:700;line-height:1.02;letter-spacing:-.02em;color:var(--text1);margin-bottom:.6rem}
+.masthead-title .amp{color:var(--gold);font-style:italic;font-weight:600}
+.masthead-standfirst{font-family:var(--serif);font-size:1.05rem;font-style:italic;color:var(--text2);max-width:680px;line-height:1.55}
+.masthead-rule{display:flex;gap:1.5rem;margin-top:1.25rem;flex-wrap:wrap}
+.rule-item{font-family:var(--mono);font-size:.66rem;color:var(--text3);letter-spacing:.04em;display:flex;align-items:center;gap:.4rem}
+.rule-dot{width:6px;height:6px;border-radius:50%}
+
+/* ── HERO FLOW ── */
+.hero-flow{
+  background:linear-gradient(180deg,var(--ink2),var(--ink));
+  border:1px solid var(--border);border-radius:16px;
+  padding:1.75rem;margin:1.5rem 0;
+}
+.hero-flow-label{font-family:var(--mono);font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);text-align:center;margin-bottom:1.5rem}
+.flow-diagram{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:1.25rem}
+.flow-pole{text-align:center}
+.flow-flag{font-size:2.5rem;line-height:1;margin-bottom:.5rem}
+.flow-country{font-family:var(--serif);font-size:1.15rem;font-weight:600;color:var(--text1);margin-bottom:.15rem}
+.flow-country-sub{font-family:var(--mono);font-size:.62rem;color:var(--text3);letter-spacing:.06em}
+.flow-center{display:flex;flex-direction:column;align-items:center;gap:.85rem;min-width:200px}
+.flow-arrow-row{display:flex;flex-direction:column;gap:.1rem;width:100%}
+.flow-arrow{position:relative;display:flex;align-items:center;gap:.5rem}
+.flow-arrow-track{flex:1;height:3px;border-radius:2px;position:relative;overflow:hidden}
+.flow-arrow.kr .flow-arrow-track{background:linear-gradient(90deg,var(--kr-red-bg),var(--kr-red))}
+.flow-arrow.us .flow-arrow-track{background:linear-gradient(90deg,var(--us-blue),var(--us-blue-bg))}
+.flow-arrow-head{font-size:.8rem;line-height:1}
+.flow-arrow.kr .flow-arrow-head{color:var(--kr-red)}
+.flow-arrow.us .flow-arrow-head{color:var(--us-blue);order:-1;transform:scaleX(-1)}
+.flow-val{font-family:var(--mono);font-weight:700;font-size:1.35rem;line-height:1}
+.flow-arrow.kr .flow-val{color:var(--kr-red)}
+.flow-arrow.us .flow-val{color:var(--us-blue)}
+.flow-caption{font-size:.66rem;color:var(--text3);text-align:center;line-height:1.4}
+.flow-net{
+  display:flex;flex-direction:column;align-items:center;gap:.1rem;
+  padding:.6rem 1rem;background:var(--ink3);border-radius:8px;border:1px solid var(--border);
+}
+.flow-net-label{font-family:var(--mono);font-size:.56rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text3)}
+.flow-net-val{font-family:var(--serif);font-size:1.1rem;font-weight:700;color:var(--kr-red)}
+
+/* ── SECTION HEADERS ── */
+.section{margin-top:2.5rem}
+.section-head{display:flex;align-items:baseline;gap:.85rem;border-bottom:1px solid var(--border2);padding-bottom:.6rem;margin-bottom:1.25rem}
+.section-kicker{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);white-space:nowrap}
+.section-title{font-family:var(--serif);font-size:1.45rem;font-weight:600;color:var(--text1);letter-spacing:-.01em}
+.section-meta{margin-left:auto;font-family:var(--mono);font-size:.62rem;color:var(--text3);white-space:nowrap}
+
+/* ── DIRECTION TOGGLE ── */
+.dir-toggle{display:flex;gap:6px;margin-bottom:1.25rem;flex-wrap:wrap}
+.dir-btn{
+  font-family:var(--mono);font-size:.68rem;letter-spacing:.04em;
+  padding:.45rem .9rem;border-radius:7px;cursor:pointer;
+  border:1px solid var(--border2);background:transparent;color:var(--text2);
+  transition:all .15s;display:flex;align-items:center;gap:.4rem;
+}
+.dir-btn:hover{background:var(--ink3)}
+.dir-btn .dot{width:7px;height:7px;border-radius:50%}
+.dir-btn.active[data-dir="all"]{background:var(--gold);color:var(--ink);border-color:var(--gold);font-weight:700}
+.dir-btn.active[data-dir="kr-us"]{background:var(--kr-red);color:#fff;border-color:var(--kr-red);font-weight:700}
+.dir-btn.active[data-dir="us-kr"]{background:var(--us-blue);color:#fff;border-color:var(--us-blue);font-weight:700}
+
+/* ── DEAL LEDGER ── */
+.ledger{display:flex;flex-direction:column;gap:8px}
+.deal{
+  display:grid;grid-template-columns:auto 1fr auto;gap:1rem;align-items:start;
+  background:var(--ink2);border:1px solid var(--border);border-radius:11px;
+  padding:1.1rem 1.25rem;transition:all .15s;position:relative;overflow:hidden;
+}
+.deal::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}
+.deal.kr-us::before{background:var(--kr-red)}
+.deal.us-kr::before{background:var(--us-blue)}
+.deal:hover{border-color:var(--border2);background:var(--ink3)}
+.deal-dir{display:flex;flex-direction:column;align-items:center;gap:.3rem;padding-top:.15rem;min-width:48px}
+.deal-dir-flags{font-size:.95rem;letter-spacing:-1px}
+.deal-dir-arrow{font-family:var(--mono);font-size:.6rem;font-weight:700;letter-spacing:.02em}
+.deal.kr-us .deal-dir-arrow{color:var(--kr-red)}
+.deal.us-kr .deal-dir-arrow{color:var(--us-blue)}
+.deal-main{}
+.deal-actor{font-family:var(--serif);font-size:1.05rem;font-weight:600;color:var(--text1);line-height:1.2;margin-bottom:.2rem}
+.deal-desc{font-size:.82rem;color:var(--text2);line-height:1.55;margin-bottom:.5rem}
+.deal-tags{display:flex;gap:.4rem;flex-wrap:wrap;align-items:center}
+.deal-sector{font-family:var(--mono);font-size:.58rem;letter-spacing:.04em;padding:.15rem .5rem;border-radius:3px;background:var(--ink4);color:var(--text2)}
+.deal-status{font-family:var(--mono);font-size:.58rem;letter-spacing:.04em;padding:.15rem .5rem;border-radius:3px;font-weight:500}
+.status-active{background:var(--gold-bg);color:var(--gold);border:1px solid var(--gold-brd)}
+.status-built{background:rgba(70,184,136,.1);color:var(--green);border:1px solid rgba(70,184,136,.25)}
+.status-cooling{background:rgba(224,107,107,.1);color:var(--red);border:1px solid rgba(224,107,107,.25)}
+.deal-src{font-size:.62rem;color:var(--text3);font-style:italic;margin-top:.5rem;line-height:1.4}
+.deal-figure{text-align:right;flex-shrink:0}
+.deal-amt{font-family:var(--mono);font-size:1.15rem;font-weight:700;color:var(--text1);line-height:1;white-space:nowrap}
+.deal-amt-sub{font-family:var(--mono);font-size:.6rem;color:var(--text3);margin-top:.3rem;white-space:nowrap}
+
+/* ── MACRO PANEL ── */
+.macro-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:1rem}
+.macro-card{background:var(--ink2);border:1px solid var(--border);border-radius:12px;padding:1.4rem}
+.macro-card-label{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:.3rem}
+.macro-card-title{font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--text1);margin-bottom:1rem}
+.fx-hero{display:flex;align-items:baseline;gap:.6rem;margin-bottom:.4rem}
+.fx-rate{font-family:var(--mono);font-size:2.1rem;font-weight:700;color:var(--kr-red);line-height:1}
+.fx-unit{font-family:var(--mono);font-size:.8rem;color:var(--text2)}
+.fx-change{font-family:var(--mono);font-size:.72rem;color:var(--red);margin-bottom:1rem}
+.fx-note{font-size:.76rem;color:var(--text2);line-height:1.6;padding-top:.85rem;border-top:1px solid var(--border)}
+.fx-note strong{color:var(--text1);font-weight:500}
+.macro-stat{display:flex;justify-content:space-between;align-items:baseline;padding:.6rem 0;border-bottom:1px solid var(--border)}
+.macro-stat:last-child{border-bottom:none}
+.macro-stat-label{font-size:.76rem;color:var(--text2);line-height:1.4;max-width:60%}
+.macro-stat-val{font-family:var(--mono);font-size:.92rem;font-weight:500;color:var(--text1);text-align:right}
+
+/* ── THESIS / OUTLOOK ── */
+.thesis-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.thesis-card{background:var(--ink2);border:1px solid var(--border);border-radius:12px;padding:1.4rem;border-top:3px solid}
+.thesis-card.kr{border-top-color:var(--kr-red)}
+.thesis-card.us{border-top-color:var(--us-blue)}
+.thesis-head{display:flex;align-items:center;gap:.5rem;margin-bottom:.85rem}
+.thesis-flag{font-size:1.1rem}
+.thesis-dir{font-family:var(--mono);font-size:.64rem;letter-spacing:.06em;text-transform:uppercase;font-weight:700}
+.thesis-card.kr .thesis-dir{color:var(--kr-red)}
+.thesis-card.us .thesis-dir{color:var(--us-blue)}
+.thesis-title{font-family:var(--serif);font-size:1.08rem;font-weight:600;color:var(--text1);margin-bottom:.6rem;line-height:1.3}
+.thesis-body{font-size:.82rem;color:var(--text2);line-height:1.72}
+.thesis-body strong{color:var(--text1);font-weight:500}
+
+/* ── BIG ANALYST NOTE ── */
+.analyst-note{
+  background:linear-gradient(135deg,var(--ink2),var(--ink3));
+  border:1px solid var(--border);border-left:3px solid var(--gold);
+  border-radius:0 12px 12px 0;padding:1.5rem 1.6rem;margin-top:1rem;
+}
+.analyst-note-label{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.75rem}
+.analyst-note-body{font-family:var(--serif);font-size:1rem;color:var(--text1);line-height:1.8}
+.analyst-note-body p{margin-bottom:.85rem}
+.analyst-note-body p:last-child{margin-bottom:0}
+.analyst-note-body strong{font-weight:600;color:#fff}
+
+/* ── SOURCES ── */
+.sources{margin-top:2.5rem;border-top:1px solid var(--border);padding-top:1.25rem}
+.sources-label{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:.85rem}
+.sources-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem .9rem}
+.src{display:flex;gap:.5rem;font-size:.68rem;color:var(--text3);line-height:1.5}
+.src-n{font-family:var(--mono);color:var(--gold);flex-shrink:0}
+.src strong{color:var(--text2);font-weight:500}
+
+/* ── COLOPHON ── */
+.colophon{text-align:center;margin-top:2.5rem;padding-top:1.5rem;border-top:2px solid var(--paper-dim);font-family:var(--mono);font-size:.64rem;color:var(--text3);letter-spacing:.06em;line-height:1.7}
+.colophon strong{color:var(--text2)}
+
+@media(max-width:760px){
+  .masthead-title{font-size:2rem}
+  .flow-diagram{grid-template-columns:1fr;gap:1rem}
+  .macro-grid,.thesis-grid,.sources-grid,.deal{grid-template-columns:1fr}
+  .deal-figure{text-align:left}
+  .deal-dir{flex-direction:row}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- MASTHEAD -->
+  <div class="masthead">
+    <div class="masthead-top">
+      <span class="issue-meta">◆ Cross-Border Capital Intelligence</span>
+      <span class="issue-meta-right">Vol. I · Issue 04 · June 2026<br>Compiled by Benjamin Min</span>
+    </div>
+    <h1 class="masthead-title">Korea <span class="amp">&amp;</span> United States<br>Investment Brief</h1>
+    <p class="masthead-standfirst">A bilingual reading of the capital moving between Seoul and Washington — who is buying, who is building, and what the historically weak won means for both directions of the trade.</p>
+    <div class="masthead-rule">
+      <span class="rule-item"><span class="rule-dot" style="background:var(--kr-red)"></span>Korea → U.S. outbound</span>
+      <span class="rule-item"><span class="rule-dot" style="background:var(--us-blue)"></span>U.S. → Korea inbound</span>
+      <span class="rule-item"><span class="rule-dot" style="background:var(--gold)"></span>Macro &amp; FX backdrop</span>
+    </div>
+  </div>
+
+  <!-- HERO FLOW DIAGRAM -->
+  <div class="hero-flow">
+    <div class="hero-flow-label">Headline Bilateral Flows · 2025–2026</div>
+    <div class="flow-diagram">
+      <div class="flow-pole">
+        <div class="flow-flag">🇰🇷</div>
+        <div class="flow-country">South Korea</div>
+        <div class="flow-country-sub">SEOUL · KRW</div>
+      </div>
+      <div class="flow-center">
+        <div class="flow-arrow-row">
+          <div class="flow-arrow kr">
+            <div class="flow-val">$350B</div>
+            <div class="flow-arrow-track"></div>
+            <div class="flow-arrow-head">▶</div>
+          </div>
+          <div class="flow-caption">State-backed investment pledge under Nov 2025 trade deal</div>
+        </div>
+        <div class="flow-net">
+          <span class="flow-net-label">Net Directional Tilt</span>
+          <span class="flow-net-val">Heavily Korea → U.S.</span>
+        </div>
+        <div class="flow-arrow-row">
+          <div class="flow-arrow us">
+            <div class="flow-val">$1.4B+</div>
+            <div class="flow-arrow-track"></div>
+            <div class="flow-arrow-head">▶</div>
+          </div>
+          <div class="flow-caption">U.S. PE into K-beauty alone in 2025 (Blackstone, KKR); broader PE M&amp;A far larger</div>
+        </div>
+      </div>
+      <div class="flow-pole">
+        <div class="flow-flag">🇺🇸</div>
+        <div class="flow-country">United States</div>
+        <div class="flow-country-sub">WASHINGTON · USD</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CAPITAL FLOW LEDGER -->
+  <div class="section">
+    <div class="section-head">
+      <span class="section-kicker">01 · The Ledger</span>
+      <span class="section-title">Capital Flow Tracker</span>
+      <span class="section-meta">10 verified moves</span>
+    </div>
+    <div class="dir-toggle" id="dirToggle">
+      <button class="dir-btn active" data-dir="all"><span class="dot" style="background:var(--gold)"></span>All Flows</button>
+      <button class="dir-btn" data-dir="kr-us"><span class="dot" style="background:var(--kr-red)"></span>Korea → U.S.</button>
+      <button class="dir-btn" data-dir="us-kr"><span class="dot" style="background:var(--us-blue)"></span>U.S. → Korea</button>
+    </div>
+    <div class="ledger" id="ledger"></div>
+  </div>
+
+  <!-- MACRO -->
+  <div class="section">
+    <div class="section-head">
+      <span class="section-kicker">02 · Macro Backdrop</span>
+      <span class="section-title">The Won Is the Whole Story</span>
+    </div>
+    <div class="macro-grid">
+      <div class="macro-card">
+        <div class="macro-card-label">USD / KRW Spot</div>
+        <div class="macro-card-title">Exchange Rate</div>
+        <div class="fx-hero">
+          <span class="fx-rate">₩1,527</span>
+          <span class="fx-unit">per $1</span>
+        </div>
+        <div class="fx-change">▼ Won -12.7% over trailing 12 months · weakest since 2009</div>
+        <div class="fx-note">As of <strong>June 8, 2026</strong>, the won sits near multi-decade lows, briefly touching ~₩1,560 amid Middle East risk-off flows. Global banks now treat <strong>₩1,400+ as the 2026 baseline</strong>, not a stress level. For Korean acquirers, this makes U.S. dollar assets structurally more expensive; for U.S. buyers, it makes Korean targets cheaper in dollar terms — a tailwind for the inbound PE wave below.</div>
+      </div>
+      <div class="macro-card">
+        <div class="macro-card-label">Supporting Indicators</div>
+        <div class="macro-card-title">Context</div>
+        <div class="macro-stat">
+          <span class="macro-stat-label">BOK base rate (held, Feb 2026)</span>
+          <span class="macro-stat-val">2.50%</span>
+        </div>
+        <div class="macro-stat">
+          <span class="macro-stat-label">Korea current account surplus (Apr 2026)</span>
+          <span class="macro-stat-val">$28.3B</span>
+        </div>
+        <div class="macro-stat">
+          <span class="macro-stat-label">2026 GDP growth (IMF proj.)</span>
+          <span class="macro-stat-val">1.8%</span>
+        </div>
+        <div class="macro-stat">
+          <span class="macro-stat-label">NPS total AUM (world's 3rd largest)</span>
+          <span class="macro-stat-val">₩1,228T</span>
+        </div>
+        <div class="macro-stat">
+          <span class="macro-stat-label">NPS overseas equity allocation</span>
+          <span class="macro-stat-val">36.8%</span>
+        </div>
+        <div class="macro-stat">
+          <span class="macro-stat-label">Investment cap, KR→US fund / yr</span>
+          <span class="macro-stat-val">$20B</span>
+        </div>
+      </div>
+    </div>
+    <div class="analyst-note">
+      <div class="analyst-note-label">Why the FX backdrop drives everything</div>
+      <div class="analyst-note-body">
+        <p>The central tension of the 2026 Korea–U.S. capital relationship is that <strong>the money is being pushed one direction by policy while the currency pulls it the other way.</strong> Seoul has committed $350B to U.S. industries under the November 2025 trade deal, but the won's weakness means every dollar deployed abroad is more painful — which is precisely why the deal caps outflows at $20B per year to protect the onshore FX market.</p>
+        <p>Meanwhile, that same weak won makes Korean assets a bargain for U.S. private equity. Blackstone, KKR, Carlyle, and Bain are actively bidding on Korean beauty, pharma, and semiconductor-equipment targets. The result is a genuinely <strong>bidirectional market</strong>: state-directed Korean capital flowing into U.S. manufacturing, and opportunistic U.S. financial capital flowing into Korean corporate assets.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- OUTLOOK -->
+  <div class="section">
+    <div class="section-head">
+      <span class="section-kicker">03 · Directional Outlook</span>
+      <span class="section-title">Two Theses, Two Directions</span>
+    </div>
+    <div class="thesis-grid">
+      <div class="thesis-card kr">
+        <div class="thesis-head">
+          <span class="thesis-flag">🇰🇷</span>
+          <span class="thesis-dir">Korea → U.S. · Building, Not Just Buying</span>
+        </div>
+        <div class="thesis-title">Korean capital is increasingly industrial, strategic, and reluctant.</div>
+        <div class="thesis-body">The defining Korea→U.S. story is no longer portfolio investment — it is <strong>factories tied to tariff avoidance</strong>. Hyundai's $7.6B Georgia Metaplant, Samsung's $37B Texas chip complex, and LG's battery network were all structured to manufacture inside U.S. borders and dodge tariffs. But the cracks are showing: Samsung's Taylor fab is delayed to 2026 with subsidies cut 26%, and the September 2025 ICE raid on Hyundai's Georgia site strained the relationship. The new $350B pledge is best read as <strong>strategically coerced capital</strong> — committed to avoid 25% tariffs, capped to protect the won, and explicitly permitted to fund projects that "lack commercial rationality."</div>
+      </div>
+      <div class="thesis-card us">
+        <div class="thesis-head">
+          <span class="thesis-flag">🇺🇸</span>
+          <span class="thesis-dir">U.S. → Korea · Opportunistic &amp; Financial</span>
+        </div>
+        <div class="thesis-title">U.S. private equity sees a cheap, restructuring-rich market.</div>
+        <div class="thesis-body">The U.S.→Korea flow is the mirror image: <strong>financial, opportunistic, and accelerating</strong>. With the won at multi-decade lows and Korean conglomerates under pressure to divest non-core assets, firms like Blackstone, KKR, and Carlyle have set up permanent Seoul offices. 2025 K-beauty M&A alone hit $1.4B. The targets cluster in beauty, pharma distribution, and the crown jewel — semiconductor-equipment maker HPSP ("Korea's ASML"), with a stake valued near $1.5B drawing every major global fund. Korea's deep pension-driven capital pool and steady corporate restructuring make it, in Deloitte's framing, both a <strong>capital source and a destination</strong> simultaneously.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOURCES -->
+  <div class="sources">
+    <div class="sources-label">Primary Sources &amp; Verification</div>
+    <div class="sources-grid" id="sourcesGrid"></div>
+  </div>
+
+  <!-- COLOPHON -->
+  <div class="colophon">
+    <strong>Korea–U.S. Cross-Border Investment Brief</strong> · Compiled and written by Benjamin Min · UCR Finance<br>
+    A bilingual research project tracking bilateral capital flows · All figures verified against named public sources, June 2026<br>
+    Not investment advice. Figures reflect publicly reported data as of June 8, 2026.
+  </div>
+
+</div>
+
+<script>
+/* ─────────────────────────────────────────
+   CAPITAL FLOW LEDGER — verified deals
+   dir: "kr-us" (Korea→US, red) | "us-kr" (US→Korea, blue)
+───────────────────────────────────────── */
+const DEALS = [
+  {
+    dir:"kr-us",
+    actor:"South Korea (Sovereign)",
+    desc:"$350B state-backed investment commitment under the U.S.–Korea Strategic Trade & Investment Deal: $200B cash (capped $20B/yr to protect the won) plus $150B for shipbuilding cooperation. In exchange, U.S. cut auto tariffs from 25% to 15%.",
+    sector:"Sovereign / Policy",
+    status:"active", statusLabel:"Phased to 2029",
+    amt:"$350B", amtSub:"Committed Nov 2025",
+    src:"Congressional Research Service (Mar 2026); Reuters / White House factsheet (Oct 29, 2025); Korea Herald (Nov 26, 2025)"
+  },
+  {
+    dir:"kr-us",
+    actor:"Hyundai Motor Group",
+    desc:"Metaplant America (Ellabell, GA) — Hyundai's first dedicated U.S. EV + battery plant. Grand opening Mar 2025; +$2.7B Phase-2 expansion announced Sep 2025 to lift capacity to 500,000 vehicles/yr. Part of a broader $21B U.S. commitment for 2025–2028.",
+    sector:"Automotive / EV",
+    status:"built", statusLabel:"Operating",
+    amt:"$7.6B", amtSub:"+$2.7B expansion",
+    src:"Georgia.org; Hyundai Newsroom (Mar 27, 2025); WTOC / AP (Sep 18, 2025)"
+  },
+  {
+    dir:"kr-us",
+    actor:"Samsung Electronics",
+    desc:"Taylor, Texas semiconductor complex. Scaled back from $44B to $37B total; CHIPS Act subsidy cut 26% (from $6.4B to $4.745B). Mass production delayed to early 2026 amid weak foundry demand and a strategic pivot from 4nm to 2nm GAA.",
+    sector:"Semiconductors",
+    status:"cooling", statusLabel:"Delayed to 2026",
+    amt:"$37B", amtSub:"Down from $44B",
+    src:"Nikkei Asia (Jul 3, 2025); FinancialContent (Dec 22, 2025); CHIPS Act filings"
+  },
+  {
+    dir:"us-kr",
+    actor:"Blackstone & KKR",
+    desc:"K-beauty buying spree: KKR acquired cosmetics-packaging leader Samhwa from TPG (~$528M); Blackstone took a majority stake in premium haircare chain Juno (~$739M). 2025 K-beauty M&A reached $1.41B — 85% of 2024's record — drawn by global K-beauty demand.",
+    sector:"Consumer / Beauty",
+    status:"active", statusLabel:"2025 deals",
+    amt:"$1.27B", amtSub:"Two deals; sector $1.4B",
+    src:"Private Equity Insights (2025); MMP advisory data; Blackstone & KKR statements"
+  },
+  {
+    dir:"us-kr",
+    actor:"Carlyle / Blackstone / Bain (bidders)",
+    desc:"HPSP — 'Korea's ASML' — controlling stake (40.9%) drew KKR, Blackstone, Carlyle, Bain & MBK in preliminary bidding. The semiconductor-annealing monopoly supplies Samsung, TSMC & Intel; revenue grew from ₩24B (2018) to ₩1.79T (2023) at a 53% operating margin.",
+    sector:"Semiconductors",
+    status:"active", statusLabel:"Bidding 2025",
+    amt:"~$1.5B", amtSub:"Stake value",
+    src:"Korea Herald (Feb 26, 2025); Private Equity Insights (2025)"
+  },
+  {
+    dir:"kr-us",
+    actor:"Samsung (Domestic Counter-Pledge)",
+    desc:"After the U.S. deal raised fears of capital flight, Samsung pledged ₩450T (~$310B) over 5 years to expand domestic operations, including a new Pyeongtaek line — a signal that Korean firms are balancing U.S. obligations with home investment.",
+    sector:"Semiconductors",
+    status:"active", statusLabel:"5-yr plan",
+    amt:"$310B", amtSub:"Domestic (₩450T)",
+    src:"CNBC (Nov 16, 2025); President Lee business roundtable"
+  },
+  {
+    dir:"kr-us",
+    actor:"LG Energy Solution",
+    desc:"North American battery network (Ultium JV with GM in OH/TN; JV with Honda in OH). As EV demand cooled, LGES sold its Ohio plant-building stake to Honda for $2.85B (Dec 2025) and pivoted Tennessee capacity to LFP cells for grid/data-center storage.",
+    sector:"Batteries / Energy",
+    status:"cooling", statusLabel:"Pivoting to ESS",
+    amt:"$2.85B", amtSub:"OH stake sale to Honda",
+    src:"Utility Dive (Jan 6, 2026); GM Newsroom (Jul 2025); ESS News (Mar 2026)"
+  },
+  {
+    dir:"us-kr",
+    actor:"Blackstone → MBK Partners",
+    desc:"Blackstone's first major South Korea exit: sale of its 71% controlling stake in drug wholesaler Geo-Young to North Asian buyout fund MBK Partners for over $1B. Illustrates the full PE cycle (buy 2019, build, exit 2025) now maturing in Korea.",
+    sector:"Pharma Distribution",
+    status:"active", statusLabel:"Exit 2025",
+    amt:"$1B+", amtSub:"Geo-Young stake",
+    src:"Reuters (2025); KED Global"
+  },
+  {
+    dir:"us-kr",
+    actor:"Apollo & ICG (new entrants)",
+    desc:"New York's Apollo Global Management and London's ICG opened Seoul offices in 2025, joining Qatar's QIA in bolstering APAC presence. Korea's growing pension pool and corporate restructuring made it a top-3 APAC M&A market at $18.6B of deal value in 2024.",
+    sector:"PE Infrastructure",
+    status:"active", statusLabel:"Office openings",
+    amt:"$18.6B", amtSub:"2024 KR M&A market",
+    src:"KED Global (Mar 2025); 2025 Asia Pacific Private Equity Almanac (Deloitte)"
+  },
+  {
+    dir:"kr-us",
+    actor:"Korea Gas Corporation (KOGAS)",
+    desc:"Government-controlled KOGAS signed long-term agreements to purchase ~3.3 million metric tons of U.S. LNG per year — an energy-trade component of the broader deal that helps narrow the bilateral trade gap and locks in U.S. energy offtake.",
+    sector:"Energy / LNG",
+    status:"active", statusLabel:"Long-term supply",
+    amt:"3.3 Mt/yr", amtSub:"U.S. LNG offtake",
+    src:"White House statement / Reuters (Oct 29, 2025)"
+  },
+];
+
+/* ─────────────────────────────────────────
+   SOURCES
+───────────────────────────────────────── */
+const SOURCES = [
+  {name:"Congressional Research Service — U.S.–South Korea Bilateral Trade Relations", meta:"Mar 19, 2026"},
+  {name:"Reuters / White House — Korea trade deal factsheet", meta:"Oct 29, 2025"},
+  {name:"Korea Herald — $350B special investment corporation", meta:"Nov 26, 2025"},
+  {name:"CNBC — Korean firms pledge domestic investment post-deal", meta:"Nov 16, 2025"},
+  {name:"Nikkei Asia — Samsung Taylor fab delay", meta:"Jul 3, 2025"},
+  {name:"FinancialContent — Samsung subsidy cut & delay", meta:"Dec 22, 2025"},
+  {name:"Georgia.org & Hyundai Newsroom — Metaplant America", meta:"Mar 2025"},
+  {name:"WTOC / AP — Hyundai $2.7B expansion", meta:"Sep 18, 2025"},
+  {name:"Private Equity Insights — Blackstone & KKR K-beauty", meta:"2025"},
+  {name:"Korea Herald — HPSP 'Korea's ASML' M&A", meta:"Feb 26, 2025"},
+  {name:"Utility Dive — Honda buys LGES Ohio stake $2.85B", meta:"Jan 6, 2026"},
+  {name:"KED Global — Korea as global PE hub; NPS AUM", meta:"Mar–May 2025"},
+  {name:"Trading Economics — USD/KRW spot", meta:"Jun 8, 2026"},
+  {name:"Korea Herald — global banks see ₩1,400 baseline", meta:"Dec 28, 2025"},
+  {name:"EBC Financial — drivers of won weakness; BOK rate", meta:"Mar 13, 2026"},
+  {name:"Reuters — Blackstone Geo-Young exit to MBK", meta:"2025"},
+];
+
+/* ─────────────────────────────────────────
+   RENDER
+───────────────────────────────────────── */
+let activeDir = 'all';
+
+function renderLedger() {
+  const filtered = DEALS.filter(d => activeDir === 'all' || d.dir === activeDir);
+  document.getElementById('ledger').innerHTML = filtered.map(d => {
+    const flags = d.dir === 'kr-us'
+      ? '🇰🇷&nbsp;🇺🇸'
+      : '🇺🇸&nbsp;🇰🇷';
+    const arrow = d.dir === 'kr-us' ? 'KR → US' : 'US → KR';
+    const statusClass = d.status === 'built' ? 'status-built' : d.status === 'cooling' ? 'status-cooling' : 'status-active';
+    return `
+      <div class="deal ${d.dir}">
+        <div class="deal-dir">
+          <div class="deal-dir-flags">${flags}</div>
+          <div class="deal-dir-arrow">${arrow}</div>
+        </div>
+        <div class="deal-main">
+          <div class="deal-actor">${d.actor}</div>
+          <div class="deal-desc">${d.desc}</div>
+          <div class="deal-tags">
+            <span class="deal-sector">${d.sector}</span>
+            <span class="deal-status ${statusClass}">${d.statusLabel}</span>
+          </div>
+          <div class="deal-src">${d.src}</div>
+        </div>
+        <div class="deal-figure">
+          <div class="deal-amt">${d.amt}</div>
+          <div class="deal-amt-sub">${d.amtSub}</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+document.getElementById('dirToggle').addEventListener('click', e => {
+  const btn = e.target.closest('.dir-btn');
+  if (!btn) return;
+  activeDir = btn.dataset.dir;
+  document.querySelectorAll('.dir-btn').forEach(b => {
+    b.classList.remove('active');
+  });
+  btn.classList.add('active');
+  renderLedger();
+});
+
+document.getElementById('sourcesGrid').innerHTML = SOURCES.map((s, i) => `
+  <div class="src"><span class="src-n">[${String(i+1).padStart(2,'0')}]</span><div><strong>${s.name}</strong> · ${s.meta}</div></div>
+`).join('');
+
+renderLedger();
+</script>
+</body>
+</html>

@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Corporate Strategy Case Tracker — Benjamin Min</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── TOKENS ── */
+:root {
+  --bg:       #0c0f1a;
+  --bg2:      #131826;
+  --bg3:      #1a2035;
+  --bg4:      #222a42;
+  --bg5:      #2a3352;
+  --border:   rgba(255,255,255,0.06);
+  --border2:  rgba(255,255,255,0.11);
+  --text1:    #f0eff4;
+  --text2:    #8b93b0;
+  --text3:    #4e5875;
+  --gold:     #e8c547;
+  --gold-dim: rgba(232,197,71,0.1);
+  --gold-brd: rgba(232,197,71,0.22);
+  --green:    #34d399;
+  --green-bg: rgba(52,211,153,0.08);
+  --red:      #f87171;
+  --red-bg:   rgba(248,113,113,0.08);
+  --blue:     #60a5fa;
+  --blue-bg:  rgba(96,165,250,0.08);
+  --purple:   #c084fc;
+  --purple-bg:rgba(192,132,252,0.08);
+  --orange:   #fb923c;
+  --orange-bg:rgba(251,146,60,0.08);
+  --cyan:     #22d3ee;
+  --cyan-bg:  rgba(34,211,238,0.08);
+  --syne:     'Syne', sans-serif;
+  --inter:    'Inter', sans-serif;
+  --mono:     'JetBrains Mono', monospace;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--inter);background:var(--bg);color:var(--text1);min-height:100vh;-webkit-font-smoothing:antialiased}
+
+/* ── SHELL ── */
+.shell{display:grid;grid-template-rows:auto 1fr;min-height:100vh}
+
+/* ── TOPBAR ── */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.9rem 1.75rem;
+  border-bottom:1px solid var(--border);
+  background:var(--bg2);
+  gap:1rem;flex-wrap:wrap;
+  position:sticky;top:0;z-index:50;
+}
+.topbar-brand{display:flex;align-items:center;gap:.75rem}
+.brand-icon{
+  width:32px;height:32px;border-radius:6px;
+  background:var(--gold);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--syne);font-weight:800;font-size:.85rem;color:var(--bg);
+  flex-shrink:0;
+}
+.brand-text{}
+.brand-title{font-family:var(--syne);font-size:.95rem;font-weight:700;color:var(--text1);letter-spacing:-.01em}
+.brand-sub{font-family:var(--mono);font-size:.62rem;color:var(--text3);letter-spacing:.06em;margin-top:1px}
+.topbar-meta{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
+.meta-pill{
+  font-family:var(--mono);font-size:.65rem;letter-spacing:.06em;
+  padding:.28rem .7rem;border-radius:20px;
+  border:1px solid var(--border2);color:var(--text3);
+}
+.meta-pill.live{border-color:var(--gold-brd);color:var(--gold)}
+.byline-pill{font-family:var(--mono);font-size:.65rem;color:var(--text3);letter-spacing:.04em}
+
+/* ── BODY GRID ── */
+.body-grid{
+  display:grid;
+  grid-template-columns:340px 1fr;
+  height:calc(100vh - 57px);
+  overflow:hidden;
+}
+
+/* ── LEFT RAIL ── */
+.rail{
+  background:var(--bg2);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  overflow:hidden;
+}
+.rail-header{
+  padding:1rem 1.1rem .75rem;
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+.rail-title{font-family:var(--syne);font-size:.9rem;font-weight:700;color:var(--text1);margin-bottom:.6rem}
+.filter-row{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.6rem}
+.filter-btn{
+  font-family:var(--mono);font-size:.6rem;letter-spacing:.05em;
+  padding:.22rem .6rem;border-radius:20px;
+  border:1px solid var(--border2);background:transparent;
+  color:var(--text3);cursor:pointer;transition:all .15s;
+}
+.filter-btn:hover{color:var(--text2);border-color:var(--border2);background:var(--bg3)}
+.filter-btn.active{background:var(--gold);color:var(--bg);border-color:var(--gold);font-weight:500}
+.search-wrap{position:relative}
+.search-input{
+  width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:6px;
+  padding:.5rem .75rem .5rem 2rem;
+  font-family:var(--inter);font-size:.78rem;color:var(--text1);outline:none;
+  transition:border-color .15s;
+}
+.search-input::placeholder{color:var(--text3)}
+.search-input:focus{border-color:var(--border2)}
+.search-icon{position:absolute;left:.65rem;top:50%;transform:translateY(-50%);color:var(--text3);font-size:.75rem;pointer-events:none}
+.case-count{font-family:var(--mono);font-size:.6rem;color:var(--text3);margin-top:.5rem;letter-spacing:.04em}
+
+/* ── CASE LIST ── */
+.case-list{overflow-y:auto;flex:1;padding:.5rem}
+.case-list::-webkit-scrollbar{width:4px}
+.case-list::-webkit-scrollbar-track{background:transparent}
+.case-list::-webkit-scrollbar-thumb{background:var(--bg5);border-radius:2px}
+.case-item{
+  padding:.8rem .9rem;border-radius:8px;cursor:pointer;
+  border:1px solid transparent;
+  transition:all .15s;margin-bottom:.35rem;
+  position:relative;
+}
+.case-item:hover{background:var(--bg3);border-color:var(--border)}
+.case-item.active{background:var(--bg3);border-color:var(--gold-brd)}
+.case-item.active::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:var(--gold);border-radius:3px 0 0 3px;
+}
+.case-company{font-family:var(--syne);font-size:.82rem;font-weight:700;color:var(--text1);margin-bottom:.2rem;line-height:1.2}
+.case-headline{font-size:.73rem;color:var(--text2);line-height:1.4;margin-bottom:.45rem}
+.case-meta-row{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap}
+.move-tag{
+  font-family:var(--mono);font-size:.58rem;letter-spacing:.04em;
+  padding:.15rem .5rem;border-radius:3px;font-weight:500;
+}
+.case-date{font-family:var(--mono);font-size:.6rem;color:var(--text3);margin-left:auto}
+.verdict-dot{
+  width:6px;height:6px;border-radius:50%;flex-shrink:0;
+}
+
+/* ── DETAIL PANEL ── */
+.detail{
+  overflow-y:auto;padding:1.75rem 2rem;
+  background:var(--bg);
+}
+.detail::-webkit-scrollbar{width:4px}
+.detail::-webkit-scrollbar-track{background:transparent}
+.detail::-webkit-scrollbar-thumb{background:var(--bg5);border-radius:2px}
+.detail-empty{
+  height:100%;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:.75rem;
+  color:var(--text3);
+}
+.detail-empty-icon{font-size:2.5rem;opacity:.3}
+.detail-empty-text{font-family:var(--syne);font-size:.9rem;color:var(--text3)}
+.detail-empty-sub{font-size:.78rem;color:var(--text3);max-width:260px;text-align:center;line-height:1.55}
+
+/* detail sections */
+.d-eyebrow{
+  display:flex;align-items:center;gap:.75rem;margin-bottom:.6rem;flex-wrap:wrap;
+}
+.d-eyebrow-label{
+  font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--text3);
+}
+.d-company{
+  font-family:var(--syne);font-size:2rem;font-weight:800;
+  color:var(--text1);letter-spacing:-.02em;line-height:1.1;
+  margin-bottom:.35rem;
+}
+.d-headline{
+  font-size:1rem;font-weight:500;color:var(--text2);
+  line-height:1.5;margin-bottom:1.25rem;max-width:680px;
+}
+.d-divider{height:1px;background:var(--border);margin:1.25rem 0}
+
+.d-section-label{
+  font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--text3);margin-bottom:.75rem;
+}
+
+/* stat strip */
+.stat-strip{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
+  gap:8px;margin-bottom:1.25rem;
+}
+.stat-box{
+  background:var(--bg2);border:1px solid var(--border);border-radius:8px;
+  padding:.8rem .9rem;
+}
+.stat-box-label{
+  font-family:var(--mono);font-size:.58rem;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--text3);margin-bottom:.35rem;
+}
+.stat-box-val{
+  font-family:var(--mono);font-size:1.05rem;font-weight:500;
+  color:var(--text1);line-height:1;
+}
+.stat-box-sub{font-size:.68rem;color:var(--text3);margin-top:.25rem;line-height:1.35}
+
+/* framework band */
+.framework-band{
+  background:var(--bg2);border:1px solid var(--border);
+  border-left:3px solid var(--gold);
+  border-radius:0 8px 8px 0;
+  padding:.85rem 1rem;margin-bottom:1.25rem;
+  display:flex;align-items:flex-start;gap:.85rem;
+}
+.fw-icon{
+  font-family:var(--syne);font-size:.7rem;font-weight:700;
+  color:var(--gold);background:var(--gold-dim);border:1px solid var(--gold-brd);
+  padding:.3rem .6rem;border-radius:4px;flex-shrink:0;white-space:nowrap;
+  letter-spacing:.04em;
+}
+.fw-body{}
+.fw-name{font-size:.82rem;font-weight:600;color:var(--text1);margin-bottom:.2rem}
+.fw-desc{font-size:.75rem;color:var(--text2);line-height:1.6}
+
+/* two col body */
+.detail-cols{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem}
+.d-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:.95rem 1rem}
+.d-card-label{font-family:var(--mono);font-size:.6rem;letter-spacing:.09em;text-transform:uppercase;color:var(--text3);margin-bottom:.6rem}
+.d-card-body{font-size:.8rem;color:var(--text2);line-height:1.7}
+.d-card-body strong{color:var(--text1);font-weight:500}
+
+/* forces list */
+.force-item{
+  display:flex;align-items:flex-start;gap:.65rem;
+  padding:.5rem 0;border-bottom:1px solid var(--border);
+}
+.force-item:last-child{border-bottom:none}
+.force-bullet{
+  width:18px;height:18px;border-radius:3px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:.6rem;font-weight:700;
+  margin-top:.1rem;
+}
+.force-text{font-size:.78rem;color:var(--text2);line-height:1.5}
+.force-text strong{color:var(--text1);font-weight:500}
+
+/* verdict box */
+.verdict-box{
+  border-radius:8px;padding:1rem 1.1rem;margin-bottom:1.25rem;
+  border:1px solid;
+}
+.verdict-box.win{background:var(--green-bg);border-color:rgba(52,211,153,.2)}
+.verdict-box.lose{background:var(--red-bg);border-color:rgba(248,113,113,.2)}
+.verdict-box.mixed{background:var(--orange-bg);border-color:rgba(251,146,60,.2)}
+.verdict-box.tbd{background:var(--blue-bg);border-color:rgba(96,165,250,.2)}
+.verdict-header{display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem}
+.verdict-badge{
+  font-family:var(--mono);font-size:.62rem;letter-spacing:.07em;font-weight:500;
+  padding:.2rem .6rem;border-radius:3px;
+}
+.verdict-box.win .verdict-badge{background:rgba(52,211,153,.15);color:var(--green)}
+.verdict-box.lose .verdict-badge{background:rgba(248,113,113,.15);color:var(--red)}
+.verdict-box.mixed .verdict-badge{background:rgba(251,146,60,.15);color:var(--orange)}
+.verdict-box.tbd .verdict-badge{background:rgba(96,165,250,.15);color:var(--blue)}
+.verdict-label{font-family:var(--syne);font-size:.8rem;font-weight:700;color:var(--text1)}
+.verdict-text{font-size:.8rem;color:var(--text2);line-height:1.7}
+
+/* timeline */
+.timeline{margin-bottom:1.25rem}
+.tl-item{display:flex;gap:.85rem;padding-bottom:.9rem;position:relative}
+.tl-item:not(:last-child)::before{
+  content:'';position:absolute;left:7px;top:16px;bottom:0;
+  width:1px;background:var(--border2);
+}
+.tl-dot{
+  width:15px;height:15px;border-radius:50%;
+  background:var(--bg4);border:2px solid var(--border2);
+  flex-shrink:0;margin-top:2px;
+}
+.tl-dot.now{border-color:var(--gold);background:var(--gold-dim)}
+.tl-body{}
+.tl-date{font-family:var(--mono);font-size:.62rem;color:var(--text3);margin-bottom:.15rem}
+.tl-text{font-size:.78rem;color:var(--text2);line-height:1.55}
+.tl-text strong{color:var(--text1);font-weight:500}
+
+/* source line */
+.source-line{
+  display:flex;align-items:flex-start;gap:.5rem;
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:6px;padding:.6rem .85rem;
+  font-size:.7rem;color:var(--text3);line-height:1.55;
+}
+.source-line-lbl{font-family:var(--mono);font-size:.6rem;color:var(--text3);letter-spacing:.06em;white-space:nowrap;padding-top:1px}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-brand">
+      <div class="brand-icon">BM</div>
+      <div class="brand-text">
+        <div class="brand-title">Corporate Strategy Case Tracker</div>
+        <div class="brand-sub">LIVE DATABASE · REAL DEALS · ANALYST COMMENTARY</div>
+      </div>
+    </div>
+    <div class="topbar-meta">
+      <span class="meta-pill live">● 12 Cases · Updated Jun 2026</span>
+      <span class="meta-pill">M&A · Pivots · Divestitures · Market Entry</span>
+      <span class="byline-pill">Benjamin Min · UCR Finance</span>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="body-grid">
+
+    <!-- LEFT RAIL -->
+    <div class="rail">
+      <div class="rail-header">
+        <div class="rail-title">Case Database</div>
+        <div class="filter-row" id="filterRow">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="Acquisition">Acquisition</button>
+          <button class="filter-btn" data-filter="Divestiture">Divestiture</button>
+          <button class="filter-btn" data-filter="Market Entry">Market Entry</button>
+          <button class="filter-btn" data-filter="Pivot">Pivot</button>
+          <button class="filter-btn" data-filter="Restructuring">Restructuring</button>
+          <button class="filter-btn" data-filter="Vertical Integration">Vert. Integration</button>
+        </div>
+        <div class="search-wrap">
+          <span class="search-icon">⌕</span>
+          <input class="search-input" type="text" id="searchInput" placeholder="Search company, sector, move…">
+        </div>
+        <div class="case-count" id="caseCount">12 cases</div>
+      </div>
+      <div class="case-list" id="caseList"></div>
+    </div>
+
+    <!-- DETAIL -->
+    <div class="detail" id="detailPanel">
+      <div class="detail-empty" id="emptyState">
+        <div class="detail-empty-icon">◎</div>
+        <div class="detail-empty-text">Select a case to open</div>
+        <div class="detail-empty-sub">Each entry includes verified financials, the strategic framework applied, and an analyst verdict.</div>
+      </div>
+      <div id="detailContent" style="display:none"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ─────────────────────────────────────────
+   MOVE TYPE COLORS
+───────────────────────────────────────── */
+const MOVE_COLORS = {
+  "Acquisition":         { bg:"rgba(96,165,250,.12)",  color:"#60a5fa",  border:"rgba(96,165,250,.25)"  },
+  "Divestiture":         { bg:"rgba(248,113,113,.12)", color:"#f87171",  border:"rgba(248,113,113,.25)" },
+  "Market Entry":        { bg:"rgba(52,211,153,.12)",  color:"#34d399",  border:"rgba(52,211,153,.25)"  },
+  "Pivot":               { bg:"rgba(232,197,71,.12)",  color:"#e8c547",  border:"rgba(232,197,71,.25)"  },
+  "Restructuring":       { bg:"rgba(251,146,60,.12)",  color:"#fb923c",  border:"rgba(251,146,60,.25)"  },
+  "Vertical Integration":{ bg:"rgba(192,132,252,.12)", color:"#c084fc",  border:"rgba(192,132,252,.25)" },
+};
+const VERDICT_LABEL = { win:"✓ Right Call", lose:"✗ Strategic Misfire", mixed:"~ Mixed Results", tbd:"◌ Outcome Pending" };
+
+/* ─────────────────────────────────────────
+   CASE DATABASE  (12 real verified cases)
+───────────────────────────────────────── */
+const CASES = [
+  {
+    id:1,
+    company:"Microsoft",
+    sector:"Technology",
+    move:"Acquisition",
+    headline:"Acquires Activision Blizzard for $68.7B — largest gaming deal in history",
+    date:"Jan 2022–Oct 2023",
+    verdict:"win",
+    verdictText:"The deal closed after 21 months of regulatory battles in Oct 2023. Microsoft paid $95/share (all-cash). Despite FTC and CMA opposition, it emerged as the defining move in Microsoft's gaming vertical integration strategy. Xbox Game Pass subscriptions accelerated. The deal signals Microsoft's long-term bet on interactive entertainment as an OS-layer asset, not a product line — consistent with Satya Nadella's platform-first doctrine.",
+    stats:[
+      {lbl:"Deal Value",val:"$68.7B",sub:"All-cash; $95/share"},
+      {lbl:"Close Date",val:"Oct 2023",sub:"After 21-month regulatory fight"},
+      {lbl:"Game Pass Subs",val:"34M+",sub:"Post-close acceleration"},
+      {lbl:"Regulatory Battles",val:"FTC + CMA",sub:"Both ultimately cleared"},
+    ],
+    framework:{
+      name:"Ansoff Matrix — Product Development + Market Penetration",
+      tag:"Ansoff Matrix",
+      desc:"Microsoft moved along two Ansoff axes simultaneously: deepening market penetration in console gaming (Xbox), while using Activision's IP library (Call of Duty, Warcraft, Candy Crush) as product development into new segments (mobile, casual, PC). The vertical integration layer — owning studio + distribution (Game Pass) + platform — is textbook forward vertical integration to capture margin across the value chain."
+    },
+    forces:[
+      {lbl:"↑",color:"var(--green)",text:"<strong>Reduces buyer power.</strong> With CoD, Warcraft, and Candy Crush exclusive or preferred on Xbox/Game Pass, Microsoft reduces PlayStation's leverage over multiplatform IP."},
+      {lbl:"→",color:"var(--blue)",text:"<strong>Raises barriers to entry.</strong> Owning the most valuable gaming IP makes it structurally harder for new entrants (Apple, Amazon) to compete for premium content."},
+      {lbl:"↓",color:"var(--orange)",text:"<strong>Substitution risk remains.</strong> Mobile gaming growth could cannibalize console — a risk Microsoft is hedging with Candy Crush's 250M MAU base, now inside the ecosystem."},
+    ],
+    timeline:[
+      {date:"Jan 18, 2022",text:"<strong>Announcement.</strong> Microsoft announces $68.7B all-cash offer for Activision Blizzard at $95/share, a 45% premium."},
+      {date:"Dec 2022",text:"<strong>FTC sues.</strong> U.S. Federal Trade Commission files suit to block the merger, citing gaming market concentration concerns."},
+      {date:"Apr 2023",text:"<strong>CMA blocks.</strong> UK Competition and Markets Authority issues initial prohibition; Microsoft enters remedies negotiation."},
+      {date:"Jul 2023",text:"<strong>Restructured deal.</strong> Microsoft agrees to divest Activision's cloud gaming rights to Ubisoft for non-EEA markets, clearing CMA."},
+      {date:"Oct 13, 2023",text:"<strong>Deal closes.</strong> Activision fully integrated into Microsoft Gaming. Bobby Kotick departs as CEO by Dec 2023.",now:true},
+    ],
+    sources:"The Wall Street Journal (Jan 18, 2022) · FTC v. Microsoft, U.S. District Court (Dec 2022) · Microsoft Press Release (Oct 13, 2023) · CMA Final Decision (Jul 2023)"
+  },
+  {
+    id:2,
+    company:"Disney",
+    sector:"Media & Entertainment",
+    move:"Restructuring",
+    headline:"Bob Iger returns; dismantles streaming-first strategy, cuts 7,000 jobs, reverts to profitability focus",
+    date:"Nov 2022–present",
+    verdict:"mixed",
+    verdictText:"Iger's return reversed Chapek's all-in streaming bet. Disney+ lost $4B in FY2022. By FY2024, Disney+ reached profitability for the first time. But linear TV (ESPN, ABC) continues secular decline and the parks segment is doing the heavy lifting. The restructuring was necessary but the long-term question — whether Disney+ can reach Netflix-scale without a sports-anchor product — remains unresolved. The ESPN standalone streaming bet is the next critical move.",
+    stats:[
+      {lbl:"Disney+ Losses",val:"$4B",sub:"FY2022 peak loss"},
+      {lbl:"Jobs Cut",val:"7,000",sub:"Announced Feb 2023"},
+      {lbl:"D+ Profitability",val:"Q4 FY2024",sub:"First profitable quarter"},
+      {lbl:"ESPN Standalone",val:"Fall 2025",sub:"Planned launch date"},
+    ],
+    framework:{
+      name:"BCG Growth-Share Matrix — Portfolio Rebalancing",
+      tag:"BCG Matrix",
+      desc:"Chapek had been treating Disney+ as a Star (high growth, high investment) hoping it would become a Cash Cow. Iger recognized it had become a Question Mark at best — burning cash without a clear path to dominance given Netflix's lead. The restructuring is a classic portfolio rationalization: reduce investment in the Question Mark until unit economics are proven, while letting the Cash Cow (Parks) fund the transition."
+    },
+    forces:[
+      {lbl:"↑",color:"var(--green)",text:"<strong>Franchise IP moat deepens.</strong> Marvel, Star Wars, and Pixar remain irreplaceable content assets that no competitor can replicate, sustaining Disney+'s differentiation."},
+      {lbl:"↓",color:"var(--red)",text:"<strong>Substitution pressure intensifies.</strong> Netflix, Amazon, and Apple are expanding budgets. Without a live sports anchor, Disney+ churn remains structurally higher than Netflix."},
+      {lbl:"→",color:"var(--blue)",text:"<strong>Bundling as the defensive move.</strong> Disney+/Hulu/ESPN bundle reduces churn by 30%+ vs. standalone. This is the near-term moat."},
+    ],
+    timeline:[
+      {date:"Feb 2020",text:"<strong>Chapek era begins.</strong> Bob Chapek replaces Iger. Doubles down on direct-to-consumer as core strategy."},
+      {date:"Mar 2021",text:"<strong>Reorganization.</strong> Disney restructures around streaming; linear TV marginalized internally."},
+      {date:"Nov 2022",text:"<strong>Iger returns.</strong> Board reinstates Bob Iger as CEO after Chapek fired; Disney+ subscriber growth had stalled.",now:true},
+      {date:"Feb 2023",text:"<strong>7,000 cuts.</strong> $5.5B cost reduction plan announced; streaming content spend reduced."},
+      {date:"Q4 FY2024",text:"<strong>D+ turns profitable.</strong> First profitable quarter for Disney+; combined streaming segment earns $253M."},
+    ],
+    sources:"Disney Earnings Calls FY2022–FY2024 · Bloomberg (Nov 2022) · The New York Times (Feb 2023) · Disney Investor Day 2023"
+  },
+  {
+    id:3,
+    company:"Amazon",
+    sector:"Technology / Healthcare",
+    move:"Vertical Integration",
+    headline:"Acquires One Medical for $3.9B — enters primary care to own the patient-to-delivery health stack",
+    date:"Jul 2022–Feb 2023",
+    verdict:"tbd",
+    verdictText:"Amazon's healthcare vertical integration thesis is sound but execution has been uneven. Amazon Care (telehealth) was shut down in Dec 2022 even as the One Medical deal was pending. Post-close, Amazon has accelerated One Medical's geographic rollout and integrated it with Prime ($9/month add-on). The long-term play — own the relationship from primary care to pharmacy (Amazon Pharmacy) to home delivery — is textbook vertical integration, but healthcare's regulatory complexity and physician culture make this a 5–10 year bet.",
+    stats:[
+      {lbl:"Deal Value",val:"$3.9B",sub:"All-cash; $18/share"},
+      {lbl:"Close Date",val:"Feb 2023",sub:"DOJ cleared"},
+      {lbl:"One Medical Sites",val:"200+",sub:"Across 25+ markets"},
+      {lbl:"Prime Health Add-on",val:"$9/mo",sub:"Launched post-close"},
+    ],
+    framework:{
+      name:"Porter's Value Chain — Forward Vertical Integration",
+      tag:"Value Chain",
+      desc:"Amazon's healthcare stack now spans: (1) diagnosis/primary care (One Medical), (2) prescription (Amazon Pharmacy), (3) last-mile delivery (Amazon Logistics), (4) insurance (on-ramp via Prime). Porter's Value Chain analysis shows Amazon capturing primary activities end-to-end — from inbound patient engagement through to outbound delivery of medication. Each layer generates proprietary data that reinforces the others, creating a compounding data moat unavailable to standalone healthcare providers."
+    },
+    forces:[
+      {lbl:"↑",color:"var(--green)",text:"<strong>Buyer power over pharma.</strong> Owning the patient relationship allows Amazon to negotiate directly with drug manufacturers, bypassing PBMs — a major structural cost reduction."},
+      {lbl:"↓",color:"var(--red)",text:"<strong>Regulatory risk is non-trivial.</strong> CMS, HIPAA, and state-level regulations add friction that Amazon's typical flywheel doesn't encounter. Cultural resistance from physicians is real."},
+      {lbl:"→",color:"var(--purple)",text:"<strong>Data network effect builds slowly.</strong> Each patient interaction enriches Amazon's health data graph, but health data utility compounds over years, not quarters."},
+    ],
+    timeline:[
+      {date:"Jul 21, 2022",text:"<strong>Announcement.</strong> Amazon announces acquisition of One Medical (1Life Healthcare) for $3.9B."},
+      {date:"Dec 2022",text:"<strong>Amazon Care shut down.</strong> Telehealth arm closed; 'One Medical will be the vehicle' per internal memo."},
+      {date:"Feb 22, 2023",text:"<strong>Deal closes.</strong> DOJ clears without conditions. One Medical operates as Amazon Health Services subsidiary.",now:true},
+      {date:"Mar 2023",text:"<strong>Prime Health launched.</strong> One Medical membership available to Prime members for $9/month."},
+      {date:"2024–2025",text:"<strong>Expansion underway.</strong> 50+ new One Medical locations opened; pharmacy-to-clinic referral loops being built."},
+    ],
+    sources:"Amazon Press Release (Jul 21, 2022) · DOJ Clearance Statement (Feb 2023) · STAT News · The Wall Street Journal · Amazon Q4 2023 Earnings Call"
+  },
+  {
+    id:4,
+    company:"3M",
+    sector:"Industrials / Healthcare",
+    move:"Divestiture",
+    headline:"Spins off healthcare division as Solventum — shedding $8.6B revenue unit to unlock industrial focus",
+    date:"Apr 2024",
+    verdict:"tbd",
+    verdictText:"3M's healthcare spinoff follows the classic conglomerate discount reversal playbook. The logic is sound: investors were applying a 3–4x revenue discount to 3M's healthcare assets because they were buried inside an industrial conglomerate. Solventum (SOLV) listed in April 2024 at ~$14B market cap. However, 3M retained an 80% stake initially, meaning full value unlock is multi-year. The PFAS liability overhang ($10.3B settlement) on the industrial side complicates the clean separation narrative.",
+    stats:[
+      {lbl:"Solventum Revenue",val:"$8.6B",sub:"FY2023 (pre-spin)"},
+      {lbl:"Spinoff Date",val:"Apr 1, 2024",sub:"NYSE: SOLV"},
+      {lbl:"Initial Market Cap",val:"~$14B",sub:"At listing"},
+      {lbl:"3M Retained Stake",val:"80%",sub:"To be sold down over time"},
+    ],
+    framework:{
+      name:"Portfolio Strategy — Conglomerate Discount Reversal",
+      tag:"Portfolio Pruning",
+      desc:"Research consistently shows conglomerates trade at a 10–15% discount to the sum-of-parts value of their divisions (Berger & Ofek, 1995). 3M's healthcare division commanded premium multiples in comps (Becton Dickinson, Danaher trade at 5–6x revenue), while 3M as a whole traded at ~3x. The spinoff is a pure unlock play: allow markets to price healthcare at healthcare multiples and industrial at industrial multiples, destroying the conglomerate tax."
+    },
+    forces:[
+      {lbl:"↑",color:"var(--green)",text:"<strong>Capital allocation clarity.</strong> 3M management can now invest in industrial/safety without a healthcare earnings drag; Solventum can pursue healthcare M&A without industrial constraints."},
+      {lbl:"↓",color:"var(--red)",text:"<strong>PFAS liability clouds 3M's standalone value.</strong> The $10.3B PFAS settlement removes an overhang, but 3M's remaining portfolio faces secular headwinds in post-pandemic industrial demand."},
+      {lbl:"→",color:"var(--blue)",text:"<strong>The retained 80% stake is the unlock timeline.</strong> Until 3M sells down to <20%, Solventum's float is limited and institutional ownership is constrained."},
+    ],
+    timeline:[
+      {date:"Jan 2023",text:"<strong>Spinoff announced.</strong> 3M CEO Mike Roman announces intent to spin off health care business as an independent public company."},
+      {date:"Jun 2023",text:"<strong>PFAS settlement.</strong> 3M reaches $10.3B settlement with U.S. municipalities over PFAS water contamination — key overhang partially resolved."},
+      {date:"Apr 1, 2024",text:"<strong>Solventum lists.</strong> Trades on NYSE as SOLV. 3M retains 80% stake initially.",now:true},
+      {date:"2024–2026",text:"<strong>Stake selldown.</strong> 3M plans to divest majority of its Solventum stake via secondary offerings over 2–3 years."},
+    ],
+    sources:"3M Press Release (Jan 2023) · SEC Form 10-12 (Solventum, 2024) · The Wall Street Journal · Bloomberg Intelligence · 3M FY2023 Annual Report"
+  },
+  {
+    id:5,
+    company:"Apple",
+    sector:"Technology",
+    move:"Vertical Integration",
+    headline:"In-house silicon (M-series, A-series chips) eliminates Intel dependency — margin and performance inflection",
+    date:"Nov 2020–ongoing",
+    verdict:"win",
+    verdictText:"The transition to Apple Silicon (M1 in Nov 2020, M2 in 2022, M3 in 2023, M4 in 2024) is arguably the most successful vertical integration move in corporate strategy in the last decade. Apple's gross margins expanded from ~38% in FY2019 to ~46% in FY2024. Mac's performance-per-watt lead over Intel/AMD is structural. The move also unlocked the hardware-software integration that enables Apple Intelligence (AI features) — making the silicon strategy a platform play, not just a cost-reduction move.",
+    stats:[
+      {lbl:"GM Expansion",val:"+8pp",sub:"FY2019→FY2024 (38%→46%)"},
+      {lbl:"M1 Launch",val:"Nov 2020",sub:"First Apple Silicon Mac"},
+      {lbl:"Perf/Watt Lead",val:"~2–3×",sub:"vs. comparable Intel chips"},
+      {lbl:"Intel Revenue Lost",val:"~$1.4B/yr",sub:"Est. Mac chip revenue to Apple"},
+    ],
+    framework:{
+      name:"Vertical Integration — Backward Integration for Margin Capture",
+      tag:"Value Chain",
+      desc:"Apple's silicon move is backward vertical integration: owning a key supplier input (chips) rather than purchasing from Intel. Porter's analysis shows Apple captured the margin Intel was earning (~$50–80 per chip markup) plus eliminated the technology dependency that constrained product roadmap. The secondary effect — unified silicon across iPhone, iPad, Mac, and Apple Watch — creates a hardware ecosystem coherence that no competitor can replicate without equivalent foundry relationships (TSMC) and decades of ARM architecture investment."
+    },
+    forces:[
+      {lbl:"↑",color:"var(--green)",text:"<strong>Supplier power eliminated.</strong> Intel held implicit power over Apple's Mac roadmap — release cadences, thermal constraints, and performance were Intel's to dictate. That leverage is now zero."},
+      {lbl:"↑",color:"var(--green)",text:"<strong>Differentiation becomes structural.</strong> M-series chips cannot be purchased by Dell, HP, or Lenovo — creating a competitive moat that is legally and technically impenetrable."},
+      {lbl:"→",color:"var(--blue)",text:"<strong>TSMC dependency shifts the risk.</strong> Apple replaced Intel dependency with TSMC dependency. Taiwan geopolitical risk is now a supply chain variable Apple cannot fully control."},
+    ],
+    timeline:[
+      {date:"Jun 2020",text:"<strong>WWDC announcement.</strong> Apple announces 2-year transition from Intel to Apple Silicon at WWDC 2020."},
+      {date:"Nov 2020",text:"<strong>M1 launches.</strong> First M1 MacBook Air and MacBook Pro ship. Industry-wide shock at performance benchmarks.",now:true},
+      {date:"Oct 2021",text:"<strong>M1 Pro/Max.</strong> Pro desktop-class silicon launches — Mac Pro territory contested for first time."},
+      {date:"Jun 2023",text:"<strong>Intel fully replaced.</strong> Last Intel Mac (Mac Pro) replaced by M2 Ultra version at WWDC 2023."},
+      {date:"2024",text:"<strong>M4 and Apple Intelligence.</strong> AI feature layer built natively on Apple Silicon NPU — validating the platform play."},
+    ],
+    sources:"Apple WWDC 2020 Keynote · Apple FY2019–FY2024 Annual Reports · AnandTech Benchmark Analysis · Bloomberg Mark Gurman (chip roadmap coverage) · Asymco (margin analysis)"
+  },
+  {
+    id:6,
+    company:"Alphabet / Google",
+    sector:"Technology",
+    move:"Market Entry",
+    headline:"Google deploys Gemini across Search, Workspace, and Cloud — all-in AI monetization pivot",
+    date:"Dec 2023–2025",
+    verdict:"mixed",
+    verdictText:"Google's Gemini rollout has been strategically necessary but operationally uneven. AI Overviews (formerly SGE) began appearing in Search results in May 2024 with embarrassing hallucination incidents at launch. However, Gemini in Workspace (Docs, Gmail, Sheets) has driven meaningful enterprise expansion. The structural risk — that AI answers reduce search clicks and therefore ad revenue — remains Google's most critical strategic question since the iPhone threatened desktop search in 2007.",
+    stats:[
+      {lbl:"Gemini Launch",val:"Dec 2023",sub:"Gemini Ultra, Pro, Nano"},
+      {lbl:"AI Overviews",val:"May 2024",sub:"Rolled out to U.S. Search"},
+      {lbl:"Google Cloud Rev",val:"$36.2B",sub:"FY2024; +28% YoY"},
+      {lbl:"Search Ad Risk",val:"$175B",sub:"Annual revenue at stake"},
+    ],
+    framework:{
+      name:"Disruption Theory (Christensen) — Incumbent Response to Sustaining Threat",
+      tag:"Disruption Defense",
+      desc:"Classic Christensen disruption theory predicts incumbents respond slowly to disruptive threats because serving existing customers with sustaining innovations is more profitable near-term. Google's Gemini response breaks that pattern — the company is actively cannibalizing its own search ad business to prevent OpenAI/Microsoft from doing it externally. This is the rare incumbent-led disruption response that Christensen noted is structurally difficult but occasionally executed well (e.g., Netflix cannibalizing its DVD business with streaming)."
+    },
+    forces:[
+      {lbl:"↓",color:"var(--red)",text:"<strong>Substitution risk is the core threat.</strong> ChatGPT and Perplexity represent direct substitutes for informational search queries. Every query answered by AI without a click is a lost impression."},
+      {lbl:"↑",color:"var(--green)",text:"<strong>Distribution moat remains formidable.</strong> 90%+ search market share, Android, Chrome, and YouTube give Google a distribution advantage that no AI-native startup can match near-term."},
+      {lbl:"→",color:"var(--blue)",text:"<strong>Cloud is the clean win.</strong> Gemini in Google Cloud is driving enterprise AI spending with no cannibalization risk — the growth vector is unambiguous."},
+    ],
+    timeline:[
+      {date:"Nov 2022",text:"<strong>ChatGPT launches.</strong> OpenAI's ChatGPT reaches 100M users in 60 days — fastest-growing product in history. Google declares internal 'code red.'"},
+      {date:"Feb 2023",text:"<strong>Bard fumbles launch.</strong> Google's Bard chatbot makes factual error in demo video; $100B market cap loss in one day."},
+      {date:"Dec 2023",text:"<strong>Gemini announced.</strong> Gemini Ultra, Pro, and Nano unveiled — Google's most capable model family.",now:true},
+      {date:"May 2024",text:"<strong>AI Overviews launch.</strong> AI-generated summaries appear atop Google Search results in U.S. — but hallucination incidents draw media attention."},
+      {date:"2025",text:"<strong>Gemini 2.0 + Workspace expansion.</strong> Deep Workspace integration; Google Cloud AI revenue accelerates."},
+    ],
+    sources:"Google I/O 2024 · Alphabet Q4 FY2024 Earnings Call · The New York Times · The Verge (AI Overviews coverage) · Bloomberg Intelligence · Statista Search Market Share"
+  },
+  {
+    id:7,
+    company:"Nike",
+    sector:"Consumer / Retail",
+    move:"Pivot",
+    headline:"DTC-first reversal: Nike rehires wholesalers after botching direct-to-consumer overreach",
+    date:"2020–2024",
+    verdict:"lose",
+    verdictText:"Nike's DTC pivot is a case study in strategy overreach. In 2020, CEO John Donahoe announced a 'Consumer Direct Acceleration' plan — cutting 50% of wholesale partners (including DSW, Zappos, Dillard's) to own the customer relationship directly. The result: Nike lost shelf space to Hoka, On Running, and New Balance. Nike's market share in running fell. By FY2024 revenue declined for the first time since 2009 (ex-COVID). In 2023 Nike began reversing course, re-onboarding retail partners. Donahoe resigned Oct 2024.",
+    stats:[
+      {lbl:"DTC Revenue Peak",val:"44%",sub:"Of total revenue FY2023"},
+      {lbl:"FY2024 Revenue",val:"$51.4B",sub:"-10% YoY; first decline since 2009"},
+      {lbl:"Market Share Loss",val:"Running",sub:"Lost ground to Hoka, On Running"},
+      {lbl:"CEO Departure",val:"Oct 2024",sub:"Donahoe replaced by Elliott Hill"},
+    ],
+    framework:{
+      name:"Ansoff Matrix — Channel Strategy Overreach",
+      tag:"Ansoff Matrix",
+      desc:"Nike's DTC push was technically a market penetration strategy (same products, same market, different channel). But the execution violated a fundamental distribution principle: wholesale partners are demand generators, not just margin thieves. Nike mistakenly treated the channel shift as zero-sum and underestimated how much foot traffic, discovery, and trial wholesalers create. Hoka and On Running filled the shelf space Nike vacated. The corrective action — re-engaging wholesale — acknowledges that DTC and wholesale are complementary, not mutually exclusive."
+    },
+    forces:[
+      {lbl:"↓",color:"var(--red)",text:"<strong>Retailer retaliation is real.</strong> When Nike cut partners, those partners (Foot Locker, DSW) retaliated by promoting competitors. Shelf space, once lost, is expensive to reclaim."},
+      {lbl:"↓",color:"var(--red)",text:"<strong>Discovery channel undervalued.</strong> New sneaker buyers discover brands in-store. By eliminating wholesale touchpoints, Nike reduced the top of its acquisition funnel."},
+      {lbl:"→",color:"var(--blue)",text:"<strong>DTC economics were real, just insufficient alone.</strong> Nike's DTC margin is ~10pp higher than wholesale. The error was exclusivity, not the direction."},
+    ],
+    timeline:[
+      {date:"Jun 2020",text:"<strong>'Consumer Direct Acceleration.'</strong> Nike announces DTC-first strategy; plans to cut thousands of wholesale accounts."},
+      {date:"2021–2022",text:"<strong>Wholesale partners exited.</strong> Nike cuts DSW, Zappos, Urban Outfitters, Dillard's, and hundreds of regional retailers."},
+      {date:"FY2023",text:"<strong>DTC peaks.</strong> DTC reaches 44% of Nike revenue — plan appears to be working on paper."},
+      {date:"2023–2024",text:"<strong>Market share declines.</strong> Hoka, On Running, New Balance gain share in running; Nike innovations stall.",now:true},
+      {date:"Oct 2024",text:"<strong>CEO exits.</strong> John Donahoe replaced by Elliott Hill; strategy reversal accelerates."},
+    ],
+    sources:"Nike FY2020–FY2024 Annual Reports · Wall Street Journal 'Nike's Costly Bet on Going Direct' (2024) · Bloomberg Intelligence · Foot Locker Earnings Calls · NPD Group Footwear Market Share Data"
+  },
+  {
+    id:8,
+    company:"Alibaba",
+    sector:"Technology / E-commerce",
+    move:"Restructuring",
+    headline:"Splits into 6 independent business units under CEO Eddie Wu — China's largest corporate breakup",
+    date:"Mar 2023–ongoing",
+    verdict:"tbd",
+    verdictText:"Alibaba's 'One Alibaba' deconstruction into six units (Cloud Intelligence, Taobao Tmall, International Digital Commerce, Cainiao, Local Services, Digital Media) is the most dramatic corporate restructuring in Chinese tech history. The stated rationale: unlock value by allowing each unit to raise capital independently. The real driver: Alibaba is under pressure from the Chinese government to deconcentrate, and from investors to close the valuation gap with Western peers. The Cloud Intelligence IPO was shelved in Nov 2023 — a significant setback to the value-unlock narrative.",
+    stats:[
+      {lbl:"Announced",val:"Mar 2023",sub:"Under CEO Daniel Zhang"},
+      {lbl:"Business Units",val:"6",sub:"Each with independent CEO"},
+      {lbl:"Cloud IPO",val:"Shelved",sub:"Nov 2023; US chip export controls cited"},
+      {lbl:"Stock Performance",val:"-55%",sub:"HK listing FY2021–FY2024"},
+    ],
+    framework:{
+      name:"Portfolio Strategy — Sum-of-Parts Unlock + Regulatory Compliance",
+      tag:"Portfolio Pruning",
+      desc:"The six-unit structure mirrors the conglomerate discount reversal logic: Alibaba Cloud at standalone SaaS multiples (~10x revenue) is worth far more than at Alibaba's blended ~2x multiple. The breakup is simultaneously a financial engineering move (unlock multiples) and a political move (comply with Chinese government concerns about tech concentration). The dual motivation makes this harder to analyze than a pure financial restructuring — regulatory risk is now priced into every spin's valuation."
+    },
+    forces:[
+      {lbl:"↑",color:"var(--green)",text:"<strong>Valuation unlock thesis is sound.</strong> Alibaba Cloud, Taobao/Tmall, and Cainiao each command premium multiples vs. the blended group multiple — IF they can list independently."},
+      {lbl:"↓",color:"var(--red)",text:"<strong>Regulatory execution risk is high.</strong> The Cloud IPO shelving due to U.S. chip export controls to China illustrates that geopolitics can block the unlock timeline entirely."},
+      {lbl:"→",color:"var(--blue)",text:"<strong>Management fragmentation is the hidden cost.</strong> Splitting into six units with six CEOs creates coordination costs and may slow cross-unit synergies that were Alibaba's historic strength."},
+    ],
+    timeline:[
+      {date:"Nov 2022",text:"<strong>Jack Ma re-emerges.</strong> Ends 14-month disappearance; signals government relationship normalization."},
+      {date:"Mar 28, 2023",text:"<strong>Breakup announced.</strong> Daniel Zhang announces six-unit structure; market rallies 14%.",now:true},
+      {date:"Sep 2023",text:"<strong>CEO swap.</strong> Daniel Zhang replaced by Eddie Wu as Group CEO; Zhang moves to Cloud Intelligence."},
+      {date:"Nov 2023",text:"<strong>Cloud IPO shelved.</strong> Alibaba cancels Cloud Intelligence spin due to U.S. chip export controls affecting growth outlook."},
+      {date:"2024–2025",text:"<strong>Continued restructuring.</strong> Taobao Tmall and International units pursue independent fundraising; BABA stock remains under pressure."},
+    ],
+    sources:"Alibaba Group Press Release (Mar 28, 2023) · South China Morning Post · Bloomberg · Alibaba FY2024 Earnings · Financial Times (Cloud IPO shelving)"
+  },
+  {
+    id:9,
+    company:"General Motors",
+    sector:"Automotive",
+    move:"Pivot",
+    headline:"Reverses EV-only bet, reinstates ICE investment and cuts Cruise robotaxi losses",
+    date:"2023–2024",
+    verdict:"mixed",
+    verdictText:"GM's EV pivot reversal is a case study in planning under uncertainty. Mary Barra had declared GM would 'eliminate tailpipe emissions by 2035.' By 2023, EV demand growth stalled below projections, Cruise suffered a catastrophic incident (October 2023 pedestrian collision), and GM was losing ~$35,000 per EV sold. The rational response — slow EV spending, reinstate ICE investment, restructure Cruise — was strategically correct given the cost reality, but represents a significant credibility cost with ESG investors and regulators.",
+    stats:[
+      {lbl:"EV Loss/Unit",val:"~$35K",sub:"Per EV sold (est., FY2023)"},
+      {lbl:"Cruise Write-down",val:"$5.0B",sub:"FY2023 total Cruise losses"},
+      {lbl:"ICE Reinvestment",val:"+$750M",sub:"Additional ICE program spend"},
+      {lbl:"2025 EV Target",val:"Revised down",sub:"From 400K to ~200K units"},
+    ],
+    framework:{
+      name:"Real Options Theory — Staged Investment Under Uncertainty",
+      tag:"Real Options",
+      desc:"GM's original EV commitment was treated as a fixed strategy rather than a staged investment. Real Options theory (Trigeorgis, 1996) suggests large irreversible investments should be structured as options — invest incrementally, preserve the right to adjust. GM's reversal is a belated application of this logic: reduce the EV 'bet' to a staged option, preserve ICE cash flows as the funding mechanism, and wait for battery cost curves to reach the $80–100/kWh threshold that makes EVs genuinely cost-competitive."
+    },
+    forces:[
+      {lbl:"↓",color:"var(--red)",text:"<strong>First-mover disadvantage in cost-uncompetitive tech.</strong> EV adoption is not just about willingness — it's about total cost of ownership. At $35K loss-per-unit, scale accelerates losses rather than reducing them."},
+      {lbl:"↑",color:"var(--green)",text:"<strong>ICE cash flows fund the bridge.</strong> GM's pickup truck and SUV business (F-150 competitor Silverado) generates ~$10B+ EBIT annually — the financial runway that Tesla lacks."},
+      {lbl:"→",color:"var(--blue)",text:"<strong>China EV competition is the structural threat.</strong> BYD, CATL-backed brands, and Xiaomi EV are competitive at price points GM cannot yet match, even in the long run."},
+    ],
+    timeline:[
+      {date:"Jan 2021",text:"<strong>Bold EV pledge.</strong> GM announces it will eliminate all tailpipe emissions by 2035; launch 30 EVs globally by 2025."},
+      {date:"Oct 2023",text:"<strong>Cruise incident.</strong> Cruise robotaxi drags a pedestrian; California DMV suspends Cruise license. GM suspends all Cruise operations.",now:true},
+      {date:"Nov 2023",text:"<strong>EV targets cut.</strong> GM quietly revises 2024 EV production targets from 400K to ~200K units."},
+      {date:"FY2023",text:"<strong>$5B Cruise write-down.</strong> GM absorbs $5B+ in Cruise-related charges in FY2023 earnings."},
+      {date:"2024",text:"<strong>ICE reinvestment.</strong> $750M+ additional investment in internal combustion programs announced; EV timeline extended."},
+    ],
+    sources:"GM FY2023 Annual Report · The Wall Street Journal · Bloomberg (Cruise incident coverage) · Reuters · GM Q4 FY2023 Earnings Call · NY Times"
+  },
+  {
+    id:10,
+    company:"Salesforce",
+    sector:"Technology / Enterprise SaaS",
+    move:"Acquisition",
+    headline:"Acquires Informatica deal collapses; activist investors force discipline — cost structure reset",
+    date:"2023–2024",
+    verdict:"win",
+    verdictText:"Salesforce's failed Informatica bid (Apr 2024) was actually a strategic win for shareholders. Under pressure from activist investors (Elliott Management, Starboard Value), Salesforce pivoted from M&A-hungry growth-at-any-cost to margin expansion. FY2024 operating margin expanded from 3.3% to 22.7% — a 19pp expansion in one year. The failed deal saved Salesforce from overpaying for a legacy data management company when AI-native data tools are rendering that category obsolete. This is a rare case where a deal not happening was the right strategic outcome.",
+    stats:[
+      {lbl:"Op Margin FY2024",val:"22.7%",sub:"Up from 3.3% in FY2023"},
+      {lbl:"Informatica Bid",val:"~$11B",sub:"Collapsed Apr 2024"},
+      {lbl:"Jobs Cut",val:"10%",sub:"~8,000 roles, Jan 2023"},
+      {lbl:"Elliott Stake",val:"~$2B",sub:"Activist pressure from Jan 2023"},
+    ],
+    framework:{
+      name:"Agency Theory + Activist Governance — Principal-Agent Realignment",
+      tag:"Agency Theory",
+      desc:"Salesforce under Marc Benioff exhibited classic principal-agent misalignment: management (agent) pursued empire-building acquisitions (Slack $27.7B, Tableau $15.7B, MuleSoft $6.5B) that maximized company size and executive prestige but delivered poor shareholder returns. Elliott Management and Starboard Value (principals) forced realignment by threatening board seats. The result — a margin expansion program — generated more shareholder value in 12 months than the prior 5 years of M&A. This is textbook agency theory correction."
+    },
+    forces:[
+      {lbl:"↑",color:"var(--green)",text:"<strong>Activist pressure created structural discipline.</strong> Elliott's board threats institutionalized a margin focus that organic governance had failed to produce, creating durable cultural change."},
+      {lbl:"↓",color:"var(--red)",text:"<strong>AI-native CRM competitors are a real threat.</strong> HubSpot, Microsoft Dynamics 365 (Copilot), and emerging AI-native tools are attacking Salesforce's pricing power from below."},
+      {lbl:"→",color:"var(--blue)",text:"<strong>Agentforce is the next strategic test.</strong> Salesforce's AI agent platform (launched 2024) is the primary growth bet; success or failure will determine whether margin expansion was a bridge or an endpoint."},
+    ],
+    timeline:[
+      {date:"Jan 2023",text:"<strong>Activist investors arrive.</strong> Elliott Management discloses ~$2B Salesforce stake; Starboard follows. Board shakeup threatened."},
+      {date:"Jan 2023",text:"<strong>10% workforce cut.</strong> 8,000 employees laid off; real estate footprint reduced."},
+      {date:"FY2024",text:"<strong>Margin explodes.</strong> Operating margin expands from 3.3% to 22.7%; free cash flow hits $9.5B.",now:true},
+      {date:"Apr 2024",text:"<strong>Informatica deal collapses.</strong> Negotiations break down after leak; shareholders relieved — CRM +5% on the news."},
+      {date:"Sep 2024",text:"<strong>Agentforce launches.</strong> AI agent platform launched at Dreamforce; positioned as primary growth driver."},
+    ],
+    sources:"Salesforce FY2023–FY2024 Annual Reports · WSJ (Elliott stake disclosure) · Bloomberg (Informatica talks) · Financial Times · Salesforce Q4 FY2024 Earnings Call"
+  },
+  {
+    id:11,
+    company:"Starbucks",
+    sector:"Consumer / Food & Beverage",
+    move:"Restructuring",
+    headline:"Brian Niccol hired from Chipotle — 'Back to Starbucks' operational reset amid margin collapse",
+    date:"Aug 2024–present",
+    verdict:"tbd",
+    verdictText:"Starbucks' CEO hire from Chipotle is a high-conviction operational turnaround bet. Laxman Narasimhan's tenure (Mar 2023–Aug 2024) was defined by falling same-store sales, mobile order congestion, and union conflicts. Niccol's mandate: fix store operations, reduce menu complexity, and rebuild the premium coffee positioning that Laxman's discounting strategy eroded. It's too early to call — Q1 FY2025 same-store sales fell 4% globally, but store ops metrics (wait time, order accuracy) show early improvement.",
+    stats:[
+      {lbl:"Niccol Start Date",val:"Sep 2024",sub:"Hired from Chipotle ($CMG)"},
+      {lbl:"SSS Q1 FY2025",val:"-4%",sub:"Global comp store sales"},
+      {lbl:"Menu Items Cut",val:"~30%",sub:"Simplification initiative"},
+      {lbl:"Chipotle Under Niccol",val:"+800%",sub:"CMG stock during his tenure"},
+    ],
+    framework:{
+      name:"Operational Excellence — Turnaround via Execution Reset",
+      tag:"Ops Turnaround",
+      desc:"Niccol's Chipotle playbook is well-documented: reduce SKU complexity, fix throughput bottlenecks, invest in store-level economics, and let brand equity do the pricing work rather than discounting it away. At Starbucks, the parallel is clear — mobile order backlog (avg. 7-minute wait) is a throughput problem, not a demand problem. The strategic question is whether Starbucks' problems are operational (fixable, as at Chipotle) or structural (brand dilution from overexpansion, China headwinds that are external)."
+    },
+    forces:[
+      {lbl:"↑",color:"var(--green)",text:"<strong>Brand equity remains strong.</strong> Starbucks' brand value ($14.2B per Interbrand 2024) is intact — the problem is execution, not brand love. That's a more solvable problem."},
+      {lbl:"↓",color:"var(--red)",text:"<strong>China is a structural headwind.</strong> 7,000+ China stores face local competition (Luckin Coffee, Tim Hortons China) that is cheaper and faster-growing. This is not Niccol's expertise."},
+      {lbl:"→",color:"var(--blue)",text:"<strong>Labor relations are the hidden variable.</strong> Starbucks has ~9,000 unionized stores. Niccol's operational changes require worker buy-in that union negotiations may complicate."},
+    ],
+    timeline:[
+      {date:"Mar 2023",text:"<strong>Narasimhan era begins.</strong> Replaced Howard Schultz (3rd stint). Introduced 'Reinvention Plan' with heavy mobile/digital emphasis."},
+      {date:"FY2024",text:"<strong>Sales deteriorate.</strong> Three consecutive quarters of same-store sales declines; mobile order wait times become a PR issue."},
+      {date:"Aug 2024",text:"<strong>Niccol announced.</strong> Starbucks board hires Brian Niccol from Chipotle; Narasimhan out. $100M sign-on package.",now:true},
+      {date:"Sep 2024",text:"<strong>'Back to Starbucks' announced.</strong> Niccol announces operational reset — handwritten cups, ceramic mugs for cafe orders, menu reduction."},
+      {date:"Q1 FY2025",text:"<strong>Mixed early results.</strong> SSS -4% globally, but ops metrics improving; analyst consensus cautiously optimistic."},
+    ],
+    sources:"Starbucks Press Release (Aug 2024) · Bloomberg (Niccol hire) · Wall Street Journal · Starbucks Q1 FY2025 Earnings Call · Interbrand Best Global Brands 2024 · CNBC"
+  },
+  {
+    id:12,
+    company:"OpenAI",
+    sector:"Technology / AI",
+    move:"Market Entry",
+    headline:"Launches GPT-4o, o1, and o3 models; transitions toward for-profit structure — monetization inflection",
+    date:"2024–2025",
+    verdict:"tbd",
+    verdictText:"OpenAI's corporate restructuring from 'capped-profit' to a full for-profit Public Benefit Corporation (announced late 2024) is a critical strategic inflection. The move is necessary to raise the capital needed to compete with Google, Meta, and Anthropic in model training — rumored training runs for GPT-5 are in the $500M–$1B range. The risk: departing from the non-profit safety-first mission creates governance exposure (board crisis of Nov 2023 showed this) and regulatory scrutiny. Revenue reportedly hit $3.7B ARR by late 2024, on track for $11.6B in FY2025.",
+    stats:[
+      {lbl:"ARR (Late 2024)",val:"$3.7B",sub:"Annualized run rate"},
+      {lbl:"FY2025 Revenue Est.",val:"$11.6B",sub:"Per Bloomberg Intelligence"},
+      {lbl:"ChatGPT Users",val:"300M+",sub:"Weekly active users, 2024"},
+      {lbl:"Last Valuation",val:"$157B",sub:"Oct 2024 funding round"},
+    ],
+    framework:{
+      name:"Crossing the Chasm (Moore) — From Early Adopter to Early Majority",
+      tag:"Crossing the Chasm",
+      desc:"OpenAI's 2024–2025 product strategy maps precisely onto Geoffrey Moore's 'Crossing the Chasm' model. GPT-3/4 served innovators and early adopters (developers, researchers, tech-forward enterprises). The GPT-4o push — real-time voice, multimodal capability, mobile app — targets the early majority: consumers, SMBs, and non-technical enterprise users. The for-profit restructuring is the distribution investment Moore's model demands for chasm crossing: you need capital to build the sales infrastructure, enterprise support, and reliability (99.9% uptime SLAs) that pragmatist buyers require."
+    },
+    forces:[
+      {lbl:"↑",color:"var(--green)",text:"<strong>Network effect accelerates with scale.</strong> More users → more fine-tuning data → better models → more users. OpenAI's 300M+ WAU makes this flywheel structurally faster than any competitor starting from zero."},
+      {lbl:"↓",color:"var(--red)",text:"<strong>Talent and compute costs are existential.</strong> Training frontier models requires $500M–$1B per run. Only OpenAI, Google, Meta, and Anthropic can sustain this — and Microsoft's $13B investment is the structural enabler."},
+      {lbl:"→",color:"var(--blue)",text:"<strong>Commoditization risk is real and fast.</strong> Meta's Llama (open-source), Mistral, and Anthropic's Claude are rapidly closing the capability gap. OpenAI's moat is brand and distribution, not pure model quality."},
+    ],
+    timeline:[
+      {date:"Nov 2023",text:"<strong>Board crisis.</strong> Sam Altman fired and rehired within 5 days; governance instability exposes structural risks of capped-profit model."},
+      {date:"May 2024",text:"<strong>GPT-4o launched.</strong> Real-time voice and vision — multimodal consumer product; ChatGPT repositioned as AI companion.",now:true},
+      {date:"Sep 2024",text:"<strong>o1 model released.</strong> 'Reasoning' model targeting STEM tasks; new product line positioning."},
+      {date:"Oct 2024",text:"<strong>$6.6B funding round.</strong> Raised at $157B valuation; for-profit restructuring announced."},
+      {date:"2025",text:"<strong>For-profit PBC transition.</strong> OpenAI converts to Public Benefit Corporation; non-profit retains equity stake. GPT-5 development ongoing."},
+    ],
+    sources:"OpenAI Blog (corporate restructuring) · Bloomberg Intelligence (revenue estimates) · The New York Times (board crisis) · Financial Times · OpenAI product announcements 2024–2025"
+  },
+];
+
+/* ─────────────────────────────────────────
+   STATE
+───────────────────────────────────────── */
+let activeFilter = 'all';
+let searchQuery = '';
+let activeCase = null;
+
+/* ─────────────────────────────────────────
+   RENDER CASE LIST
+───────────────────────────────────────── */
+function filteredCases() {
+  return CASES.filter(c => {
+    const matchFilter = activeFilter === 'all' || c.move === activeFilter;
+    const q = searchQuery.toLowerCase();
+    const matchSearch = !q ||
+      c.company.toLowerCase().includes(q) ||
+      c.headline.toLowerCase().includes(q) ||
+      c.sector.toLowerCase().includes(q) ||
+      c.move.toLowerCase().includes(q);
+    return matchFilter && matchSearch;
+  });
+}
+
+function renderList() {
+  const fc = filteredCases();
+  document.getElementById('caseCount').textContent = `${fc.length} case${fc.length !== 1 ? 's' : ''}`;
+  const html = fc.map(c => {
+    const mc = MOVE_COLORS[c.move] || {};
+    const vColors = { win:'#34d399', lose:'#f87171', mixed:'#fb923c', tbd:'#60a5fa' };
+    return `
+      <div class="case-item${activeCase && activeCase.id === c.id ? ' active' : ''}" data-id="${c.id}">
+        <div class="case-company">${c.company}</div>
+        <div class="case-headline">${c.headline}</div>
+        <div class="case-meta-row">
+          <span class="move-tag" style="background:${mc.bg};color:${mc.color};border:1px solid ${mc.border}">${c.move}</span>
+          <span style="font-family:var(--mono);font-size:.6rem;color:var(--text3)">${c.sector}</span>
+          <div class="verdict-dot" style="background:${vColors[c.verdict]}" title="${VERDICT_LABEL[c.verdict]}"></div>
+          <span class="case-date">${c.date}</span>
+        </div>
+      </div>`;
+  }).join('');
+  document.getElementById('caseList').innerHTML = html || '<div style="padding:1.5rem;text-align:center;font-size:.8rem;color:var(--text3)">No cases match this filter.</div>';
+}
+
+/* ─────────────────────────────────────────
+   RENDER DETAIL
+───────────────────────────────────────── */
+function renderDetail(c) {
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('detailContent').style.display = 'block';
+  const mc = MOVE_COLORS[c.move] || {};
+  const vColors = { win:'#34d399', lose:'#f87171', mixed:'#fb923c', tbd:'#60a5fa' };
+  const vBg    = { win:'var(--green-bg)', lose:'var(--red-bg)', mixed:'var(--orange-bg)', tbd:'var(--blue-bg)' };
+  document.getElementById('detailContent').innerHTML = `
+    <div class="d-eyebrow">
+      <span class="d-eyebrow-label">Corporate Strategy Case</span>
+      <span class="move-tag" style="background:${mc.bg};color:${mc.color};border:1px solid ${mc.border}">${c.move}</span>
+      <span style="font-family:var(--mono);font-size:.65rem;color:var(--text3)">${c.sector}</span>
+      <span style="font-family:var(--mono);font-size:.65rem;color:var(--text3);margin-left:auto">${c.date}</span>
+    </div>
+    <div class="d-company">${c.company}</div>
+    <div class="d-headline">${c.headline}</div>
+
+    <div class="d-section-label">Key Metrics</div>
+    <div class="stat-strip">
+      ${c.stats.map(s=>`
+        <div class="stat-box">
+          <div class="stat-box-label">${s.lbl}</div>
+          <div class="stat-box-val">${s.val}</div>
+          <div class="stat-box-sub">${s.sub}</div>
+        </div>`).join('')}
+    </div>
+
+    <div class="d-divider"></div>
+    <div class="d-section-label">Strategic Framework Applied</div>
+    <div class="framework-band">
+      <div class="fw-icon">${c.framework.tag}</div>
+      <div class="fw-body">
+        <div class="fw-name">${c.framework.name}</div>
+        <div class="fw-desc">${c.framework.desc}</div>
+      </div>
+    </div>
+
+    <div class="detail-cols">
+      <div class="d-card">
+        <div class="d-card-label">Competitive Forces Analysis</div>
+        <div>
+          ${c.forces.map(f=>`
+            <div class="force-item">
+              <div class="force-bullet" style="background:rgba(255,255,255,.06);color:${f.color}">${f.lbl}</div>
+              <div class="force-text">${f.text}</div>
+            </div>`).join('')}
+        </div>
+      </div>
+      <div class="d-card">
+        <div class="d-card-label">Strategic Timeline</div>
+        <div class="timeline">
+          ${c.timeline.map(t=>`
+            <div class="tl-item">
+              <div class="tl-dot${t.now?' now':''}"></div>
+              <div class="tl-body">
+                <div class="tl-date">${t.date}</div>
+                <div class="tl-text">${t.text}</div>
+              </div>
+            </div>`).join('')}
+        </div>
+      </div>
+    </div>
+
+    <div class="d-section-label">Analyst Verdict</div>
+    <div class="verdict-box ${c.verdict}">
+      <div class="verdict-header">
+        <span class="verdict-badge">${VERDICT_LABEL[c.verdict]}</span>
+        <span class="verdict-label">${c.company} — ${c.move}</span>
+      </div>
+      <div class="verdict-text">${c.verdictText}</div>
+    </div>
+
+    <div class="source-line">
+      <span class="source-line-lbl">Sources</span>
+      <span>${c.sources}</span>
+    </div>
+  `;
+  document.getElementById('detailPanel').scrollTop = 0;
+}
+
+/* ─────────────────────────────────────────
+   EVENTS
+───────────────────────────────────────── */
+document.getElementById('caseList').addEventListener('click', e => {
+  const item = e.target.closest('.case-item');
+  if (!item) return;
+  const c = CASES.find(x => x.id === +item.dataset.id);
+  if (!c) return;
+  activeCase = c;
+  renderList();
+  renderDetail(c);
+});
+
+document.getElementById('filterRow').addEventListener('click', e => {
+  const btn = e.target.closest('.filter-btn');
+  if (!btn) return;
+  activeFilter = btn.dataset.filter;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderList();
+});
+
+document.getElementById('searchInput').addEventListener('input', e => {
+  searchQuery = e.target.value;
+  renderList();
+});
+
+/* ─────────────────────────────────────────
+   INIT — open first case
+───────────────────────────────────────── */
+activeCase = CASES[0];
+renderList();
+renderDetail(CASES[0]);
+</script>
+</body>
+</html>

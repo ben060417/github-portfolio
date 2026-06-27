@@ -1,0 +1,678 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0a1628;
+  --navy-mid: #122040;
+  --navy-light: #1a2f55;
+  --gold: #c9a84c;
+  --gold-light: #e2c47a;
+  --gold-pale: rgba(201,168,76,0.12);
+  --cream: #f5f0e8;
+  --cream-dark: #e8e0d0;
+  --text-primary: #f0ead8;
+  --text-secondary: #9aabb8;
+  --text-muted: #5a7080;
+  --border: rgba(201,168,76,0.2);
+  --border-soft: rgba(255,255,255,0.07);
+  --green: #4caf82;
+  --red: #e05a5a;
+  --amber: #d4a843;
+  --card-bg: rgba(255,255,255,0.04);
+  --card-border: rgba(255,255,255,0.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--navy);
+  color:var(--text-primary);
+  min-height:100vh;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(201,168,76,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 90% 80%, rgba(26,47,85,0.6) 0%, transparent 60%);
+}
+.app{max-width:860px;margin:0 auto;padding:2.5rem 1.5rem}
+
+/* Header */
+.header{text-align:center;margin-bottom:3rem}
+.header-label{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:.75rem;opacity:.9}
+.header h1{font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:500;color:var(--text-primary);line-height:1.2;margin-bottom:.75rem}
+.header h1 span{color:var(--gold)}
+.header p{font-size:.95rem;color:var(--text-secondary);max-width:480px;margin:0 auto;line-height:1.65}
+
+/* Step indicator */
+.steps{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:2.5rem}
+.step{display:flex;align-items:center;gap:.5rem}
+.step-dot{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:var(--text-muted);transition:all .3s;flex-shrink:0}
+.step-dot.active{border-color:var(--gold);color:var(--gold);background:var(--gold-pale)}
+.step-dot.done{border-color:var(--gold);background:var(--gold);color:var(--navy)}
+.step-label{font-size:12px;color:var(--text-muted);white-space:nowrap}
+.step-label.active{color:var(--text-secondary)}
+.step-line{width:40px;height:1px;background:var(--border);margin:0 .25rem;flex-shrink:0}
+.step-line.done{background:var(--gold);opacity:.5}
+
+/* Panels */
+.panel{display:none;animation:fadeUp .35s ease}
+.panel.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* Form card */
+.form-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:2rem;margin-bottom:1.25rem}
+.form-card-title{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:500;color:var(--text-primary);margin-bottom:.35rem}
+.form-card-sub{font-size:.875rem;color:var(--text-secondary);margin-bottom:1.75rem;line-height:1.5}
+
+/* Form elements */
+.field{margin-bottom:1.5rem}
+.field:last-child{margin-bottom:0}
+.field label{display:block;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-secondary);margin-bottom:.6rem;font-weight:500}
+.field input[type=range]{
+  width:100%;appearance:none;height:4px;border-radius:2px;
+  background:linear-gradient(to right,var(--gold) var(--pct,50%),rgba(255,255,255,0.1) var(--pct,50%));
+  outline:none;cursor:pointer;
+}
+.field input[type=range]::-webkit-slider-thumb{appearance:none;width:18px;height:18px;border-radius:50%;background:var(--gold);border:2px solid var(--navy);cursor:pointer;box-shadow:0 0 0 3px rgba(201,168,76,.2)}
+.range-row{display:flex;justify-content:space-between;align-items:center;margin-top:.6rem}
+.range-val{font-size:1.1rem;font-weight:500;color:var(--gold)}
+.range-labels{display:flex;justify-content:space-between;font-size:.75rem;color:var(--text-muted);margin-top:.25rem}
+.options-grid{display:grid;gap:.6rem}
+.options-grid.cols2{grid-template-columns:1fr 1fr}
+.options-grid.cols3{grid-template-columns:1fr 1fr 1fr}
+.opt{
+  padding:.875rem 1rem;border-radius:10px;border:1px solid var(--border-soft);
+  cursor:pointer;transition:all .2s;
+  background:transparent;text-align:left;color:var(--text-primary);
+  font-family:'DM Sans',sans-serif;
+}
+.opt:hover{border-color:rgba(201,168,76,.35);background:var(--gold-pale)}
+.opt.selected{border-color:var(--gold);background:var(--gold-pale)}
+.opt-icon{font-size:1.2rem;margin-bottom:.3rem;display:block}
+.opt-title{font-size:.875rem;font-weight:500;display:block}
+.opt-sub{font-size:.75rem;color:var(--text-secondary);margin-top:.2rem;display:block;line-height:1.4}
+
+/* Nav buttons */
+.nav-row{display:flex;justify-content:flex-end;gap:.75rem;margin-top:1.5rem}
+.btn{
+  padding:.7rem 1.6rem;border-radius:8px;font-size:.875rem;font-weight:500;
+  cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;border:none;
+}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text-secondary)}
+.btn-ghost:hover{border-color:var(--text-secondary);color:var(--text-primary)}
+.btn-primary{background:var(--gold);color:var(--navy);font-weight:600}
+.btn-primary:hover{background:var(--gold-light);transform:translateY(-1px);box-shadow:0 4px 16px rgba(201,168,76,.3)}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed;transform:none}
+
+/* ── RESULTS ── */
+.results-header{text-align:center;margin-bottom:2rem}
+.results-header .profile-tag{display:inline-block;background:var(--gold-pale);border:1px solid var(--border);color:var(--gold);font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;padding:.35rem .9rem;border-radius:20px;margin-bottom:.75rem}
+.results-header h2{font-family:'Playfair Display',serif;font-size:1.9rem;font-weight:500;margin-bottom:.35rem}
+.results-header p{font-size:.9rem;color:var(--text-secondary);max-width:520px;margin:0 auto;line-height:1.6}
+
+.results-grid{display:grid;grid-template-columns:1fr 1.15fr;gap:1.25rem;margin-bottom:1.25rem}
+
+/* Donut chart */
+.donut-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:1.5rem;display:flex;flex-direction:column;align-items:center}
+.donut-title{font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-secondary);margin-bottom:1.25rem;align-self:flex-start}
+.donut-wrap{position:relative;width:180px;height:180px;margin:0 auto .75rem}
+.donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
+.donut-center-label{font-size:.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em}
+.donut-center-val{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--text-primary);font-weight:500}
+.legend{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:.4rem .75rem;margin-top:.5rem}
+.legend-item{display:flex;align-items:center;gap:.5rem;font-size:.8rem;color:var(--text-secondary)}
+.legend-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.legend-pct{margin-left:auto;font-weight:500;color:var(--text-primary);font-size:.8rem}
+
+/* Allocation bars */
+.alloc-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:1.5rem}
+.alloc-title{font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-secondary);margin-bottom:1.25rem}
+.alloc-row{margin-bottom:1rem}
+.alloc-row:last-child{margin-bottom:0}
+.alloc-meta{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.45rem}
+.alloc-name{font-size:.875rem;font-weight:500;color:var(--text-primary)}
+.alloc-right{display:flex;gap:.75rem;align-items:center}
+.alloc-pct{font-size:.875rem;font-weight:600;color:var(--gold)}
+.alloc-range{font-size:.75rem;color:var(--text-muted)}
+.alloc-bar-bg{height:6px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden}
+.alloc-bar-fill{height:100%;border-radius:3px;transition:width .8s cubic-bezier(.4,0,.2,1)}
+.alloc-desc{font-size:.75rem;color:var(--text-muted);margin-top:.3rem;line-height:1.4}
+
+/* Scenarios */
+.scenarios-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:1.5rem;margin-bottom:1.25rem}
+.scenarios-title{font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-secondary);margin-bottom:1.25rem}
+.scenarios-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem}
+.scenario{border-radius:10px;padding:1rem;border:1px solid}
+.scenario.bull{border-color:rgba(76,175,130,.25);background:rgba(76,175,130,.06)}
+.scenario.base{border-color:rgba(201,168,76,.25);background:rgba(201,168,76,.06)}
+.scenario.bear{border-color:rgba(224,90,90,.25);background:rgba(224,90,90,.06)}
+.scenario-icon{font-size:1.1rem;margin-bottom:.4rem}
+.scenario-label{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:.2rem}
+.scenario-ret{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:500}
+.scenario.bull .scenario-ret{color:var(--green)}
+.scenario.base .scenario-ret{color:var(--gold)}
+.scenario.bear .scenario-ret{color:var(--red)}
+.scenario-range{font-size:.75rem;color:var(--text-muted);margin-top:.2rem}
+.scenario-desc{font-size:.75rem;color:var(--text-secondary);margin-top:.5rem;line-height:1.45}
+
+/* Rationale */
+.rationale-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:1.5rem;margin-bottom:1.25rem}
+.rationale-title{font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-secondary);margin-bottom:1rem}
+.rationale-item{display:flex;gap:.875rem;margin-bottom:.875rem;padding-bottom:.875rem;border-bottom:1px solid var(--border-soft)}
+.rationale-item:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none}
+.rationale-num{width:22px;height:22px;border-radius:50%;background:var(--gold-pale);border:1px solid var(--border);color:var(--gold);font-size:.75rem;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:.1rem}
+.rationale-text{font-size:.875rem;color:var(--text-secondary);line-height:1.6}
+.rationale-text strong{color:var(--text-primary);font-weight:500}
+
+/* Key stats row */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:1.25rem}
+.stat-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.1rem}
+.stat-label{font-size:.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.35rem}
+.stat-val{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:500;color:var(--text-primary)}
+.stat-sub{font-size:.75rem;color:var(--text-secondary);margin-top:.2rem}
+
+/* Disclaimer */
+.disclaimer{font-size:.75rem;color:var(--text-muted);line-height:1.65;border-top:1px solid var(--border-soft);padding-top:1.25rem;margin-top:.5rem}
+.disclaimer strong{color:var(--text-secondary)}
+
+/* Reset */
+.reset-row{text-align:center;margin-top:1.5rem}
+.reset-btn{background:transparent;border:none;color:var(--text-muted);font-size:.85rem;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:underline;text-underline-offset:3px}
+.reset-btn:hover{color:var(--text-secondary)}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="header">
+    <div class="header-label">Wealth Management · Portfolio Intelligence</div>
+    <h1>Private Wealth<br><span>Allocation Simulator</span></h1>
+    <p>Answer five questions. Receive an institutional-grade portfolio allocation modeled on JPMorgan Private Bank and UBS Wealth Management frameworks.</p>
+  </div>
+
+  <!-- Step indicators -->
+  <div class="steps" id="stepIndicator"></div>
+
+  <!-- Panel 1: Profile -->
+  <div class="panel active" id="panel1">
+    <div class="form-card">
+      <div class="form-card-title">Client Profile</div>
+      <div class="form-card-sub">Your age and income tier determine your baseline allocation runway and capacity for illiquid assets.</div>
+
+      <div class="field">
+        <label>Current Age</label>
+        <input type="range" id="ageSlider" min="22" max="75" value="30" oninput="syncSlider(this,'ageVal')">
+        <div class="range-row"><span class="range-val" id="ageVal">30</span><span style="font-size:.8rem;color:var(--text-muted)">years old</span></div>
+        <div class="range-labels"><span>22</span><span>75</span></div>
+      </div>
+
+      <div class="field">
+        <label>Annual Income / Net Worth Tier</label>
+        <div class="options-grid cols2" id="incomeOpts">
+          <button class="opt" data-val="emerging" onclick="selectOpt(this,'incomeOpts')">
+            <span class="opt-icon">🌱</span>
+            <span class="opt-title">Emerging Affluent</span>
+            <span class="opt-sub">$100K–$500K net worth</span>
+          </button>
+          <button class="opt" data-val="mass_affluent" onclick="selectOpt(this,'incomeOpts')">
+            <span class="opt-icon">⚡</span>
+            <span class="opt-title">Mass Affluent</span>
+            <span class="opt-sub">$500K–$2M net worth</span>
+          </button>
+          <button class="opt" data-val="hnwi" onclick="selectOpt(this,'incomeOpts')">
+            <span class="opt-icon">◆</span>
+            <span class="opt-title">High Net Worth</span>
+            <span class="opt-sub">$2M–$10M investable</span>
+          </button>
+          <button class="opt" data-val="uhnwi" onclick="selectOpt(this,'incomeOpts')">
+            <span class="opt-icon">▲</span>
+            <span class="opt-title">Ultra High Net Worth</span>
+            <span class="opt-sub">$10M+ investable</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-primary" onclick="goTo(2)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- Panel 2: Risk & Goals -->
+  <div class="panel" id="panel2">
+    <div class="form-card">
+      <div class="form-card-title">Risk Tolerance</div>
+      <div class="form-card-sub">Your comfort with volatility determines the equity/fixed income split and allocation to alternatives.</div>
+      <div class="field">
+        <div class="options-grid" id="riskOpts">
+          <button class="opt" data-val="conservative" onclick="selectOpt(this,'riskOpts')">
+            <span class="opt-title">Conservative</span>
+            <span class="opt-sub">Capital preservation first. Willing to accept lower returns for stability and income.</span>
+          </button>
+          <button class="opt" data-val="moderate" onclick="selectOpt(this,'riskOpts')">
+            <span class="opt-title">Moderate</span>
+            <span class="opt-sub">Balanced approach. Can tolerate moderate drawdowns over a 3–5 year cycle.</span>
+          </button>
+          <button class="opt" data-val="aggressive" onclick="selectOpt(this,'riskOpts')">
+            <span class="opt-title">Growth-Oriented</span>
+            <span class="opt-sub">Long-term appreciation is the priority. Comfortable with 20–40% drawdowns in a down cycle.</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <div class="form-card-title">Primary Objective</div>
+      <div class="form-card-sub">This shapes the tilt across growth assets, income-generating assets, and capital preservation vehicles.</div>
+      <div class="field">
+        <div class="options-grid cols2" id="goalOpts">
+          <button class="opt" data-val="wealth_growth" onclick="selectOpt(this,'goalOpts')">
+            <span class="opt-icon">📈</span>
+            <span class="opt-title">Long-Term Wealth Growth</span>
+            <span class="opt-sub">Compound aggressively over 10+ years</span>
+          </button>
+          <button class="opt" data-val="retirement" onclick="selectOpt(this,'goalOpts')">
+            <span class="opt-icon">🏡</span>
+            <span class="opt-title">Retirement Security</span>
+            <span class="opt-sub">Build a sustainable income stream</span>
+          </button>
+          <button class="opt" data-val="income" onclick="selectOpt(this,'goalOpts')">
+            <span class="opt-icon">💰</span>
+            <span class="opt-title">Current Income</span>
+            <span class="opt-sub">Generate dividends, coupons, or distributions</span>
+          </button>
+          <button class="opt" data-val="preservation" onclick="selectOpt(this,'goalOpts')">
+            <span class="opt-icon">🛡️</span>
+            <span class="opt-title">Capital Preservation</span>
+            <span class="opt-sub">Protect purchasing power against inflation</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn btn-ghost" onclick="goTo(1)">← Back</button>
+      <button class="btn btn-primary" onclick="goTo(3)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- Panel 3: Time Horizon -->
+  <div class="panel" id="panel3">
+    <div class="form-card">
+      <div class="form-card-title">Investment Time Horizon</div>
+      <div class="form-card-sub">This is the single most important input for determining appropriate illiquidity premium and equity allocation.</div>
+      <div class="field">
+        <div class="options-grid cols3" id="horizonOpts">
+          <button class="opt" data-val="short" onclick="selectOpt(this,'horizonOpts')">
+            <span class="opt-title">Short-Term</span>
+            <span class="opt-sub">Under 3 years. High liquidity needed.</span>
+          </button>
+          <button class="opt" data-val="medium" onclick="selectOpt(this,'horizonOpts')">
+            <span class="opt-title">Medium-Term</span>
+            <span class="opt-sub">3–7 years. Balanced liquidity.</span>
+          </button>
+          <button class="opt" data-val="long" onclick="selectOpt(this,'horizonOpts')">
+            <span class="opt-title">Long-Term</span>
+            <span class="opt-sub">7–15 years. Can tolerate illiquidity.</span>
+          </button>
+          <button class="opt" data-val="perpetual" onclick="selectOpt(this,'horizonOpts')">
+            <span class="opt-title">Multi-Generational</span>
+            <span class="opt-sub">15+ years. Endowment-style thinking.</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <div class="form-card-title">Liquidity Needs</div>
+      <div class="form-card-sub">Do you anticipate needing to draw down capital in the near term?</div>
+      <div class="field">
+        <div class="options-grid cols3" id="liqOpts">
+          <button class="opt" data-val="none" onclick="selectOpt(this,'liqOpts')">
+            <span class="opt-title">None</span>
+            <span class="opt-sub">No planned withdrawals</span>
+          </button>
+          <button class="opt" data-val="moderate" onclick="selectOpt(this,'liqOpts')">
+            <span class="opt-title">Moderate</span>
+            <span class="opt-sub">Possible within 3–5 years</span>
+          </button>
+          <button class="opt" data-val="high" onclick="selectOpt(this,'liqOpts')">
+            <span class="opt-title">High</span>
+            <span class="opt-sub">Likely within 1–2 years</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn btn-ghost" onclick="goTo(2)">← Back</button>
+      <button class="btn btn-primary" id="generateBtn" onclick="generate()">Generate Allocation →</button>
+    </div>
+  </div>
+
+  <!-- Panel 4: Results -->
+  <div class="panel" id="panel4">
+    <div class="results-header">
+      <div class="profile-tag" id="profileTag">Balanced Growth</div>
+      <h2 id="resultsTitle">Recommended Portfolio Allocation</h2>
+      <p id="resultsSubtitle">Based on your profile, below is an institutional-grade asset allocation aligned with your objectives and constraints.</p>
+    </div>
+
+    <div class="stats-row" id="statsRow"></div>
+
+    <div class="results-grid">
+      <div class="donut-card">
+        <div class="donut-title">Asset Allocation</div>
+        <div class="donut-wrap">
+          <canvas id="donutCanvas" width="180" height="180"></canvas>
+          <div class="donut-center">
+            <span class="donut-center-label">Equity</span>
+            <span class="donut-center-val" id="equityCenter">—</span>
+          </div>
+        </div>
+        <div class="legend" id="legendEl"></div>
+      </div>
+      <div class="alloc-card">
+        <div class="alloc-title">Allocation Detail</div>
+        <div id="allocBars"></div>
+      </div>
+    </div>
+
+    <div class="scenarios-card">
+      <div class="scenarios-title">Projected Return Scenarios (Annual, 10-Year Avg)</div>
+      <div class="scenarios-row" id="scenariosEl"></div>
+      <div style="font-size:.75rem;color:var(--text-muted);margin-top:.875rem;line-height:1.5">Projections are illustrative estimates based on historical asset class returns (MSCI, Bloomberg Barclays, NCREIF, Cambridge Associates data) and are not guarantees of future performance.</div>
+    </div>
+
+    <div class="rationale-card">
+      <div class="rationale-title">Advisor Rationale</div>
+      <div id="rationaleEl"></div>
+    </div>
+
+    <div class="disclaimer">
+      <strong>Important Disclosures.</strong> This tool is for educational and illustrative purposes only and does not constitute investment advice, a solicitation, or an offer to buy or sell any security. Asset allocation does not guarantee a profit or protect against loss. All projected returns are hypothetical and based on historical data; past performance does not guarantee future results. Actual results will vary. This simulator does not account for taxes, fees, or individual circumstances. Consult a licensed financial advisor before making investment decisions. Methodology informed by JPMorgan Private Bank Long-Term Capital Market Assumptions 2024, UBS House View 2024, and Fidelity Portfolio Construction Guidelines.
+    </div>
+
+    <div class="reset-row">
+      <button class="reset-btn" onclick="reset()">← Start Over with a New Profile</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const STEPS=[{n:1,lbl:"Profile"},{n:2,lbl:"Risk & Goals"},{n:3,lbl:"Time Horizon"},{n:4,lbl:"Results"}];
+let currentStep=1;
+const state={age:30,income:null,risk:null,goal:null,horizon:null,liquidity:null};
+
+function buildSteps(){
+  const el=document.getElementById('stepIndicator');
+  el.innerHTML=STEPS.map((s,i)=>`
+    ${i>0?`<div class="step-line${s.n<=currentStep?' done':''}"></div>`:''}
+    <div class="step">
+      <div class="step-dot${s.n===currentStep?' active':s.n<currentStep?' done':''}">
+        ${s.n<currentStep?'✓':s.n}
+      </div>
+      <span class="step-label${s.n===currentStep?' active':''}">${s.lbl}</span>
+    </div>`).join('');
+}
+
+function syncSlider(el,valId){
+  const min=+el.min,max=+el.max,val=+el.value;
+  el.style.setProperty('--pct',((val-min)/(max-min)*100)+'%');
+  document.getElementById(valId).textContent=val;
+  state.age=val;
+}
+
+function selectOpt(el,groupId){
+  document.querySelectorAll('#'+groupId+' .opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  const key={incomeOpts:'income',riskOpts:'risk',goalOpts:'goal',horizonOpts:'horizon',liqOpts:'liquidity'}[groupId];
+  state[key]=el.dataset.val;
+}
+
+function goTo(n){
+  document.getElementById('panel'+currentStep).classList.remove('active');
+  currentStep=n;
+  document.getElementById('panel'+currentStep).classList.add('active');
+  buildSteps();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function generate(){
+  buildAllocation();
+  goTo(4);
+}
+
+function reset(){
+  state.income=null;state.risk=null;state.goal=null;state.horizon=null;state.liquidity=null;
+  document.querySelectorAll('.opt').forEach(o=>o.classList.remove('selected'));
+  document.getElementById('ageSlider').value=30;
+  syncSlider(document.getElementById('ageSlider'),'ageVal');
+  goTo(1);
+}
+
+// ── ALLOCATION ENGINE ──
+const ASSET_COLORS=['#c9a84c','#4caf82','#5b9de0','#9b7dd4','#e07a5f','#6ab3c8'];
+
+const PROFILES={
+  conservative:{
+    name:"Capital Preservation",
+    subtitle:"Defensive allocation prioritizing income and stability over growth.",
+    alloc:[
+      {name:"U.S. Fixed Income",key:"fi_us",color:ASSET_COLORS[2],desc:"Core government and investment-grade corporate bonds for stability and income."},
+      {name:"Global Equities",key:"eq_global",color:ASSET_COLORS[0],desc:"Diversified equity exposure for modest real return above inflation."},
+      {name:"Cash & Equivalents",key:"cash",color:ASSET_COLORS[5],desc:"High liquidity reserve; T-bills, money market, short-duration."},
+      {name:"Real Assets / REITS",key:"real",color:ASSET_COLORS[3],desc:"Inflation hedge via real estate and infrastructure income streams."},
+      {name:"Intl. Fixed Income",key:"fi_intl",color:ASSET_COLORS[4],desc:"Developed market sovereign bonds for additional diversification."},
+      {name:"Alternatives",key:"alts",color:ASSET_COLORS[1],desc:"Minimal hedge fund and private credit allocation for yield enhancement."},
+    ],
+    baseWeights:[40,20,15,10,10,5],
+    bull:{ret:7.2,range:"6.0–8.5%",desc:"Rates fall; bonds rally; equities add modest gains."},
+    base:{ret:4.8,range:"3.5–6.0%",desc:"Stable macro; income drives returns; limited equity upside."},
+    bear:{ret:-2.1,range:"-5.0–0%",desc:"Rising rates compress bond prices; equity drawdown limited by low allocation."},
+    rationale:[
+      {t:"Overweight Fixed Income",b:"A defensive mandate demands that duration and credit quality work together. The 40% U.S. fixed income allocation is calibrated to capture yield while managing interest rate sensitivity."},
+      {t:"Limited Equity Exposure",b:"20% global equities provides just enough real return potential to stay ahead of inflation without subjecting the portfolio to meaningful drawdown risk during equity bear markets."},
+      {t:"High Cash Buffer",b:"15% cash equivalents ensures immediate liquidity for any near-term needs and provides dry powder to re-invest opportunistically during market dislocations."},
+    ]
+  },
+  moderate:{
+    name:"Balanced Growth",
+    subtitle:"Balanced allocation designed to compound wealth with manageable volatility.",
+    alloc:[
+      {name:"Global Equities",key:"eq_global",color:ASSET_COLORS[0],desc:"Core equity exposure across US large-cap, international developed, and select EM."},
+      {name:"U.S. Fixed Income",key:"fi_us",color:ASSET_COLORS[2],desc:"Investment-grade bonds provide ballast during equity drawdowns."},
+      {name:"Alternatives",key:"alts",color:ASSET_COLORS[1],desc:"Private equity, hedge funds, and private credit for return enhancement."},
+      {name:"Real Assets / REITs",key:"real",color:ASSET_COLORS[3],desc:"CRE, infrastructure, and commodity exposure for inflation protection."},
+      {name:"International Equities",key:"eq_intl",color:ASSET_COLORS[4],desc:"Developed and emerging market equity diversification."},
+      {name:"Cash & Equivalents",key:"cash",color:ASSET_COLORS[5],desc:"Tactical liquidity buffer; held in short-duration instruments."},
+    ],
+    baseWeights:[35,25,15,12,8,5],
+    bull:{ret:10.8,range:"9.0–13.0%",desc:"Strong equity markets; alternatives generate alpha; real assets appreciate."},
+    base:{ret:7.2,range:"5.5–8.5%",desc:"Balanced return from equity growth and fixed income income; alternatives contribute."},
+    bear:{ret:-8.5,range:"-15.0–-3.0%",desc:"Equity drawdown partially offset by fixed income and alternatives diversification."},
+    rationale:[
+      {t:"Core Equity Tilt",b:"At 35% global equities, this allocation captures the long-term equity risk premium without overconcentrating in single-country or single-factor risk. International diversification adds resilience."},
+      {t:"Alternatives as a Third Pillar",b:"15% alternatives is the institutional standard for balanced mandates. Private equity adds return premium; private credit adds yield; hedge funds add uncorrelated return streams."},
+      {t:"Real Assets as Inflation Hedge",b:"12% real assets serves a dual purpose: it generates income (particularly via REITs and infrastructure) and hedges against inflationary erosion of purchasing power."},
+    ]
+  },
+  aggressive:{
+    name:"High-Growth Accumulation",
+    subtitle:"Concentrated equity and alternatives allocation for maximum long-term compounding.",
+    alloc:[
+      {name:"Global Equities",key:"eq_global",color:ASSET_COLORS[0],desc:"Dominant allocation to US growth, international, and emerging markets."},
+      {name:"Private Equity / VC",key:"pe",color:ASSET_COLORS[1],desc:"Illiquid premium capture via buyout, growth equity, and venture."},
+      {name:"International Equities",key:"eq_intl",color:ASSET_COLORS[4],desc:"Asia-Pacific and EM growth markets for secular growth exposure."},
+      {name:"Real Assets",key:"real",color:ASSET_COLORS[3],desc:"Core CRE and infrastructure; inflation-linked return stream."},
+      {name:"Fixed Income",key:"fi",color:ASSET_COLORS[2],desc:"Minimal duration; primarily high-yield and flexible credit for yield."},
+      {name:"Cash & Equivalents",key:"cash",color:ASSET_COLORS[5],desc:"Minimum liquidity reserve only."},
+    ],
+    baseWeights:[45,20,15,10,7,3],
+    bull:{ret:16.5,range:"14.0–20.0%",desc:"Equity bull cycle + PE realization events drive exceptional compounding."},
+    base:{ret:10.2,range:"8.0–12.5%",desc:"Long-term equity premium + alternatives premium above public market returns."},
+    bear:{ret:-22.0,range:"-35.0–-10.0%",desc:"Significant drawdown expected; long time horizon required to recover."},
+    rationale:[
+      {t:"Maximum Equity Premium",b:"45% global equities captures the equity risk premium in full. For investors with long time horizons and no near-term liquidity needs, this is the primary engine of wealth compounding."},
+      {t:"20% Private Equity Allocation",b:"The illiquidity premium for private equity over public markets has averaged 3-5% annually over the past 20 years per Cambridge Associates. This allocation is appropriate only for investors with 7+ year time horizons."},
+      {t:"Minimal Fixed Income",b:"With a long horizon and high risk tolerance, bonds primarily serve as a drag on returns. The small allocation is maintained in higher-yielding credit to extract income without sacrificing too much on duration."},
+    ]
+  }
+};
+
+function getProfile(){
+  const{risk,goal,horizon,liquidity,income}=state;
+  let profile='moderate';
+  if(risk==='conservative'||liquidity==='high'||horizon==='short') profile='conservative';
+  else if(risk==='aggressive'&&(horizon==='long'||horizon==='perpetual')&&liquidity!=='high') profile='aggressive';
+  
+  // Modify weights based on inputs
+  const p=JSON.parse(JSON.stringify(PROFILES[profile]));
+  
+  // Goal adjustments
+  if(goal==='income'){p.baseWeights[0]=Math.max(p.baseWeights[0]-5,5);p.baseWeights[1]=Math.min(p.baseWeights[1]+5,50);}
+  if(goal==='preservation'){p.baseWeights[2]=Math.min((p.baseWeights[2]||0)+5,20);}
+  if(goal==='wealth_growth'&&profile==='moderate'){p.baseWeights[0]=Math.min(p.baseWeights[0]+5,55);}
+
+  // HNWI / UHNWI → more alts
+  if((income==='hnwi'||income==='uhnwi')&&profile!=='conservative'){
+    const altIdx=p.alloc.findIndex(a=>a.key==='alts'||a.key==='pe');
+    if(altIdx>-1){p.baseWeights[altIdx]=Math.min(p.baseWeights[altIdx]+5,30);}
+  }
+
+  // Normalize
+  const total=p.baseWeights.reduce((a,b)=>a+b,0);
+  p.baseWeights=p.baseWeights.map(w=>Math.round(w/total*100));
+  // fix rounding
+  const diff=100-p.baseWeights.reduce((a,b)=>a+b,0);
+  p.baseWeights[0]+=diff;
+
+  return{profile,data:p};
+}
+
+function drawDonut(weights,colors,size=180){
+  const c=document.getElementById('donutCanvas');
+  const ctx=c.getContext('2d');
+  const cx=size/2,cy=size/2,r=size*.42,inner=size*.27;
+  ctx.clearRect(0,0,size,size);
+  const total=weights.reduce((a,b)=>a+b,0);
+  let start=-Math.PI/2;
+  const gap=0.03;
+  weights.forEach((w,i)=>{
+    const slice=(w/total)*2*Math.PI;
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.arc(cx,cy,r,start+gap/2,start+slice-gap/2);
+    ctx.closePath();
+    ctx.fillStyle=colors[i];
+    ctx.fill();
+    start+=slice;
+  });
+  // Inner circle cutout
+  ctx.beginPath();
+  ctx.arc(cx,cy,inner,0,2*Math.PI);
+  ctx.fillStyle='#0a1628';
+  ctx.fill();
+}
+
+function buildAllocation(){
+  const{profile,data}=getProfile();
+  const alloc=data.alloc;
+  const weights=data.baseWeights;
+  const colors=alloc.map(a=>a.color);
+
+  // Profile tag & header
+  document.getElementById('profileTag').textContent=data.name;
+  document.getElementById('resultsTitle').textContent='Your Recommended Allocation';
+  document.getElementById('resultsSubtitle').textContent=data.subtitle;
+  document.getElementById('equityCenter').textContent=weights[0]+'%';
+
+  // Stats row
+  const age=state.age;
+  const yearsToRetire=Math.max(65-age,0);
+  document.getElementById('statsRow').innerHTML=`
+    <div class="stat-card">
+      <div class="stat-label">Risk Profile</div>
+      <div class="stat-val">${{conservative:'Defensive',moderate:'Balanced',aggressive:'Aggressive'}[profile]}</div>
+      <div class="stat-sub">${{conservative:'Capital preservation priority',moderate:'Growth with stability',aggressive:'Maximum growth focus'}[profile]}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Investment Horizon</div>
+      <div class="stat-val">${{short:'< 3 Years',medium:'3–7 Years',long:'7–15 Years',perpetual:'15+ Years'}[state.horizon||'medium']}</div>
+      <div class="stat-sub">${state.age<50?`~${yearsToRetire} years to typical retirement`:'Wealth distribution phase'}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Base Case Return Est.</div>
+      <div class="stat-val">${data.base.ret.toFixed(1)}%</div>
+      <div class="stat-sub">Annualized 10-yr avg (illustrative)</div>
+    </div>`;
+
+  // Donut
+  setTimeout(()=>drawDonut(weights,colors),100);
+
+  // Legend
+  document.getElementById('legendEl').innerHTML=alloc.map((a,i)=>`
+    <div class="legend-item">
+      <div class="legend-dot" style="background:${a.color}"></div>
+      <span>${a.name.split(' ')[0]}</span>
+      <span class="legend-pct">${weights[i]}%</span>
+    </div>`).join('');
+
+  // Allocation bars
+  document.getElementById('allocBars').innerHTML=alloc.map((a,i)=>`
+    <div class="alloc-row">
+      <div class="alloc-meta">
+        <span class="alloc-name">${a.name}</span>
+        <div class="alloc-right">
+          <span class="alloc-pct">${weights[i]}%</span>
+        </div>
+      </div>
+      <div class="alloc-bar-bg">
+        <div class="alloc-bar-fill" style="width:0%;background:${a.color}" data-target="${weights[i]}"></div>
+      </div>
+      <div class="alloc-desc">${a.desc}</div>
+    </div>`).join('');
+  setTimeout(()=>{
+    document.querySelectorAll('.alloc-bar-fill').forEach(b=>{b.style.width=b.dataset.target+'%'});
+  },200);
+
+  // Scenarios
+  document.getElementById('scenariosEl').innerHTML=`
+    <div class="scenario bull">
+      <div class="scenario-icon">↑</div>
+      <div class="scenario-label">Bull Market</div>
+      <div class="scenario-ret">+${data.bull.ret}%</div>
+      <div class="scenario-range">${data.bull.range}</div>
+      <div class="scenario-desc">${data.bull.desc}</div>
+    </div>
+    <div class="scenario base">
+      <div class="scenario-icon">→</div>
+      <div class="scenario-label">Base Case</div>
+      <div class="scenario-ret">+${data.base.ret}%</div>
+      <div class="scenario-range">${data.base.range}</div>
+      <div class="scenario-desc">${data.base.desc}</div>
+    </div>
+    <div class="scenario bear">
+      <div class="scenario-icon">↓</div>
+      <div class="scenario-label">Bear Market</div>
+      <div class="scenario-ret">${data.bear.ret}%</div>
+      <div class="scenario-range">${data.bear.range}</div>
+      <div class="scenario-desc">${data.bear.desc}</div>
+    </div>`;
+
+  // Rationale
+  document.getElementById('rationaleEl').innerHTML=data.rationale.map((r,i)=>`
+    <div class="rationale-item">
+      <div class="rationale-num">${i+1}</div>
+      <div class="rationale-text"><strong>${r.t}. </strong>${r.b}</div>
+    </div>`).join('');
+}
+
+// Init
+document.getElementById('ageSlider').style.setProperty('--pct','13.5%');
+buildSteps();
+</script>
+</body>
+</html>

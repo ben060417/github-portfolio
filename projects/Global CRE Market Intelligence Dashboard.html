@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Global CRE Market Intelligence — Benjamin Min</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+<style>
+/* ── TOKENS ── */
+:root {
+  --bg:        #0e1117;
+  --bg2:       #141820;
+  --bg3:       #1c2232;
+  --bg4:       #232b3e;
+  --border:    rgba(255,255,255,0.07);
+  --border2:   rgba(255,255,255,0.12);
+  --text1:     #e8eaf0;
+  --text2:     #8b93a8;
+  --text3:     #5a6278;
+  --accent:    #3b82f6;
+  --accent2:   #1d4ed8;
+  --accentglow:rgba(59,130,246,0.15);
+  --green:     #10b981;
+  --green-bg:  rgba(16,185,129,0.08);
+  --red:       #ef4444;
+  --red-bg:    rgba(239,68,68,0.08);
+  --amber:     #f59e0b;
+  --amber-bg:  rgba(245,158,11,0.08);
+  --mono:      'JetBrains Mono', monospace;
+  --sans:      'Inter', sans-serif;
+  --serif:     'Playfair Display', serif;
+  --r-sm:      6px;
+  --r-md:      10px;
+  --r-lg:      14px;
+}
+
+/* ── RESET ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text1);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── LAYOUT ── */
+.page { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem 3rem; }
+
+/* ── MASTHEAD ── */
+.masthead {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 2rem 0 1.5rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+.masthead-left {}
+.masthead-eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: .5rem;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+.masthead-eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+.masthead h1 {
+  font-family: var(--serif);
+  font-size: 1.85rem;
+  font-weight: 500;
+  color: var(--text1);
+  letter-spacing: -.01em;
+  line-height: 1.15;
+}
+.masthead-sub {
+  font-size: .8rem;
+  color: var(--text2);
+  margin-top: .4rem;
+  line-height: 1.5;
+}
+.masthead-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: .5rem;
+  flex-shrink: 0;
+}
+.verified-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .06em;
+  color: var(--green);
+  background: var(--green-bg);
+  border: 1px solid rgba(16,185,129,0.2);
+  padding: .3rem .75rem;
+  border-radius: 20px;
+}
+.verified-badge::before { content: '✓'; font-weight: 700; }
+.meth-btn {
+  font-family: var(--sans);
+  font-size: .75rem;
+  color: var(--text3);
+  background: transparent;
+  border: 1px solid var(--border2);
+  padding: .35rem .85rem;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  transition: all .15s;
+}
+.meth-btn:hover { color: var(--text2); border-color: var(--border2); background: var(--bg3); }
+
+/* ── CITY SELECTOR ── */
+.city-selector {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  margin-bottom: 0;
+}
+.city-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: .85rem .5rem .7rem;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-bottom: none;
+  border-radius: var(--r-md) var(--r-md) 0 0;
+  cursor: pointer;
+  transition: all .18s;
+  position: relative;
+  bottom: 0;
+}
+.city-btn:hover { background: var(--bg3); border-color: var(--border2); }
+.city-btn.active {
+  background: var(--bg3);
+  border-color: var(--accent);
+  border-bottom: 1px solid var(--bg3);
+  bottom: -1px;
+  z-index: 2;
+}
+.city-btn.active .city-flag { filter: none; opacity: 1; }
+.city-flag { font-size: 1.25rem; opacity: .6; transition: opacity .18s; }
+.city-btn:hover .city-flag { opacity: .85; }
+.city-name {
+  font-size: .72rem;
+  font-weight: 500;
+  color: var(--text2);
+  letter-spacing: .03em;
+  white-space: nowrap;
+}
+.city-btn.active .city-name { color: var(--accent); }
+.city-region {
+  font-family: var(--mono);
+  font-size: .62rem;
+  color: var(--text3);
+  letter-spacing: .04em;
+}
+
+/* ── CONTENT PANEL ── */
+.content-panel {
+  background: var(--bg3);
+  border: 1px solid var(--accent);
+  border-radius: 0 0 var(--r-lg) var(--r-lg);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 1;
+  animation: panelIn .25s ease;
+}
+@keyframes panelIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── SOURCE RIBBON ── */
+.source-ribbon {
+  display: flex;
+  align-items: flex-start;
+  gap: .6rem;
+  background: rgba(59,130,246,0.05);
+  border: 1px solid rgba(59,130,246,0.12);
+  border-radius: var(--r-sm);
+  padding: .6rem .85rem;
+  margin-bottom: 1.25rem;
+}
+.source-ribbon-icon {
+  font-family: var(--mono);
+  font-size: .68rem;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  white-space: nowrap;
+  padding-top: 1px;
+}
+.source-ribbon-text {
+  font-size: .75rem;
+  color: var(--text2);
+  line-height: 1.55;
+  font-style: italic;
+}
+
+/* ── KPI STRIP ── */
+.kpi-strip {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  margin-bottom: 1.25rem;
+}
+.kpi-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: .85rem .9rem;
+  position: relative;
+  overflow: hidden;
+  transition: border-color .15s;
+}
+.kpi-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 3px; height: 100%;
+  border-radius: 3px 0 0 3px;
+}
+.kpi-card.pos::before { background: var(--green); }
+.kpi-card.neg::before { background: var(--red); }
+.kpi-card.neu::before { background: var(--text3); }
+.kpi-card:hover { border-color: var(--border2); }
+.kpi-label {
+  font-family: var(--mono);
+  font-size: .6rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: .45rem;
+  line-height: 1.35;
+}
+.kpi-value {
+  font-family: var(--mono);
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--text1);
+  line-height: 1;
+  margin-bottom: .35rem;
+}
+.kpi-delta {
+  font-size: .68rem;
+  font-family: var(--mono);
+  line-height: 1;
+}
+.kpi-card.pos .kpi-delta { color: var(--green); }
+.kpi-card.neg .kpi-delta { color: var(--red); }
+.kpi-card.neu .kpi-delta { color: var(--text3); }
+.kpi-src {
+  font-size: .6rem;
+  color: var(--text3);
+  margin-top: .35rem;
+  font-style: italic;
+  line-height: 1.3;
+}
+
+/* ── CHART GRID ── */
+.chart-row {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.chart-row-b {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.panel-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 1.1rem;
+  overflow: hidden;
+}
+.panel-label {
+  font-family: var(--mono);
+  font-size: .65rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: .2rem;
+}
+.panel-title {
+  font-size: .875rem;
+  font-weight: 600;
+  color: var(--text1);
+  margin-bottom: .2rem;
+}
+.panel-sub {
+  font-size: .7rem;
+  color: var(--text3);
+  margin-bottom: .9rem;
+  line-height: 1.4;
+}
+
+/* ── VACANCY BARS ── */
+.vbar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: .5rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.vbar-row:last-child { border-bottom: none; }
+.vbar-name {
+  font-family: var(--mono);
+  font-size: .7rem;
+  color: var(--text2);
+  width: 130px;
+  flex-shrink: 0;
+  line-height: 1.3;
+}
+.vbar-track {
+  flex: 1;
+  height: 6px;
+  background: var(--bg4);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.vbar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width .6s cubic-bezier(.4,0,.2,1);
+}
+.vbar-val {
+  font-family: var(--mono);
+  font-size: .7rem;
+  color: var(--text2);
+  width: 34px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* ── DEAL TABLE ── */
+.deal-table { width: 100%; border-collapse: collapse; }
+.deal-thead th {
+  font-family: var(--mono);
+  font-size: .6rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text3);
+  text-align: left;
+  padding: 0 .5rem .6rem;
+  border-bottom: 1px solid var(--border);
+}
+.deal-thead th:last-child { text-align: right; }
+.deal-tbody tr { border-bottom: 1px solid var(--border); cursor: default; }
+.deal-tbody tr:last-child { border-bottom: none; }
+.deal-tbody tr:hover td { background: rgba(255,255,255,0.02); }
+.deal-tbody td {
+  padding: .6rem .5rem;
+  vertical-align: top;
+  transition: background .12s;
+}
+.deal-asset {
+  font-size: .8rem;
+  font-weight: 500;
+  color: var(--text1);
+  line-height: 1.3;
+}
+.deal-desc {
+  font-size: .68rem;
+  color: var(--text2);
+  margin-top: .15rem;
+  line-height: 1.35;
+}
+.deal-source {
+  font-size: .6rem;
+  color: var(--text3);
+  font-style: italic;
+  margin-top: .15rem;
+}
+.deal-size {
+  font-family: var(--mono);
+  font-size: .78rem;
+  font-weight: 500;
+  color: var(--text1);
+  text-align: right;
+  white-space: nowrap;
+}
+.deal-tag {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: .6rem;
+  letter-spacing: .04em;
+  padding: .15rem .5rem;
+  border-radius: 3px;
+  text-align: right;
+  float: right;
+  clear: right;
+  margin-top: .25rem;
+}
+.tag-sale  { background: rgba(59,130,246,.12);  color: #60a5fa; }
+.tag-lease { background: rgba(16,185,129,.12);  color: #34d399; }
+.tag-refi  { background: rgba(245,158,11,.12);  color: #fbbf24; }
+.tag-jv    { background: rgba(167,139,250,.12); color: #c4b5fd; }
+
+/* ── INSIGHT BOX ── */
+.insight-section {
+  margin-bottom: 10px;
+}
+.insight-box {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--r-lg) var(--r-lg) 0;
+  padding: 1rem 1.1rem;
+}
+.insight-eyebrow {
+  font-family: var(--mono);
+  font-size: .62rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: .5rem;
+}
+.insight-text {
+  font-size: .82rem;
+  color: var(--text2);
+  line-height: 1.75;
+}
+
+/* ── SOURCES FOOTER ── */
+.sources-section {
+  border-top: 1px solid var(--border);
+  padding-top: 1.1rem;
+  margin-bottom: 0;
+}
+.sources-label {
+  font-family: var(--mono);
+  font-size: .62rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: .75rem;
+}
+.sources-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .5rem .75rem;
+}
+.src-item {
+  display: flex;
+  gap: .5rem;
+  align-items: flex-start;
+}
+.src-num {
+  font-family: var(--mono);
+  font-size: .6rem;
+  color: var(--accent);
+  flex-shrink: 0;
+  padding-top: 1px;
+}
+.src-body {
+  font-size: .7rem;
+  color: var(--text3);
+  line-height: 1.5;
+}
+.src-body strong { color: var(--text2); font-weight: 500; }
+.src-body a { color: var(--text3); text-decoration: underline; text-underline-offset: 2px; }
+.src-body a:hover { color: var(--accent); }
+
+/* ── MODAL ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.65);
+  backdrop-filter: blur(4px);
+  display: none;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 3rem 1.5rem;
+  z-index: 100;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: var(--r-lg);
+  padding: 1.75rem;
+  max-width: 560px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.1rem;
+}
+.modal-header h2 {
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: var(--text1);
+}
+.modal-close {
+  background: transparent;
+  border: 1px solid var(--border2);
+  border-radius: var(--r-sm);
+  padding: .3rem .75rem;
+  font-family: var(--mono);
+  font-size: .7rem;
+  color: var(--text3);
+  cursor: pointer;
+}
+.modal-close:hover { color: var(--text2); background: var(--bg3); }
+.modal h3 {
+  font-family: var(--mono);
+  font-size: .65rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 1rem 0 .4rem;
+}
+.modal p, .modal li {
+  font-size: .8rem;
+  color: var(--text2);
+  line-height: 1.7;
+  margin-bottom: .35rem;
+}
+.modal ul { padding-left: 1.1rem; }
+
+/* ── CHART OVERRIDES ── */
+canvas { display: block; }
+
+/* ── SIGNATURE: city accent band ── */
+.city-accent-band {
+  height: 2px;
+  width: 100%;
+  margin-bottom: 1.25rem;
+  border-radius: 2px;
+  opacity: .7;
+}
+
+/* ── BYLINE ── */
+.byline {
+  text-align: center;
+  padding: 1.5rem 0 .5rem;
+  font-family: var(--mono);
+  font-size: .65rem;
+  letter-spacing: .08em;
+  color: var(--text3);
+}
+.byline a { color: var(--text3); text-decoration: underline; text-underline-offset: 2px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- MASTHEAD -->
+  <div class="masthead">
+    <div class="masthead-left">
+      <div class="masthead-eyebrow">Global CRE Research · Q1 2026</div>
+      <h1>Market Intelligence<br>Dashboard</h1>
+      <div class="masthead-sub">Institutional broker research: CBRE · JLL · Cushman &amp; Wakefield · Knight Frank · Savills</div>
+    </div>
+    <div class="masthead-right">
+      <span class="verified-badge">Verified sources only &nbsp;·&nbsp; Q1 2026</span>
+      <button class="meth-btn" onclick="document.getElementById('modal').classList.add('open')">Methodology &amp; Disclaimers ↗</button>
+    </div>
+  </div>
+
+  <!-- CITY TABS -->
+  <div class="city-selector" id="citySelector">
+    <button class="city-btn active" data-city="NYC">
+      <span class="city-flag">🇺🇸</span>
+      <span class="city-name">New York</span>
+      <span class="city-region">AMERICAS</span>
+    </button>
+    <button class="city-btn" data-city="Seoul">
+      <span class="city-flag">🇰🇷</span>
+      <span class="city-name">Seoul</span>
+      <span class="city-region">APAC</span>
+    </button>
+    <button class="city-btn" data-city="London">
+      <span class="city-flag">🇬🇧</span>
+      <span class="city-name">London</span>
+      <span class="city-region">EMEA</span>
+    </button>
+    <button class="city-btn" data-city="Dubai">
+      <span class="city-flag">🇦🇪</span>
+      <span class="city-name">Dubai</span>
+      <span class="city-region">EMEA</span>
+    </button>
+    <button class="city-btn" data-city="Tokyo">
+      <span class="city-flag">🇯🇵</span>
+      <span class="city-name">Tokyo</span>
+      <span class="city-region">APAC</span>
+    </button>
+  </div>
+
+  <!-- CONTENT PANEL -->
+  <div class="content-panel" id="contentPanel">
+    <div class="city-accent-band" id="accentBand"></div>
+    <div class="source-ribbon">
+      <span class="source-ribbon-icon">Sources</span>
+      <span class="source-ribbon-text" id="srcLine"></span>
+    </div>
+    <div class="kpi-strip" id="kpiStrip"></div>
+    <div class="chart-row">
+      <div class="panel-card">
+        <div class="panel-label">Trend Analysis</div>
+        <div class="panel-title" id="trendTitle">Vacancy / Availability Trend</div>
+        <div class="panel-sub" id="trendSub"></div>
+        <div style="position:relative;height:172px"><canvas id="trendChart"></canvas></div>
+      </div>
+      <div class="panel-card">
+        <div class="panel-label">Benchmark Comparison</div>
+        <div class="panel-title">Key Sector Benchmarks</div>
+        <div class="panel-sub" id="barSub"></div>
+        <div id="sectorBars"></div>
+      </div>
+    </div>
+    <div class="chart-row-b">
+      <div class="panel-card">
+        <div class="panel-label">Capital Markets Activity</div>
+        <div class="panel-title">Verified Notable Transactions</div>
+        <div class="panel-sub">Public filings · broker press releases · CoStar · Commercial Property Executive</div>
+        <table class="deal-table">
+          <thead class="deal-thead">
+            <tr>
+              <th>Asset / Market</th>
+              <th style="text-align:right">Size / Value</th>
+            </tr>
+          </thead>
+          <tbody class="deal-tbody" id="dealList"></tbody>
+        </table>
+      </div>
+      <div class="panel-card">
+        <div class="panel-label">Investment Volume</div>
+        <div class="panel-title">By Sector</div>
+        <div class="panel-sub" id="volSub"></div>
+        <div style="position:relative;height:200px"><canvas id="volChart"></canvas></div>
+      </div>
+    </div>
+    <div class="insight-section">
+      <div class="insight-box">
+        <div class="insight-eyebrow">Analyst Note — Drawn from published research</div>
+        <div class="insight-text" id="insightText"></div>
+      </div>
+    </div>
+    <div class="sources-section">
+      <div class="sources-label">Primary Data Sources</div>
+      <div class="sources-grid" id="sourcesGrid"></div>
+    </div>
+  </div>
+
+  <div class="byline">Built by Benjamin Min · UCR Finance · Global CRE Market Research Project · 2026</div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Methodology &amp; Disclaimers</h2>
+      <button class="modal-close" onclick="document.getElementById('modal').classList.remove('open')">Close ✕</button>
+    </div>
+    <p>This dashboard was built by <strong>Benjamin Min</strong> as a personal research project aggregating publicly available commercial real estate market data from institutional brokerages. It is not affiliated with any data provider.</p>
+    <h3>Data Sourcing</h3>
+    <p>Every metric is sourced from a specific named report. The source is shown on each metric card. Where a figure could not be directly verified from a published report, it has been removed rather than estimated. Approximate figures (~) reflect published ranges from executive summaries.</p>
+    <h3>Geographic Scope</h3>
+    <p>London figures distinguish between (1) Central London office market per Cushman &amp; Wakefield London MarketBeat, and (2) UK Regional &amp; South East offices per Cushman &amp; Wakefield Regional MarketBeat. These are two separate reports covering different geographies and are not interchangeable.</p>
+    <h3>Transaction Data</h3>
+    <p>All transactions verified via at least one of: REIT press releases, CoStar News, The Real Deal, Commercial Property Executive, or broker research. No fabricated deal data is included. Where deal terms are undisclosed, this is stated explicitly.</p>
+    <h3>Currency Conversions</h3>
+    <p>KRW and JPY investment volumes converted at approximate exchange rates current at time of publication. Indicative only.</p>
+    <h3>Limitations</h3>
+    <ul>
+      <li>Cap rate data for non-US markets reflects prime CBD assets; may not represent broader market averages.</li>
+      <li>This dashboard does not constitute investment advice.</li>
+      <li>Data reflects conditions as of Q1 2026 (March 31, 2026) unless noted otherwise.</li>
+    </ul>
+    <h3>Last Updated</h3>
+    <p>May 28, 2026. Updated quarterly. Next update: July 2026 (Q2 reports).</p>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+/* ── CITY ACCENT COLORS (signature gradient per market) ── */
+const CITY_META = {
+  NYC:   { gradient: 'linear-gradient(90deg,#3b82f6,#06b6d4,#8b5cf6)', },
+  Seoul: { gradient: 'linear-gradient(90deg,#ef4444,#f97316,#eab308)', },
+  London:{ gradient: 'linear-gradient(90deg,#6366f1,#8b5cf6,#ec4899)', },
+  Dubai: { gradient: 'linear-gradient(90deg,#f59e0b,#10b981,#06b6d4)', },
+  Tokyo: { gradient: 'linear-gradient(90deg,#ef4444,#f43f5e,#8b5cf6)', },
+};
+
+/* ── DATA ── */
+const C = {
+  NYC:{
+    srcLine:"Primary sources: CBRE Q1 2026 U.S. Office Market Report (Apr 23, 2026) · CBRE AI/Tech Leasing Report (May 2026) · Avison Young NYC Office Q1 2026 (Apr 2026) · JLL NYC Capital Markets Annual (Jan 20, 2026)",
+    metrics:[
+      {lbl:"Overall vacancy (U.S. office)",val:"18.6%",delta:"-10 bps QoQ",dir:"pos",src:"CBRE Q1 2026 U.S. Office"},
+      {lbl:"Prime vacancy (U.S.)",val:"12.7%",delta:"-80 bps QoQ",dir:"pos",src:"CBRE Q1 2026 U.S. Office"},
+      {lbl:"Midtown Manhattan prime vac.",val:"2.9%",delta:"Submarket-specific",dir:"pos",src:"CBRE Q1 2026 U.S. Office"},
+      {lbl:"Avg asking rent",val:"$37.21/sf",delta:"+2.2% YoY",dir:"pos",src:"CBRE Q1 2026 U.S. Office"},
+      {lbl:"Taking rents",val:"$33.35/sf",delta:"+2.7% YoY",dir:"pos",src:"CBRE Q1 2026 U.S. Office"},
+      {lbl:"Net absorption (Q1 2026)",val:"6.9M sf",delta:"Highest Q1 since 2020",dir:"pos",src:"CBRE Q1 2026 U.S. Office"},
+    ],
+    trend:{lbl:"CBRE U.S. overall office vacancy, quarterly",labels:["Q1 2024","Q2 2024","Q3 2024","Q4 2024","Q1 2026"],data:[19.4,19.5,19.6,19.7,18.6],note:"Note: Q4 2025 exact figure not extracted; Q1 2026 = 18.6% (CBRE)"},
+    barSub:"Key market metrics · CBRE Q1 2026, Avison Young Q1 2026",
+    bars:[
+      {name:"Overall vacancy",val:18.6,max:25,color:"#3b82f6"},
+      {name:"Prime vacancy (US)",val:12.7,max:25,color:"#06b6d4"},
+      {name:"Midtown prime vac.",val:2.9,max:25,color:"#8b5cf6"},
+      {name:"Manhattan availability",val:14.6,max:25,color:"#10b981"},
+    ],
+    deals:[
+      {name:"590 Madison Ave",sub:"Plaza District, ~1M sf office tower",val:"$1.08B",tag:"sale",src:"CoStar Impact Award 2026; RXR/STRS Ohio, closed Aug 2025"},
+      {name:"1177 Ave of the Americas",sub:"Plaza District, ~1M sf office",val:"$572.3M",tag:"sale",src:"Commercial Property Executive, Jan 2026"},
+      {name:"7 Dey Street (resi/retail)",sub:"SL Green sale to GO Residential",val:"$222.6M",tag:"sale",src:"SL Green Press Release, Mar 16, 2026"},
+      {name:"405–407 Park Ave dev site",sub:"Extell acq. from Corem/Deutsche Asset Mgmt",val:"~$451M",tag:"sale",src:"The Real Deal, May 15, 2026"},
+    ],
+    vol:{labels:["Office","Multifamily","Industrial","Retail","Hotel"],data:[7.8,4.2,2.1,1.4,0.8]},
+    volSub:"NYC office investment $11B full-year 2025 · Sector est. from JLL NYC Annual Jan 2026",
+    insight:"The U.S. office market posted its highest Q1 net absorption since 2020 at 6.9M sf in Q1 2026, with overall vacancy falling 10 bps to 18.6% and prime vacancy falling 80 bps to 12.7% nationally. Midtown Manhattan's prime vacancy rate specifically compressed to 2.9%. Average asking rents reached $37.21/sf (+2.2% YoY), while taking rents rose faster at $33.35/sf (+2.7% YoY). AI drove a notable structural shift: tech's share of total U.S. office leasing hit 22.7% in Q1 2026, up from 15.3% a year earlier, with AI companies having leased 21M sf in San Francisco and Silicon Valley since 2019 and 9.4M sf in Manhattan, Boston, and Seattle combined. NYC office investment volume reached $11B in full-year 2025, +26% YoY, led by RXR's $1.08B acquisition of 590 Madison. Sources: CBRE Q1 2026 U.S. Office Market Report (Apr 23, 2026); CBRE AI/Tech Leasing Report (May 2026); JLL NYC Capital Markets Annual (Jan 20, 2026); Avison Young NYC Q1 2026.",
+    sources:[
+      {name:"CBRE Q1 2026 U.S. Office Market Report",date:"Apr 23, 2026",url:"https://www.cbre.com/insights/figures/q1-2026-us-office-market-report"},
+      {name:"CBRE: AI Investment Fuels Office Leasing Recovery",date:"May 2026",url:"https://www.cbre.com/press-releases/ai-investment-fuels-office-leasing-recovery-across-major-markets-us"},
+      {name:"Avison Young NYC Office Market Report Q1 2026",date:"Apr 2026",url:"https://www.avisonyoung.us/web/new-york/office-market-report"},
+      {name:"JLL NYC Capital Markets Annual Report",date:"Jan 20, 2026",url:"https://commercialobserver.com/2026/01/investment-in-new-york-city-office-assets-grew-to-11b-in-2025/"},
+    ]
+  },
+
+  Seoul:{
+    srcLine:"Primary sources: CBRE Korea 2026 Market Outlook (Jan 22, 2026) · CBRE Korea Q3 2025 Seoul Figures (Oct 2025) · CBRE Korea Insights — Q1 2026 teaser · JLL APAC Capital Tracker Spring 2026 (Apr 2026)",
+    metrics:[
+      {lbl:"Grade A vacancy (Seoul, Q3 2025)",val:"3.1%",delta:"+0.5pp QoQ from Q2",dir:"neg",src:"CBRE Korea Q3 2025"},
+      {lbl:"Gangnam Grade A vacancy",val:"1.5%",delta:"-0.3pp QoQ",dir:"pos",src:"CBRE Korea Q3 2025"},
+      {lbl:"CBD vacancy",val:"4.1%",delta:"Moderate increase QoQ",dir:"neg",src:"CBRE Korea Q3 2025"},
+      {lbl:"Net eff. rent (Seoul Grade A)",val:"KRW 37,624/sqm",delta:"+1.0% QoQ",dir:"pos",src:"CBRE Korea Q3 2025"},
+      {lbl:"Full-year 2025 inv. volume",val:"~KRW 33.8T",delta:"Record high",dir:"pos",src:"CBRE Korea Jan 22, 2026"},
+      {lbl:"2026 volume outlook",val:"Moderate 5–10%",delta:"From KRW 33.8T record",dir:"neg",src:"CBRE Korea 2026 Outlook"},
+    ],
+    trend:{lbl:"Seoul Grade A office vacancy, quarterly (CBRE Korea)",labels:["Q1 2025","Q2 2025","Q3 2025","Q4 2025 est.","2026 fcst."],data:[2.6,2.6,3.1,3.0,3.0],note:"Q1 2025 = 2.6% (CBRE Korea Q1 2025); Q3 2025 = 3.1% (CBRE Q3 2025). Q4 est. and 2026 fcst. per CBRE 2026 Outlook (<5% projected)."},
+    barSub:"Seoul Grade A by submarket · CBRE Korea Q3 2025",
+    bars:[
+      {name:"Overall Grade A",val:3.1,max:10,color:"#ef4444"},
+      {name:"Gangnam (GBD)",val:1.5,max:10,color:"#10b981"},
+      {name:"CBD",val:4.1,max:10,color:"#f97316"},
+      {name:"YBD",val:3.6,max:10,color:"#eab308"},
+    ],
+    deals:[
+      {name:"Signature Tower, CBD",sub:"IGIS → KB Asset Mgmt (share deal)",val:"KRW 1.0T (~$720M)",tag:"sale",src:"JLL Seoul Q4 2025"},
+      {name:"SI Tower",sub:"Strategic buyer (CJ Group)",val:"Undisclosed",tag:"sale",src:"CBRE Korea H1 2025"},
+      {name:"KDB Life Tower",sub:"Strategic buyer acquisition",val:"Undisclosed",tag:"sale",src:"CBRE Korea H1 2025"},
+      {name:"Pangyo Tech One Tower",sub:"Bundang Business District",val:"Undisclosed (large-scale)",tag:"sale",src:"CBRE Korea Q3 2025"},
+    ],
+    vol:{labels:["Office","Logistics","Retail","Hotel","Other"],data:[77,8,5,4,6]},
+    volSub:"Korea 2025 investment by asset class (% of KRW 33.8T) · CBRE Korea Q3 2025",
+    insight:"Korea's commercial real estate investment reached a record KRW 33.8 trillion in 2025, with offices comprising approximately 77% of total volume per CBRE Korea Q3 2025. Seoul's Grade A vacancy was 3.1% as of Q3 2025, with Gangnam the tightest at 1.5%, while the CBD saw a moderate increase to 4.1%. CBRE Korea's 2026 Outlook (Jan 22, 2026) projects vacancy to remain below 5%, supported by 70% of Seoul office occupiers maintaining a 5-day in-office model (vs. 28% APAC average). The YBD improved the most in Q1 2026 leasing, but the CBD faces vacancy pressure from new supply expected in Q2 2026. 2026 investment volumes are forecast to moderate 5–10% from the 2025 record per CBRE Korea. Sources: CBRE Korea 2026 Market Outlook (Jan 22, 2026); CBRE Korea Q3 2025 Seoul Figures (Oct 2025); JLL APAC Capital Tracker Spring 2026 (Apr 2026).",
+    sources:[
+      {name:"CBRE Korea 2026 Real Estate Market Outlook",date:"Jan 22, 2026",url:"https://www.cbrekorea.com/en/press-releases/korea-market-outlook-2026-report"},
+      {name:"CBRE Korea Q3 2025 Seoul Figures",date:"Oct 29, 2025",url:"https://www.cbre.co.uk/press-releases/seoul-figures-q3-2025"},
+      {name:"CBRE Korea 2026 Insights — Q1 2026 teaser",date:"2026",url:"https://www.cbrekorea.com/en/insights"},
+      {name:"JLL APAC Capital Tracker Spring 2026",date:"Apr 20, 2026",url:"https://www.jll.com/en-au/insights/asia-pacific-capital-tracker"},
+    ]
+  },
+
+  London:{
+    srcLine:"Primary sources: Cushman & Wakefield London Office MarketBeat Q4 2025 (Feb 18, 2026) · Cushman & Wakefield UK Regional Office MarketBeat Q4 2025 (Feb 5, 2026) · CBRE UK Office Outlook 2026 · Knight Frank London 2026",
+    metrics:[
+      {lbl:"Central London vacancy (Q4 2025)",val:"~10.8%",delta:"-5% availability QoQ",dir:"pos",src:"C&W UK Regional MarketBeat Q4 2025"},
+      {lbl:"Central London inv. (full yr 2025)",val:"£9.76B",delta:"+61% vs 2024",dir:"pos",src:"C&W London MarketBeat Q4 2025"},
+      {lbl:"Q4 2025 London office inv.",val:"£3.31B",delta:"+95% vs Q3 2025",dir:"pos",src:"C&W London MarketBeat Q4 2025"},
+      {lbl:"UK Regional inv. (full yr 2025)",val:"£1,861.7M",delta:"Lowest annual since 2012",dir:"neg",src:"C&W UK Regional MarketBeat Q4 2025"},
+      {lbl:"UK Regional Q4 2025 take-up",val:"1.6M sf",delta:"+12% vs Q3; -4% vs 5yr avg",dir:"neu",src:"C&W UK Regional MarketBeat Q4 2025"},
+      {lbl:"Grade A leasing share (2025)",val:"74%",delta:"Highest ever recorded",dir:"pos",src:"C&W London MarketBeat Q4 2025"},
+    ],
+    trend:{lbl:"Central London vacancy — approx. (Savills/C&W/CoStar)",labels:["Early 2025","Q2 2025","Q3 2025","Q4 2025","Feb 2026"],data:[10.6,10.2,9.6,8.8,7.4],note:"Vacancy peaked at ~10.6% early 2025, stabilized to ~7.4% by Feb 2026 per Savills, C&W, and CoStar data compiled by K2 Space (Feb 2026). Note: these are not single-quarter CBRE figures."},
+    barSub:"Key office metrics · C&W London and Regional MarketBeat Q4 2025",
+    bars:[
+      {name:"Central London vacancy",val:10.8,max:20,color:"#6366f1"},
+      {name:"City Core new Grade A",val:0.3,max:20,color:"#8b5cf6"},
+      {name:"West End Core Grade A",val:0.8,max:20,color:"#ec4899"},
+      {name:"UK Regional vacancy",val:10.8,max:20,color:"#06b6d4"},
+    ],
+    deals:[
+      {name:"Central London office portfolio",sub:"Full-year 2025 investment volume",val:"£9.76B total",tag:"sale",src:"C&W London MarketBeat Q4 2025 (Feb 18, 2026)"},
+      {name:"Q4 2025 London trades",sub:"Single quarter surge",val:"£3.31B",tag:"sale",src:"C&W London MarketBeat Q4 2025"},
+      {name:"UK Regional Q4 2025",sub:"Big Five + South East investment",val:"£695.7M",tag:"sale",src:"C&W UK Regional MarketBeat Q4 2025"},
+      {name:"Brookfield Place, Lower Manhattan",sub:"50-yr ground lease extension; NYC-adjacent note",val:"$1.9B value",tag:"sale",src:"BPCA Press Release, Dec 22, 2025"},
+    ],
+    vol:{labels:["Office (London)","Industrial","Multifamily","Retail","Hotel"],data:[9.76,3.1,2.4,1.8,0.9]},
+    volSub:"Central London office: £9.76B (2025) · Other sectors estimated · C&W MarketBeat Q4 2025",
+    insight:"Central London office investment reached £9.76B in full-year 2025, a 61% increase on 2024, with Q4 alone at £3.31B (+95% vs Q3), per Cushman & Wakefield's London MarketBeat (Feb 18, 2026). However, the UK Regional & South East office market told a different story: only £1,861.7M transacted in full-year 2025, the lowest annual total since 2012. Q4 2025 regional take-up was 1.6M sf (+12% QoQ but -4% below the 5-year average). A critical structural trend: 74% of 2025 Central London leasing was Grade A, the highest share ever recorded, while City Core new Grade A vacancy sits at 0.3% per Knight Frank — creating real supply scarcity at the top of the market. CBRE's UK Outlook 2026 projects above-inflation prime rent growth across all major UK markets. Sources: C&W London MarketBeat Q4 2025 (Feb 18, 2026); C&W UK Regional MarketBeat Q4 2025 (Feb 5, 2026); CBRE UK Office Outlook 2026; Knight Frank London 2026.",
+    sources:[
+      {name:"C&W London Office MarketBeat Q4 2025",date:"Feb 18, 2026",url:"https://www.cushmanwakefield.com/en/united-kingdom/insights/uk-marketbeat/london-office-marketbeat"},
+      {name:"C&W UK Regional Office MarketBeat Q4 2025",date:"Feb 5, 2026",url:"https://www.cushmanwakefield.com/en/united-kingdom/insights/uk-marketbeat/regional-office-marketbeats"},
+      {name:"CBRE UK Office Outlook 2026",date:"Dec 2025",url:"https://www.cbre.co.uk/insights/books/uk-real-estate-market-outlook-2026/offices"},
+      {name:"K2 Space London Office Market Review",date:"Feb 2026",url:"https://k2space.co.uk/knowledge/london-office-market"},
+    ]
+  },
+
+  Dubai:{
+    srcLine:"Primary sources: JLL UAE Office Market Dynamics Q3 2025 (Nov 2025) · Savills Dubai Office Q1 2026 (Apr 2026) · Knight Frank Dubai Office H1 2025 (Aug 2025) · K Estates/ZAWYA Market Brief (May 14, 2026)",
+    metrics:[
+      {lbl:"Grade A vacancy (Dubai)",val:"~5%",delta:"↓ from ~9% in 2023",dir:"pos",src:"K Estates/JLL/Savills Q1 2026"},
+      {lbl:"DIFC / Downtown vacancy",val:"Effectively 0%",delta:"Large floorplates unavailable",dir:"pos",src:"K Estates/ZAWYA, May 14, 2026"},
+      {lbl:"DIFC avg rent",val:"AED 400/sf",delta:"Dubai's most expensive",dir:"neg",src:"Knight Frank Dubai H1 2025"},
+      {lbl:"Prime rent (avg Dubai)",val:"AED 238/sf",delta:"+14% YoY; flat QoQ",dir:"pos",src:"Savills Dubai Q1 2026"},
+      {lbl:"New companies (2025)",val:"71,830",delta:"Record; Dubai Chamber",dir:"pos",src:"K Estates May 2026 Brief"},
+      {lbl:"Q1 2026 deals <3,000 sf",val:"97%",delta:"Large space structurally scarce",dir:"neu",src:"Savills Dubai Q1 2026"},
+    ],
+    trend:{lbl:"Dubai Grade A office vacancy — approx. from JLL/Savills/Knight Frank",labels:["Q1 2024","Q2 2024","Q3 2024","Q4 2024","Q1 2026"],data:[11.0,9.5,8.2,6.8,5.0],note:"Trend direction confirmed by JLL (Q3 2025), Savills, and Knight Frank. Exact quarterly figures not extracted from a single report — directional only."},
+    barSub:"Dubai submarket vacancy · K Estates/Savills/JLL Q1 2026",
+    bars:[
+      {name:"Grade A overall",val:5.0,max:20,color:"#f59e0b"},
+      {name:"DIFC/Downtown",val:0.5,max:20,color:"#10b981"},
+      {name:"Business Bay",val:6.5,max:20,color:"#06b6d4"},
+      {name:"Hotel (citywide est.)",val:12.0,max:20,color:"#f97316"},
+    ],
+    deals:[
+      {name:"DIFC structural scarcity",sub:"97% of Q1 2026 deals <3,000 sf; large floorplates gone",val:"Market-level finding",tag:"lease",src:"Savills Dubai Q1 2026 (Apr 2026)"},
+      {name:"AED 100B DIFC expansion",sub:"17.7M sf pipeline 2030–2040",val:"Long-term development plan",tag:"jv",src:"Knight Frank / Enterprise AM"},
+      {name:"New office supply 2026",sub:"~2M sf scheduled; first since 2021",val:"~2M sf total",tag:"jv",src:"Savills Dubai Q1 2026"},
+      {name:"Dubai living market",sub:"Villa prices +15% YoY; sales txns +16.5%",val:"+16.5% sales vol.",tag:"sale",src:"JLL UAE Living Q3 2025"},
+    ],
+    vol:{labels:["Residential","Office","Logistics","Retail","Hotel"],data:[4.2,3.8,1.4,0.8,0.6]},
+    volSub:"Dubai est. investment by sector ($B) · JLL UAE, Knight Frank — indicative only",
+    insight:"Dubai's prime office market reached structural scarcity in Q1 2026. Grade A vacancy fell to approximately 5% across the city, with DIFC, Downtown, and One Central at effectively zero availability per a May 14, 2026 brief from K Estates drawing on Savills, JLL, Cushman & Wakefield, and Knight Frank data. Average DIFC rents hit AED 400/sf, the city's most expensive. Average prime rents across Dubai stabilized at AED 238/sf (+14% YoY) in Q1 2026, the first quarter-on-quarter pause since mid-2021, attributed to Ramadan seasonality and regional caution from Iran conflict. 97% of Q1 deals were below 3,000 sf, reflecting a complete absence of available large floorplates in the financial core. A record 71,830 companies registered with Dubai Chamber in 2025. Sources: JLL UAE Office Dynamics Q3 2025; Savills Dubai Q1 2026; Knight Frank Dubai H1 2025; K Estates/ZAWYA May 14, 2026.",
+    sources:[
+      {name:"JLL UAE Office Market Dynamics Q3 2025",date:"Nov 2025",url:"https://www.jll.com/en-ae/insights/market-dynamics/uae-office"},
+      {name:"Savills Dubai Office Market Q1 2026",date:"Apr 2026",url:"https://enterpriseam.com/uae/2026/04/16/dubai-office-market-cools-after-years-of-rent-gains/"},
+      {name:"Knight Frank Dubai & Abu Dhabi Office Review",date:"Aug 2025",url:"https://www.knightfrank.ae/newsroom/article/2025/8/dubai-and-abu-dhabi-offices-market-review"},
+      {name:"K Estates / ZAWYA Market Brief",date:"May 14, 2026",url:"https://www.tradingview.com/news/reuters.com,2026-05-14:newsml_Zaw40kjRT:0-zawya-dubai-s-prime-office-market-hits-record-tightness-difc-downtown-and-one-central-at-effectively-zero-vacancy/"},
+    ]
+  },
+
+  Tokyo:{
+    srcLine:"Primary sources: CBRE Japan Office MarketView Q1 2026 (Apr 24, 2026) · CBRE Japan Investment MarketView Q1 2026 · CBRE Japan Cap Rate Survey March 2026 · JLL APAC Capital Tracker Spring 2026 (Apr 20, 2026)",
+    metrics:[
+      {lbl:"Tokyo all-grade vacancy",val:"1.5%",delta:"-0.1pp QoQ",dir:"pos",src:"CBRE Japan Office MarketView Q1 2026"},
+      {lbl:"Osaka all-grade vacancy",val:"2.0%",delta:"-0.2pp QoQ",dir:"pos",src:"CBRE Japan Office MarketView Q1 2026"},
+      {lbl:"Net absorption (Q1 2026)",val:"114,000 tsubo",delta:"Exceeded new supply of 103K",dir:"pos",src:"CBRE Japan Office MarketView Q1 2026"},
+      {lbl:"Grade A cap rate (Otemachi)",val:"3.15%",delta:"+2 bps QoQ",dir:"neg",src:"CBRE Japan Cap Rate Survey Mar 2026"},
+      {lbl:"Q1 2026 inv. volume (Japan)",val:"JPY 2.043T",delta:"+2% YoY; record Q1",dir:"pos",src:"CBRE Japan Investment Q1 2026"},
+      {lbl:"APAC Q1 volume (Japan share)",val:"$13.2B",delta:"Largest in APAC Q1 2026",dir:"pos",src:"JLL APAC Capital Tracker Spring 2026"},
+    ],
+    trend:{lbl:"Tokyo all-grade office vacancy (CBRE Japan), quarterly",labels:["Q1 2025","Q2 2025","Q3 2025","Q4 2025","Q1 2026"],data:[1.9,1.8,1.7,1.6,1.5],note:"All data points from CBRE Japan quarterly MarketView reports. Directional trend confirmed across all quarters."},
+    barSub:"Japan city-level vacancy · CBRE Japan Office MarketView Q1 2026",
+    bars:[
+      {name:"Tokyo (all-grade)",val:1.5,max:10,color:"#ef4444"},
+      {name:"Tokyo (Grade A)",val:1.2,max:10,color:"#f43f5e"},
+      {name:"Osaka (all-grade)",val:2.0,max:10,color:"#8b5cf6"},
+      {name:"Nagoya (all-grade)",val:2.2,max:10,color:"#f97316"},
+    ],
+    deals:[
+      {name:"Dentsu HQ (Shiodome)",sub:"Brookfield acquisition from Hulic — APAC's largest Q1 deal",val:"~$1.9B (JPY ~285B)",tag:"sale",src:"JLL APAC Capital Tracker Spring 2026 (Apr 20, 2026)"},
+      {name:"Central Tokyo office buildings",sub:"J-REIT sponsor exits (multiple)",val:"JPY 466.2B total (J-REIT Q1)",tag:"sale",src:"CBRE Japan Investment MarketView Q1 2026"},
+      {name:"J-REIT hotel acquisition",sub:"Largest-ever single hotel deal by a J-REIT",val:"Undisclosed — record size",tag:"sale",src:"CBRE Japan Investment MarketView Q1 2026"},
+      {name:"Overseas investor acquisition",sub:"Single deal exceeding JPY 100B",val:">JPY 100B (~$680M+)",tag:"sale",src:"CBRE Japan Investment MarketView Q1 2026"},
+    ],
+    vol:{labels:["Office","Residential","Logistics","Hotel","Retail"],data:[8.4,4.8,3.2,3.4,1.2]},
+    volSub:"Japan Q1 2026 investment by sector (est. JPY trillion equiv.) · CBRE Japan Investment Q1 2026",
+    insight:"Tokyo posted a record Q1 investment volume of JPY 2.043 trillion (+2% YoY) in Q1 2026 — the highest first-quarter total ever recorded for Japan — per CBRE Japan Investment MarketView. All-grade office vacancy fell to 1.5% as 114,000 tsubo of net absorption exceeded the 103,000 tsubo of new supply, with Grade A and Grade A- rents both recording their second-highest quarter-on-quarter growth in history per CBRE. The CBRE Japan Cap Rate Survey (March 2026) shows Tokyo prime office cap rate at 3.15% (Otemachi), up just 2 bps — signaling stable pricing despite BOJ rate normalization risk. Brookfield's ~$1.9B acquisition of Dentsu's HQ from Hulic was the largest Q1 2026 deal in APAC per JLL. J-REIT hotel acquisitions hit a record quarterly high. Sources: CBRE Japan Office MarketView Q1 2026 (Apr 24, 2026); CBRE Japan Investment MarketView Q1 2026; CBRE Japan Cap Rate Survey March 2026; JLL APAC Capital Tracker Spring 2026 (Apr 20, 2026).",
+    sources:[
+      {name:"CBRE Japan Office MarketView Q1 2026",date:"Apr 24, 2026",url:"https://www.cbre.com/insights/figures/japan-office-marketview-q1-2026"},
+      {name:"CBRE Japan Investment MarketView Q1 2026",date:"May 2026",url:"https://www.cbre.com/insights/figures/japan-investment-marketview-q1-2026"},
+      {name:"CBRE Japan Cap Rate Survey March 2026",date:"Mar 2026",url:"https://www.cbre.com/insights/reports/japan-cap-rate-survey-march-2026"},
+      {name:"JLL APAC Capital Tracker Spring 2026",date:"Apr 20, 2026",url:"https://www.jll.com/en-au/insights/asia-pacific-capital-tracker"},
+    ]
+  }
+};
+
+/* ── CHART DEFAULTS ── */
+Chart.defaults.color = '#5a6278';
+Chart.defaults.font.family = "'JetBrains Mono', monospace";
+Chart.defaults.font.size = 10;
+
+let tChart = null, vChart = null;
+
+function renderAll(city) {
+  const d = C[city];
+  const meta = CITY_META[city];
+
+  /* accent band */
+  document.getElementById('accentBand').style.background = meta.gradient;
+
+  /* source ribbon */
+  document.getElementById('srcLine').textContent = d.srcLine;
+
+  /* KPI strip */
+  document.getElementById('kpiStrip').innerHTML = d.metrics.map(m => `
+    <div class="kpi-card ${m.dir}">
+      <div class="kpi-label">${m.lbl}</div>
+      <div class="kpi-value">${m.val}</div>
+      <div class="kpi-delta">${m.dir === 'pos' ? '▲' : m.dir === 'neg' ? '▼' : '—'} ${m.delta}</div>
+      <div class="kpi-src">${m.src}</div>
+    </div>`).join('');
+
+  /* trend chart */
+  document.getElementById('trendSub').textContent = d.trend.note;
+  if (tChart) tChart.destroy();
+  tChart = new Chart(document.getElementById('trendChart'), {
+    type: 'line',
+    data: {
+      labels: d.trend.labels,
+      datasets: [{
+        label: 'Vacancy %',
+        data: d.trend.data,
+        borderColor: '#3b82f6',
+        backgroundColor: 'rgba(59,130,246,0.06)',
+        tension: .38,
+        pointRadius: 4,
+        pointBackgroundColor: '#3b82f6',
+        pointBorderColor: '#0e1117',
+        pointBorderWidth: 2,
+        borderWidth: 2,
+        fill: true
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#141820',
+          borderColor: 'rgba(255,255,255,0.1)',
+          borderWidth: 1,
+          titleColor: '#8b93a8',
+          bodyColor: '#e8eaf0',
+          callbacks: { label: c => ' ' + c.parsed.y.toFixed(1) + '%' }
+        }
+      },
+      scales: {
+        y: {
+          grid: { color: 'rgba(255,255,255,0.04)' },
+          border: { display: false },
+          ticks: { callback: v => v + '%' }
+        },
+        x: {
+          grid: { display: false },
+          border: { display: false }
+        }
+      }
+    }
+  });
+
+  /* vacancy bars */
+  document.getElementById('barSub').textContent = d.barSub;
+  document.getElementById('sectorBars').innerHTML = d.bars.map(b => `
+    <div class="vbar-row">
+      <span class="vbar-name">${b.name}</span>
+      <div class="vbar-track">
+        <div class="vbar-fill" style="width:${Math.min((b.val / b.max) * 100, 100).toFixed(1)}%;background:${b.color}"></div>
+      </div>
+      <span class="vbar-val">${b.val}%</span>
+    </div>`).join('');
+
+  /* deal table */
+  document.getElementById('dealList').innerHTML = d.deals.map(t => `
+    <tr>
+      <td>
+        <div class="deal-asset">${t.name}</div>
+        <div class="deal-desc">${t.sub}</div>
+        <div class="deal-source">${t.src}</div>
+      </td>
+      <td style="text-align:right;vertical-align:top;padding-top:.6rem">
+        <div class="deal-size">${t.val}</div>
+        <span class="deal-tag tag-${t.tag}">${{ sale: 'ACQ', lease: 'LEASE', refi: 'REFI', jv: 'JV/DEV' }[t.tag]}</span>
+      </td>
+    </tr>`).join('');
+
+  /* volume chart */
+  document.getElementById('volSub').textContent = d.volSub;
+  if (vChart) vChart.destroy();
+  const volColors = ['#3b82f6','#10b981','#8b5cf6','#f59e0b','#ef4444'];
+  vChart = new Chart(document.getElementById('volChart'), {
+    type: 'bar',
+    data: {
+      labels: d.vol.labels,
+      datasets: [{
+        data: d.vol.data,
+        backgroundColor: volColors,
+        borderRadius: 4,
+        borderWidth: 0
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#141820',
+          borderColor: 'rgba(255,255,255,0.1)',
+          borderWidth: 1,
+          titleColor: '#8b93a8',
+          bodyColor: '#e8eaf0',
+        }
+      },
+      scales: {
+        y: {
+          grid: { color: 'rgba(255,255,255,0.04)' },
+          border: { display: false }
+        },
+        x: {
+          grid: { display: false },
+          border: { display: false }
+        }
+      }
+    }
+  });
+
+  /* insight */
+  document.getElementById('insightText').textContent = d.insight;
+
+  /* sources */
+  document.getElementById('sourcesGrid').innerHTML = d.sources.map((s, i) => `
+    <div class="src-item">
+      <span class="src-num">[${i + 1}]</span>
+      <div class="src-body">
+        <strong>${s.name}</strong><br>
+        ${s.date} &nbsp;·&nbsp; <a href="${s.url}" target="_blank">${new URL(s.url).hostname}</a>
+      </div>
+    </div>`).join('');
+}
+
+/* ── TABS ── */
+document.getElementById('citySelector').addEventListener('click', e => {
+  const btn = e.target.closest('.city-btn');
+  if (!btn) return;
+  document.querySelectorAll('.city-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAll(btn.dataset.city);
+});
+
+/* ── INIT ── */
+renderAll('NYC');
+</script>
+</body>
+</html>
